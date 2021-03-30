@@ -1,13 +1,9 @@
-import React, { ReactElement } from "react";
-import Navbar from "react-bootstrap/Navbar";
-import Nav from "react-bootstrap/Nav";
-import Form from "react-bootstrap/form";
-import FormControl from "react-bootstrap/formControl";
-import Button from "react-bootstrap/Button";
-
-
-
-
+import React, { ReactElement } from 'react';
+import Navbar from 'react-bootstrap/Navbar';
+import Nav from 'react-bootstrap/Nav';
+import Form from 'react-bootstrap/form';
+import FormControl from 'react-bootstrap/formControl';
+import Button from 'react-bootstrap/Button';
 
 export default function SpaNavbar(): ReactElement {
   return (
