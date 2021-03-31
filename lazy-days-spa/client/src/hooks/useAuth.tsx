@@ -1,16 +1,16 @@
 // Adapted from https://usehooks.com/useAuth/
 // Easy to understand React Hook recipes by Gabe Ragland
+
 import 'firebase/auth';
 
 import firebase from 'firebase/app';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
-// Add your Firebase credentials
 firebase.initializeApp({
-  apiKey: process.env.FIREBASE_API_KEY,
-  authDomain: process.env.FIREBASE_AUTHDOMAIN,
-  projectID: process.env.FIREBASE_PROJECTID,
-  appID: process.env.FIREBASE_APPID,
+  apiKey: process.env.REACT_APP_FIREBASE_APIKEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTHDOMAIN,
+  projectID: process.env.REACT_APP_FIREBASE_PROJECTID,
+  appID: process.env.REACT_APP_FIREBASE_APPID,
 });
 
 interface AuthUserAndMethods {
