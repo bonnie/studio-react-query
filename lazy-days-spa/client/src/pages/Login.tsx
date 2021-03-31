@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
 
-export default function Login(): ReactElement {
-    return (<div />);
+export function Login(): ReactElement {
+  return <div />;
 }

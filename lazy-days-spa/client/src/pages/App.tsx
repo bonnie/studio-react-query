@@ -1,12 +1,16 @@
-import React from 'react';
-import "./App.css";
-import Container from 'react-bootstrap/Container'
+import React, { ReactElement } from 'react';
+import Container from 'react-bootstrap/Container';
 
-import Navbar from './Navbar';
+import { Loading } from './Loading';
+import { SpaNavbar } from './nav/Navbar';
+import { Routes } from './Routes';
 
-export default function App(): React.FC {
-  return (<Container className="App">
-    <Navbar />
-    <Routes />
-  </Container>);
+export function App(): ReactElement {
+  return (
+    <Container className="App">
+      <Loading />
+      <SpaNavbar />
+      <Routes />
+    </Container>
+  );
 }

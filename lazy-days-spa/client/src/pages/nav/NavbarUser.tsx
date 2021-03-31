@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
 
-export function Book(): ReactElement {
+export function NavbarUser(): ReactElement {
   return <div />;
 }

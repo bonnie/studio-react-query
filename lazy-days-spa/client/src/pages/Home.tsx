@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
+
 import splashImg from '../../public/splash.jpg';
 
-export default function Home(): React.FC {
+export function Home(): ReactElement {
   return (
     <div>
-      <img className="background-image" src={splashImg} />
+      <img
+        className="background-image"
+        src={splashImg}
+        alt="peaceful orchids and stacked rocks"
+      />
     </div>
   );
 }

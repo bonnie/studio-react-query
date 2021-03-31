@@ -1,8 +1,20 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
+import { Route, Switch } from 'react-router-dom';
 
-import Home from './Home';
-import Book from './Book';
+import { Book } from './Book';
+import { Home } from './Home';
+import { Login } from './Login';
+import { Treatments } from './Treatments';
+import { UserProfile } from './UserProfile';
 
-export default function Routes: React.FC {
-    return (<div />);
+export function Routes(): ReactElement {
+  return (
+    <Switch>
+      <Route path="/book" component={Book} />
+      <Route path="/login" component={Login} />
+      <Route path="/treatments" component={Treatments} />
+      <Route path="/user/:id" component={UserProfile} />
+      <Route path="/" component={Home} />
+    </Switch>
+  );
 }
