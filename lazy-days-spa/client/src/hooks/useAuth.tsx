@@ -61,6 +61,7 @@ function useProvideAuth(): AuthUserAndMethods {
   }
   async function signup(email: string, password: string): Promise<void> {
     try {
+      console.log('SIGNING UP!!!!');
       setError(null);
       const response: firebase.auth.UserCredential = await firebase
         .auth()

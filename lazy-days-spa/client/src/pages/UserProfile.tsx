@@ -1,8 +1,14 @@
 import React, { ReactElement } from 'react';
-import { useParams } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
+
+import { useAuth } from '../hooks/useAuth';
 
 export function UserProfile(): ReactElement {
-  const { id } = useParams();
+  const auth = useAuth();
+
+  if (!auth?.user) {
+    return <Redirect to="/signin" />;
+  }
 
   return <div />;
 }
