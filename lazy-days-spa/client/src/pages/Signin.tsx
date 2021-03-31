@@ -1,6 +1,8 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import React, { ReactElement, useState } from 'react';
 import { Form } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
+import { Redirect } from 'react-router-dom';
 
 import { useAuth } from '../hooks/useAuth';
 
@@ -11,6 +13,10 @@ export function Signin(): ReactElement {
   const [action, setAction] = useState<string>();
   const [validated, setValidated] = useState(false);
   const auth = useAuth();
+
+  if (auth?.user) {
+    return <Redirect to={`/user/${auth.user.uid}`} />;
+  }
 
   const onSubmit = (
     event: React.FormEvent<HTMLFormElement>,
