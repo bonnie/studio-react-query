@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
 
-import splashImg from '../../public/splash.jpg';
+import splashImg from '../images/splash.jpg';
 
 export function Home(): ReactElement {
   return (
@@ -10,6 +10,7 @@ export function Home(): ReactElement {
         src={splashImg}
         alt="peaceful orchids and stacked rocks"
       />
+      <h1 style={{ textAlign: 'right' }}>Lazy Days Spa</h1>
     </div>
   );
 }
