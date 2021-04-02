@@ -16,7 +16,7 @@ export function Signin(): ReactElement {
   const auth = useAuth();
 
   if (auth?.user) {
-    return <Redirect to={`/user/${auth.user.uid}`} />;
+    return <Redirect to={`/user/${auth.user.id}`} />;
   }
 
   const onSubmit = (
@@ -25,8 +25,15 @@ export function Signin(): ReactElement {
   ) => {
     event.preventDefault();
     const form = event.currentTarget;
-    if (form.checkValidity() === false || !email || !password) {
+    if (form.checkValidity() === false) {
+      setValidated(false);
       event.stopPropagation();
+      return;
+    }
+
+    // to satisfy typescript
+    if (!email || !password) {
+      setValidated(false);
       return;
     }
 

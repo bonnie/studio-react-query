@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import { ReactElement } from 'react';
 import Button from 'react-bootstrap/Button';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
@@ -25,7 +25,7 @@ export function SpaNavbar(): ReactElement {
       </Nav>
       {auth && auth.user ? (
         <>
-          <Link to={`/user/${auth.user.uid}`} component={Nav.Link}>
+          <Link to={`/user/${auth.user.id}`} component={Nav.Link}>
             Account ({auth.user.email})
           </Link>
           <Button onClick={() => auth.signout()}>Sign out</Button>
