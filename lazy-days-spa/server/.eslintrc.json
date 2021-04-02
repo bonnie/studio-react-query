@@ -1,0 +1,21 @@
+{
+  "extends": [
+    "airbnb-base",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "env": {
+    "es6": true
+  },
+  "rules": {
+    "max-lines-per-function": ["warn", 30],
+    "import/extensions": ["error", "never"],
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error",
+    "sort-imports": "off",
+    "import/order": "off",
+    "no-shadow": "off",
+    "@typescript-eslint/no-shadow": "error",
+    "prettier/prettier": "error"
+  }
+}
