@@ -13,22 +13,23 @@ import {
   NewUser,
   Treatment,
   User,
-} from '../../shared/types';
+} from '../../../shared/types';
+import { AuthUser, PasswordHash } from '../auth';
 
 const dbPath = '../db';
-enum filenames {
+export enum filenames {
   users = 'users.json',
   appointments = 'appointments.json',
   treatments = 'treatments.json',
 }
 
-interface Error {
+export interface Error {
   error: string;
   status?: number;
 }
 
 /* ****** Read from file ***** */
-async function getJSONfromFile(filename: filenames.users): Promise<User[]>;
+async function getJSONfromFile(filename: filenames.users): Promise<AuthUser[]>;
 async function getJSONfromFile(
   filename: filenames.appointments,
 ): Promise<Appointment[]>;
@@ -59,8 +60,8 @@ async function writeJSONToFile(filename, data) {
 /* ****** Add new item ***** */
 async function addNewItem(
   filename: filenames.users,
-  newItemData: NewUser,
-): Promise<User>;
+  newItemData: NewUser & PasswordHash,
+): Promise<AuthUser>;
 async function addNewItem(
   filename: filenames.appointments,
   newItemData: NewAppointment,
@@ -112,7 +113,7 @@ async function deleteItem(filename, itemId) {
 async function updateItem(
   filename: filenames.users,
   updatedItemData: User,
-): Promise<User | Error>;
+): Promise<AuthUser | Error>;
 async function updateItem(
   filename: filenames.appointments,
   updatedItemData: Appointment,
@@ -142,56 +143,6 @@ async function updateItem(filename, updatedItemData) {
   }
 }
 
-/* ********** Users **************** */
-interface UserData {
-  userData: User;
-  appointments: Appointment[];
-}
-export async function getUserData(userId: number): Promise<UserData | Error> {
-  try {
-    const users = await getJSONfromFile(filenames.users);
-    const userArray = users.filter((u) => u.id === userId);
-    if (userArray.length !== 1) {
-      return { error: `Could not find user with id ${userId}`, status: 400 };
-    }
-    const user = userArray[0];
-
-    const appointments = await getJSONfromFile(filenames.appointments);
-    const userAppointments = Object.values(appointments).filter(
-      (a) => a.userId === userId,
-    );
-    return { userData: user, appointments: userAppointments };
-  } catch (e) {
-    return { error: `Could not get user for id ${userId}: ${e}` };
-  }
-}
-
-export async function addNewUser(newUserData: NewUser): Promise<User | Error> {
-  try {
-    const newUser = await addNewItem(filenames.users, newUserData);
-    return newUser;
-  } catch (e) {
-    return { error: `could not add new user: ${e}` };
-  }
-}
-
-export async function deleteUser(userId: number): Promise<number | Error> {
-  try {
-    return deleteItem(filenames.users, userId);
-  } catch (e) {
-    return { error: `could not delete user: ${e}` };
-  }
-}
-
-export async function updateUser(userData: User): Promise<User | Error> {
-  try {
-    return updateItem(filenames.users, userData);
-  } catch (e) {
-    return { error: `could not update user: ${e}` };
-  }
-}
-
-/* ********** Appointments **************** */
 interface AppointmentData {
   appointments: Appointment[];
 }
@@ -204,61 +155,20 @@ export async function getAppointments(): Promise<AppointmentData | Error> {
   }
 }
 
-export async function addNewAppointment(
-  newAppointmentData: NewAppointment,
-): Promise<Appointment | Error> {
-  try {
-    const newAppointment = await addNewItem(
-      filenames.appointments,
-      newAppointmentData,
-    );
-    return newAppointment;
-  } catch (e) {
-    return { error: `could not add new appointment: ${e}` };
-  }
+export async function getTreatments(): Promise<Treatment[]> {
+  return getJSONfromFile(filenames.treatments);
 }
 
-export async function deleteAppointment(
-  appointmentId: number,
-): Promise<number | Error> {
-  try {
-    return deleteItem(filenames.appointments, appointmentId);
-  } catch (e) {
-    return { error: `could not delete appointment: ${e}` };
-  }
-}
-
-export async function updateAppointment(
-  appointmentData: Appointment,
-): Promise<Appointment | Error> {
-  try {
-    return updateItem(filenames.appointments, appointmentData);
-  } catch (e) {
-    return { error: `could not update appointment: ${e}` };
-  }
-}
-
-/* ********** Treatments **************** */
-interface TreatmentData {
-  treatments: Treatment[];
-}
-export async function getTreatments(): Promise<TreatmentData | Error> {
-  try {
-    const treatments = await getJSONfromFile(filenames.treatments);
-    return { treatments };
-  } catch (e) {
-    return { error: `Could not read file ${e}` };
-  }
+export function getUsers(): Promise<AuthUser[]> {
+  return getJSONfromFile(filenames.users);
 }
 
 export default {
-  getUserData,
-  addNewUser,
-  deleteUser,
-  updateUser,
+  filenames,
+  addNewItem,
+  deleteItem,
+  updateItem,
+  getUsers,
   getAppointments,
-  addNewAppointment,
-  deleteAppointment,
-  updateAppointment,
   getTreatments,
 };

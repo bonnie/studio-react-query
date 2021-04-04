@@ -3,9 +3,20 @@ import dotenv from 'dotenv';
 import express from 'express';
 import jwt from 'express-jwt';
 
+import { User as SpaUser } from '../../shared/types';
 import db from './db-func';
 
 dotenv.config();
+
+// typing for Express request with jwt
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace Express {
+    interface Request {
+      auth?: SpaUser;
+    }
+  }
+}
 
 const app = express();
 
@@ -23,13 +34,23 @@ app.use(express.static('public'));
 // user profile protected by jwt
 app.get(
   '/user/:id',
-  jwt({ secret: process.env.EXPRESS_SECRET }),
+  jwt({
+    secret: process.env.EXPRESS_SECRET,
+    algorithms: ['HS256'],
+    requestProperty: 'auth',
+  }),
   (req, res) => {
     // check that the token matches the id url param
-    if (req.user.id !== req.params.id) return res.sendStatus(401);
+    // decoded token resides in req.user
+    if (req.auth.id !== Number(req.params.id)) return res.sendStatus(401);
     return res.sendStatus(200);
   },
 );
+
+// verify login
+app.post('/login', (req, res) => {
+  // authenticate user
+});
 
 // // read data from options file
 // const sundaeOptionsRaw = fs.readFileSync("./sundae-options.json", "utf-8");
