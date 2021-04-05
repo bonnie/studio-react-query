@@ -1,4 +1,3 @@
-/* eslint-disable import/no-unresolved */
 import { Request, Response } from 'express';
 
 import { User } from '../../../shared/types';
@@ -12,33 +11,44 @@ function removePasswordData(user: AuthUser): User {
   return cleanUser;
 }
 
-export async function getUserDataById(userId: number): Promise<User> {
-  // find the user
-  const users = await db.getUsers();
-  const userArray = users.filter((u) => u.id === userId);
+// eslint-disable-next-line max-lines-per-function
+export async function get(req: Request, res: Response): Promise<Response> {
+  try {
+    const requestedId = Number(req.params.id);
 
-  // throw error if not found (or more than one is found!)
-  if (userArray.length !== 1) {
-    throw new Error(`Could not find user with id ${userId}`);
+    // check that the token matches the id url param (decoded token resides in req.user)
+    if (req.auth?.id !== requestedId) return res.status(401);
+
+    // find the user
+    const users = await db.getUsers();
+    const userArray = users.filter((u) => u.id === requestedId);
+
+    // throw error if not found (or more than one is found!)
+    if (userArray.length !== 1) {
+      return res
+        .status(400)
+        .json({ message: `Could not find user with id ${requestedId}` });
+    }
+
+    // remove password data from user object
+    const user = removePasswordData(userArray[0]);
+
+    // get user's appointments
+    const appointments = await db.getAppointments();
+    const userAppointments = Object.values(appointments).filter(
+      (a) => a.userId === requestedId,
+    );
+
+    // return user and appointments
+    return res
+      .status(200)
+      .json({ user: { ...user, appointments: userAppointments } });
+  } catch (e) {
+    return res.status(500).json({ message: `could not get user: ${e}` });
   }
-
-  // remove password data from user object
-  const user = removePasswordData(userArray[0]);
-
-  // get user's appointments
-  const appointments = await db.getAppointments();
-  const userAppointments = Object.values(appointments).filter(
-    (a) => a.userId === userId,
-  );
-
-  // return user and appointments
-  return { ...user, appointments: userAppointments };
 }
 
-export async function addNewUser(
-  req: Request,
-  res: Response,
-): Promise<Response> {
+export async function create(req: Request, res: Response): Promise<Response> {
   try {
     const { email, password } = req.body;
     const existingUsers = await db.getUsers();
@@ -65,15 +75,29 @@ export async function addNewUser(
   }
 }
 
-export async function deleteUser(userId: number): Promise<number> {
-  return db.deleteItem(db.filenames.users, userId);
+export async function remove(req: Request, res: Response): Promise<Response> {
+  try {
+    const { id } = req.params;
+    await db.deleteItem(db.filenames.users, Number(id));
+    return res.status(204);
+  } catch (e) {
+    return res.status(500).json({ message: `could not delete user: ${e}` });
+  }
 }
 
-export async function updateUser(userData: User): Promise<User> {
-  return db.updateItem(db.filenames.users, userData);
+export async function update(req: Request, res: Response): Promise<Response> {
+  try {
+    const { user } = req.body;
+    const newUserData = db.updateItem(db.filenames.users, user);
+    return res.status(200).json({ user: newUserData });
+  } catch (e) {
+    return res.status(500).json({ message: `could not update user: ${e}` });
+  }
 }
 
-export async function authUser(email: string, password: string): Promise<User> {
+export async function auth(req: Request, res: Response): Promise<Response> {
+  const { email, password } = req.body;
+
   // auth user
   const users = await db.getUsers();
   const validUser = users.reduce(
@@ -84,13 +108,19 @@ export async function authUser(email: string, password: string): Promise<User> {
     null,
   );
 
-  if (!validUser) {
-    throw new Error('Invalid login data');
-  }
+  if (!validUser) return res.status(400).json({ message: 'Invalid login' });
 
   // create jwt
   const cleanUser = removePasswordData(validUser);
   const token = createJWT(cleanUser);
 
-  return { ...cleanUser, token };
+  return res.status(200).json({ user: { ...cleanUser, token } });
 }
+
+export default {
+  get,
+  create,
+  remove,
+  update,
+  auth,
+};

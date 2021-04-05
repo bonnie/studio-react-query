@@ -23,6 +23,7 @@
     "sort-imports": "off",
     "import/order": "off",
     "import/prefer-default-export": 0,
+    "import/no-unresolved": 0,
     "no-shadow": "off",
     "@typescript-eslint/no-shadow": "error",
     "prettier/prettier": "error"

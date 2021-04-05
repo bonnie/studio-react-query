@@ -7,13 +7,10 @@ import express from 'express';
 import jwt from 'express-jwt';
 
 import { User as UserType } from '../../shared/types';
-import db from './db-func/index.js'; // add .js for ts-node; https://github.com/microsoft/TypeScript/issues/41887#issuecomment-741902030
-import {
-  addNewUser,
-  authUser,
-  deleteUser,
-  getUserDataById,
-} from './route-methods/user.js';
+import appointmentRoutes from './route-methods/appointment.js';
+// add .js for ts-node; https://github.com/microsoft/TypeScript/issues/41887#issuecomment-741902030
+import treatmentRoutes from './route-methods/treatment.js';
+import userRoutes from './route-methods/user.js';
 
 dotenv.config();
 if (!process.env.EXPRESS_SECRET) {
@@ -47,17 +44,11 @@ app.use(express.static('public'));
 // middleware for parsing json body
 app.use(json());
 
-// verify login
-app.post('/signin', async (req, res) => {
-  try {
-    const userWithToken = await authUser(req.body.email, req.body.password);
-    return res.status(200).json({ user: userWithToken });
-  } catch (e) {
-    return res.status(401).json({ message: e });
-  }
-});
+/* *********** routes ********* */
 
-/* *********** user routes ********* */
+// verify login
+app.post('/signin', userRoutes.auth);
+
 // user profile protected by jwt
 app.get(
   '/user/:id',
@@ -68,49 +59,20 @@ app.get(
     algorithms: ['HS256'],
     requestProperty: 'auth',
   }),
-  async (req, res) => {
-    try {
-      const requestedId = Number(req.params.id);
-
-      // check that the token matches the id url param
-      // (decoded token resides in req.user)
-      if (req.auth?.id !== requestedId) return res.status(401);
-
-      // get data for user
-      const user = await getUserDataById(requestedId);
-      return res.status(200).json({ user });
-    } catch (e) {
-      return res.status(500).json({ message: `could not get user: ${e}` });
-    }
-  },
+  userRoutes.get,
 );
 
-app.post('/user', addNewUser);
+app.post('/user', userRoutes.create);
+app.delete('/user/:id', userRoutes.remove);
+app.patch('/user/:id', userRoutes.update);
 
-app.delete('/user/:id', async (req, res) => {
-  try {
-    await deleteUser(Number(req.params.id));
-    return res.status(204);
-  } catch (e) {
-    return res.status(500).json({ message: `could not delete user: ${e}` });
-  }
-});
+app.get('/appointments', appointmentRoutes.get);
+app.post('/appointment', appointmentRoutes.create);
+app.delete('/appointment/:id', appointmentRoutes.remove);
+app.patch('/appointment/:id', appointmentRoutes.update);
 
-app.patch('/user/:id', async (req, res) => {
-  // update user
-});
-/* *********** END: user routes ********* */
-
-/* *********** appointment routes ********* */
-
-/* *********** END: appointment routes ********* */
-
-/* *********** treatment routes ********* */
-app.get('/treatments', async (req, res) => {
-  const treatments = await db.getTreatments();
-  return res.status(200).json({ treatments });
-});
-/* *********** END: treatment routes ********* */
+app.get('/treatments', treatmentRoutes.get);
+/* *********** END: routes ********* */
 
 if (esMain(import.meta)) {
   // eslint-disable-next-line no-console
