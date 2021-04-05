@@ -23,11 +23,6 @@ export enum filenames {
   treatments = 'treatments.json',
 }
 
-export interface Error {
-  error: string;
-  status?: number;
-}
-
 /* ****** Read from file ***** */
 async function getJSONfromFile(filename: filenames.users): Promise<AuthUser[]>;
 async function getJSONfromFile(
@@ -84,11 +79,11 @@ async function addNewItem(filename, newItemData) {
 async function deleteItem(
   filename: filenames.users,
   itemId: number,
-): Promise<number | Error>;
+): Promise<number>;
 async function deleteItem(
   filename: filenames.appointments,
   itemId: number,
-): Promise<number | Error>;
+): Promise<number>;
 async function deleteItem(filename, itemId) {
   try {
     const items = await getJSONfromFile(filename);
@@ -103,9 +98,9 @@ async function deleteItem(filename, itemId) {
     await writeJSONToFile(filename, updatedItems);
     return itemId;
   } catch (e) {
-    return {
-      error: `Could not delete item id ${itemId} from ${filename}: ${e}`,
-    };
+    throw new Error(
+      `Could not delete item id ${itemId} from ${filename}: ${e}`,
+    );
   }
 }
 
@@ -113,11 +108,11 @@ async function deleteItem(filename, itemId) {
 async function updateItem(
   filename: filenames.users,
   updatedItemData: User,
-): Promise<AuthUser | Error>;
+): Promise<AuthUser>;
 async function updateItem(
   filename: filenames.appointments,
   updatedItemData: Appointment,
-): Promise<Appointment | Error>;
+): Promise<Appointment>;
 async function updateItem(filename, updatedItemData) {
   try {
     const items = await getJSONfromFile(filename);
@@ -137,21 +132,21 @@ async function updateItem(filename, updatedItemData) {
     await writeJSONToFile(filename, items);
     return updatedItemData;
   } catch (e) {
-    return {
-      error: `Could not delete item id ${updatedItemData.id} from ${filename}: ${e}`,
-    };
+    throw new Error(
+      `Could not delete item id ${updatedItemData.id} from ${filename}: ${e}`,
+    );
   }
 }
 
 interface AppointmentData {
   appointments: Appointment[];
 }
-export async function getAppointments(): Promise<AppointmentData | Error> {
+export async function getAppointments(): Promise<AppointmentData> {
   try {
     const appointments = await getJSONfromFile(filenames.appointments);
     return { appointments };
   } catch (e) {
-    return { error: `Could not read file ${e}` };
+    throw new Error(`Could not read file ${e}`);
   }
 }
 

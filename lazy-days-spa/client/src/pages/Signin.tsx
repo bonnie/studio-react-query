@@ -15,7 +15,11 @@ export function Signin(): ReactElement {
   const [validated, setValidated] = useState(false);
   const auth = useAuth();
 
-  if (auth?.user) {
+  if (auth === null) {
+    throw new Error('useAuth being called outside Provider');
+  }
+
+  if (auth.user) {
     return <Redirect to={`/user/${auth.user.id}`} />;
   }
 
@@ -38,9 +42,9 @@ export function Signin(): ReactElement {
     }
 
     if (action === 'signup') {
-      auth?.signup(email, password);
+      auth.signup(email, password);
     } else if (action === 'signin') {
-      auth?.signin(email, password);
+      auth.signin(email, password);
     }
 
     setValidated(true);
@@ -90,7 +94,7 @@ export function Signin(): ReactElement {
           Sign in
         </Button>
       </Form>
-      {auth?.error && <Alert variant="danger">{auth.error}</Alert>}
+      {auth.error && <Alert variant="danger">{auth.error}</Alert>}
     </>
   );
 }

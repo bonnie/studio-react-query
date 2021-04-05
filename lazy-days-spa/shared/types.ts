@@ -1,24 +1,26 @@
 interface Id { id: number }
 
 export interface NewUser {
-    email: string;
-    token?: string;
-  }
+  // leaving room for address, phone number, etc to be added here
+  email: string;
+  token?: string;
+}
 
-export type User = Id & NewUser;
+export type User = Id & NewUser & { appointments?: Appointment[]};
 
 export interface NewAppointment {
-    date: Date;
-    userId: number;
-    treatmentId: number;
+  dateTime: Date;
+  userId?: number;
+  treatmentId: number;
+  staffName: string;
 }
 
 export type Appointment = Id & NewAppointment;
 
 export interface Treatment {
-    id: number;
-    name: string;
-    durationInMinutes: number;
-    imageUrl: string;
-    description: string;
+  id: number;
+  name: string;
+  durationInMinutes: number;
+  imageUrl: string;
+  description: string;
 }

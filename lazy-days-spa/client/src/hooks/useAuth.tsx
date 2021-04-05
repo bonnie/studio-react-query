@@ -1,6 +1,6 @@
 // Adapted from https://usehooks.com/useAuth/
 // Easy to understand React Hook recipes by Gabe Ragland
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
 import { User } from '../../../shared/types';
 import { axiosInstance } from '../axiosInstance';
@@ -49,11 +49,15 @@ function useProvideAuth(): Auth {
   const [user, setUser] = useState<User | null>(getStoredUser());
   const [error, setError] = useState<string | null>(null);
 
-  async function signin(email: string, password: string): Promise<void> {
+  async function serverCall(
+    urlEndpoint: string,
+    email: string,
+    password: string,
+  ): Promise<void> {
     try {
       setError(null);
       const response = await axiosInstance({
-        url: '/signin',
+        url: urlEndpoint,
         method: 'POST',
         data: { email, password },
         headers: { 'Content-Type': 'application/json' },
@@ -64,20 +68,12 @@ function useProvideAuth(): Auth {
       setError(errorResponse?.data?.message || SERVER_ERROR);
     }
   }
+
+  async function signin(email: string, password: string): Promise<void> {
+    serverCall('/signin', email, password);
+  }
   async function signup(email: string, password: string): Promise<void> {
-    try {
-      setError(null);
-      const response = await axiosInstance({
-        url: '/signup',
-        method: 'POST',
-        data: { email, password },
-        headers: { 'Content-Type': 'application/json' },
-      });
-      setUser(response.data.user);
-      localStorage.setItem(USER_LOCALSTORAGE_KEY, response.data.user);
-    } catch (errorResponse) {
-      setError(errorResponse?.data?.message || SERVER_ERROR);
-    }
+    serverCall('/user', email, password);
   }
 
   // remove user from state and localStorage
