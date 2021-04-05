@@ -11,25 +11,25 @@ export function SpaNavbar(): ReactElement {
 
   return (
     <Navbar bg="dark" variant="dark" expand="lg">
-      <Link component={Navbar.Brand} to="/">
+      <Navbar.Brand as={Link} to="/">
         Lazy Days Spa
-      </Link>
+      </Navbar.Brand>
       <Nav className="mr-auto">
-        <Link component={Nav.Link} to="/">
+        <Nav.Link as={Link} to="/">
           Home
-        </Link>
-        <Link component={Nav.Link} to="/treatments">
+        </Nav.Link>
+        <Nav.Link as={Link} to="/treatments">
           Treatments
-        </Link>
-        <Link component={Nav.Link} to="/book">
+        </Nav.Link>
+        <Nav.Link as={Link} to="/book">
           Schedule a treatment
-        </Link>
+        </Nav.Link>
       </Nav>
       {auth && auth.user ? (
         <>
-          <Link to={`/user/${auth.user.id}`} component={Nav.Link}>
+          <Nav.Link to={`/user/${auth.user.id}`} as={Link}>
             Account ({auth.user.email})
-          </Link>
+          </Nav.Link>
           <Button onClick={() => auth.signout()}>Sign out</Button>
         </>
       ) : (

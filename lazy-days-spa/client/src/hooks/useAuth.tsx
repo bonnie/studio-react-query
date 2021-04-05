@@ -70,9 +70,12 @@ function useProvideAuth(): Auth {
 
       setUser(response.data.user);
       if (response?.data?.user?.token)
-        localStorage.setItem(USER_LOCALSTORAGE_KEY, response.data.user);
+        localStorage.setItem(
+          USER_LOCALSTORAGE_KEY,
+          JSON.stringify(response.data.user),
+        );
     } catch (errorResponse) {
-      setError(errorResponse.response.data.message || SERVER_ERROR);
+      setError(errorResponse?.response?.data?.message || SERVER_ERROR);
     }
   }
 
