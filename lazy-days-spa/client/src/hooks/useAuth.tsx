@@ -63,8 +63,11 @@ function useProvideAuth(): Auth {
         headers: { 'Content-Type': 'application/json' },
       });
       setUser(response.data.user);
-      localStorage.setItem(USER_LOCALSTORAGE_KEY, response.data.user);
+      console.log('(*(*(*(*(*( USER', response.data.user);
+      if (response?.data?.user?.token)
+        localStorage.setItem(USER_LOCALSTORAGE_KEY, response.data.user);
     } catch (errorResponse) {
+      console.log('*(*(*(*(*(*( ERROR RESPONSE', errorResponse);
       setError(errorResponse?.data?.message || SERVER_ERROR);
     }
   }

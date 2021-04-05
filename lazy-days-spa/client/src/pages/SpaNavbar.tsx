@@ -11,15 +11,17 @@ export function SpaNavbar(): ReactElement {
 
   return (
     <Navbar bg="dark" variant="dark" expand="lg">
-      <Navbar.Brand href="#home">Lazy Days Spa</Navbar.Brand>
+      <Link component={Navbar.Brand} to="/">
+        Lazy Days Spa
+      </Link>
       <Nav className="mr-auto">
-        <Link component={Nav.Link} path="/">
+        <Link component={Nav.Link} to="/">
           Home
         </Link>
-        <Link component={Nav.Link} path="/treatments">
+        <Link component={Nav.Link} to="/treatments">
           Treatments
         </Link>
-        <Link component={Nav.Link} path="/book">
+        <Link component={Nav.Link} to="/book">
           Schedule a treatment
         </Link>
       </Nav>

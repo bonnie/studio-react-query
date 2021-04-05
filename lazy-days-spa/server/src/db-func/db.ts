@@ -16,7 +16,7 @@ import {
 } from '../../../shared/types';
 import { AuthUser, PasswordHash } from '../auth';
 
-const dbPath = '../db';
+const dbPath = 'db';
 export enum filenames {
   users = 'users.json',
   appointments = 'appointments.json',
@@ -49,7 +49,7 @@ async function writeJSONToFile(
 async function writeJSONToFile(filename, data) {
   const filePath = path.join(dbPath, filename);
   const jsonData = JSON.stringify(data);
-  await fs.writeFile(filePath, jsonData, { mode: 'w' });
+  await fs.writeFile(filePath, jsonData, { flag: 'w' });
 }
 
 /* ****** Add new item ***** */

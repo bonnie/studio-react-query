@@ -9,10 +9,10 @@ import { useAuth } from '../hooks/useAuth';
 
 // eslint-disable-next-line max-lines-per-function
 export function Signin(): ReactElement {
-  const [email, setEmail] = useState<string>();
-  const [password, setPassword] = useState<string>();
-  const [action, setAction] = useState<string>();
-  const [validated, setValidated] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [action, setAction] = useState('');
+  const [error, setError] = useState('');
   const auth = useAuth();
 
   if (auth === null) {
@@ -28,16 +28,15 @@ export function Signin(): ReactElement {
     // eslint-disable-next-line sonarjs/cognitive-complexity
   ) => {
     event.preventDefault();
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {
-      setValidated(false);
-      event.stopPropagation();
+    setError('');
+
+    if (!email) {
+      setError('please enter an email');
       return;
     }
 
-    // to satisfy typescript
-    if (!email || !password) {
-      setValidated(false);
+    if (!password) {
+      setError('please enter a password');
       return;
     }
 
@@ -46,13 +45,11 @@ export function Signin(): ReactElement {
     } else if (action === 'signin') {
       auth.signin(email, password);
     }
-
-    setValidated(true);
   };
 
   return (
     <>
-      <Form noValidate validated={validated} onSubmit={onSubmit}>
+      <Form noValidate onSubmit={onSubmit}>
         <Form.Group controlId="formBasicEmail">
           <Form.Label>Email address</Form.Label>
           <Form.Control
@@ -94,7 +91,9 @@ export function Signin(): ReactElement {
           Sign in
         </Button>
       </Form>
-      {auth.error && <Alert variant="danger">{auth.error}</Alert>}
+      {(auth.error || error) && (
+        <Alert variant="danger">{auth.error || error}</Alert>
+      )}
     </>
   );
 }

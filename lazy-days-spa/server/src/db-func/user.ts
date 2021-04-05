@@ -1,4 +1,6 @@
 /* eslint-disable import/no-unresolved */
+import { Request, Response } from 'express';
+
 import { User } from '../../../shared/types';
 import { AuthUser, createJWT, hashPassword, passwordIsValid } from '../auth.js';
 import db from './db.js';
@@ -34,20 +36,33 @@ export async function getUserDataById(userId: number): Promise<User> {
 }
 
 export async function addNewUser(
-  email: string,
-  password: string,
-): Promise<User> {
-  const userPasswordData = hashPassword(password);
-  const newUser = await db.addNewItem(db.filenames.users, {
-    email,
-    ...userPasswordData,
-  });
+  req: Request,
+  res: Response,
+): Promise<Response> {
+  try {
+    const { email, password } = req.body;
+    const existingUsers = await db.getUsers();
+    const takenEmail = email in existingUsers.map((u) => u.email);
+    if (takenEmail) {
+      return res.status(400).json({ message: 'Email is already in use' });
+    }
 
-  // create jwt
-  const cleanUser = removePasswordData(newUser);
-  const token = createJWT(cleanUser);
+    const userPasswordData = hashPassword(password);
+    const newUser = await db.addNewItem(db.filenames.users, {
+      email,
+      ...userPasswordData,
+    });
 
-  return { ...cleanUser, token };
+    // create jwt
+    const cleanUser = removePasswordData(newUser);
+    const token = createJWT(cleanUser);
+
+    return res.status(201).json({
+      user: { ...cleanUser, token },
+    });
+  } catch (e) {
+    return res.status(500).json({ message: `could not add user: ${e}` });
+  }
 }
 
 export async function deleteUser(userId: number): Promise<number> {

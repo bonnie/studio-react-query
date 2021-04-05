@@ -1,4 +1,5 @@
 /* eslint-disable import/no-unresolved */
+import { json } from 'body-parser';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import esMain from 'es-main';
@@ -43,6 +44,9 @@ app.use(
 // use middleware to serve static images
 app.use(express.static('public'));
 
+// middleware for parsing json body
+app.use(json());
+
 // verify login
 app.post('/signin', async (req, res) => {
   try {
@@ -65,27 +69,31 @@ app.get(
     requestProperty: 'auth',
   }),
   async (req, res) => {
-    const requestedId = Number(req.params.id);
+    try {
+      const requestedId = Number(req.params.id);
 
-    // check that the token matches the id url param
-    // (decoded token resides in req.user)
-    if (req.auth?.id !== requestedId) return res.status(401);
+      // check that the token matches the id url param
+      // (decoded token resides in req.user)
+      if (req.auth?.id !== requestedId) return res.status(401);
 
-    // get data for user
-    const user = await getUserDataById(requestedId);
-    return res.status(200).json({ user });
+      // get data for user
+      const user = await getUserDataById(requestedId);
+      return res.status(200).json({ user });
+    } catch (e) {
+      return res.status(500).json({ message: `could not get user: ${e}` });
+    }
   },
 );
 
-app.post('/user', async (req, res) => {
-  // create new user
-  const user = addNewUser(req.body.email, req.body.password);
-  return res.status(201).json(user);
-});
+app.post('/user', addNewUser);
 
 app.delete('/user/:id', async (req, res) => {
-  await deleteUser(Number(req.params.id));
-  return res.status(204);
+  try {
+    await deleteUser(Number(req.params.id));
+    return res.status(204);
+  } catch (e) {
+    return res.status(500).json({ message: `could not delete user: ${e}` });
+  }
 });
 
 app.patch('/user/:id', async (req, res) => {
