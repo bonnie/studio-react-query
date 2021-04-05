@@ -42,7 +42,7 @@ export async function addNewUser(
   try {
     const { email, password } = req.body;
     const existingUsers = await db.getUsers();
-    const takenEmail = email in existingUsers.map((u) => u.email);
+    const takenEmail = existingUsers.map((u) => u.email).includes(email);
     if (takenEmail) {
       return res.status(400).json({ message: 'Email is already in use' });
     }
