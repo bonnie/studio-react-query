@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 
 import { User } from '../../../shared/types';
 import { AuthUser, createJWT, hashPassword, passwordIsValid } from '../auth.js';
-import db from './db.js';
+import db from '../db-func/index.js';
 
 function removePasswordData(user: AuthUser): User {
   // use "object rest operator" to remove properties in a typescript-friendly way

@@ -7,13 +7,13 @@ import express from 'express';
 import jwt from 'express-jwt';
 
 import { User as UserType } from '../../shared/types';
-import db from './db-func/db.js'; // add .js for ts-node; https://github.com/microsoft/TypeScript/issues/41887#issuecomment-741902030
+import db from './db-func/index.js'; // add .js for ts-node; https://github.com/microsoft/TypeScript/issues/41887#issuecomment-741902030
 import {
   addNewUser,
   authUser,
   deleteUser,
   getUserDataById,
-} from './db-func/user.js';
+} from './route-methods/user.js';
 
 dotenv.config();
 if (!process.env.EXPRESS_SECRET) {

@@ -1,6 +1,6 @@
 /* eslint-disable import/no-unresolved */
 import { Appointment, NewAppointment } from '../../../shared/types';
-import db from './db.js';
+import db from '../db-func/index.js';
 
 export async function addNewAppointment(
   newAppointmentData: NewAppointment,
