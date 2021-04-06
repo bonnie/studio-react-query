@@ -8,14 +8,10 @@ import { applyPatch, Operation } from 'fast-json-patch';
 import { promises as fs } from 'fs';
 import path from 'path';
 
-import {
-  Appointment,
-  NewAppointment,
-  NewUser,
-  Treatment,
-  User,
-} from '../../../shared/types';
-import { AuthUser, PasswordHash } from '../auth';
+import { Appointment, NewAppointment, Treatment } from '../../../shared/types';
+import { AuthUser, NewAuthUser } from '../auth';
+
+type JsonDataType = AuthUser | Appointment | Treatment;
 
 const dbPath = 'db';
 export enum filenames {
@@ -25,33 +21,18 @@ export enum filenames {
 }
 
 /* ****** Read from file ***** */
-async function getJSONfromFile(filename: filenames.users): Promise<AuthUser[]>;
-async function getJSONfromFile(
-  filename: filenames.appointments,
-): Promise<Appointment[]>;
-async function getJSONfromFile(
-  filename: filenames.treatments,
-): Promise<Treatment[]>;
-async function getJSONfromFile(
+async function getJSONfromFile<T extends JsonDataType>(
   filename: filenames,
-): Promise<Array<AuthUser | Appointment | Treatment>> {
+): Promise<T[]> {
   const filePath = path.join(dbPath, filename);
   const data = await fs.readFile(filePath);
   return JSON.parse(data.toString());
 }
 
 /* ****** Write to file ***** */
-async function writeJSONToFile(
-  filename: filenames.users,
-  data: User[],
-): Promise<void>;
-async function writeJSONToFile(
-  filename: filenames.appointments,
-  data: Appointment[],
-): Promise<void>;
-async function writeJSONToFile(
+async function writeJSONToFile<T extends JsonDataType>(
   filename: filenames,
-  data: Array<User | Appointment>,
+  data: Array<T>,
 ): Promise<void> {
   const filePath = path.join(dbPath, filename);
   const jsonData = JSON.stringify(data);
@@ -59,17 +40,20 @@ async function writeJSONToFile(
 }
 
 /* ****** Add new item ***** */
+// NOTE: there are issues with enums in overloads, which is why
+// I don't specify exactly which filename in the overload (and
+// why I didn't overload the other functions and used T instead)
 async function addNewItem(
-  filename: filenames.users,
-  newItemData: NewUser & PasswordHash,
+  filename: filenames,
+  newItemData: NewAuthUser,
 ): Promise<AuthUser>;
 async function addNewItem(
-  filename: filenames.appointments,
+  filename: filenames,
   newItemData: NewAppointment,
 ): Promise<Appointment>;
 async function addNewItem(
   filename: filenames,
-  newItemData: (NewUser & PasswordHash) | NewAppointment,
+  newItemData: NewAuthUser | NewAppointment,
 ): Promise<AuthUser | Appointment> {
   const items = await getJSONfromFile(filename);
 
@@ -85,14 +69,6 @@ async function addNewItem(
 }
 
 /* ****** Delete item ***** */
-async function deleteItem(
-  filename: filenames.users,
-  itemId: number,
-): Promise<number>;
-async function deleteItem(
-  filename: filenames.appointments,
-  itemId: number,
-): Promise<number>;
 async function deleteItem(
   filename: filenames,
   itemId: number,
@@ -114,22 +90,12 @@ async function deleteItem(
 }
 
 /* ****** Update item ***** */
-async function updateItem(
-  itemId: number,
-  filename: filenames.users,
-  itemPatch: Operation[],
-): Promise<User>;
-async function updateItem(
-  itemId: number,
-  filename: filenames.appointments,
-  itemPatch: Operation[],
-): Promise<Appointment>;
 // eslint-disable-next-line max-lines-per-function
 async function updateItem(
   itemId: number,
-  filename: filenames.users | filenames.appointments,
+  filename: filenames,
   itemPatch: Operation[],
-): Promise<User | Appointment> {
+): Promise<JsonDataType> {
   try {
     const items = await getJSONfromFile(filename);
 
@@ -159,24 +125,16 @@ async function updateItem(
   }
 }
 
-interface AppointmentData {
-  appointments: Appointment[];
-}
-export async function getAppointments(): Promise<AppointmentData> {
-  try {
-    const appointments = await getJSONfromFile(filenames.appointments);
-    return { appointments };
-  } catch (e) {
-    throw new Error(`Could not read file ${e}`);
-  }
+export async function getAppointments(): Promise<Appointment[]> {
+  return getJSONfromFile<Appointment>(filenames.appointments);
 }
 
 export async function getTreatments(): Promise<Treatment[]> {
-  return getJSONfromFile(filenames.treatments);
+  return getJSONfromFile<Treatment>(filenames.treatments);
 }
 
 export function getUsers(): Promise<AuthUser[]> {
-  return getJSONfromFile(filenames.users);
+  return getJSONfromFile<AuthUser>(filenames.users);
 }
 
 export default {

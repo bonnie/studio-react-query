@@ -2,7 +2,7 @@ import crypto from 'crypto';
 import jsonwebtoken from 'jsonwebtoken';
 import pbkdf2 from 'pbkdf2';
 
-import { User } from '../../shared/types';
+import { NewUser, User } from '../../shared/types';
 
 export interface PasswordHash {
   salt: string;
@@ -12,6 +12,7 @@ export interface PasswordHash {
   digest: string;
 }
 
+export type NewAuthUser = NewUser & PasswordHash;
 export type AuthUser = User & PasswordHash;
 
 export function hashPassword(password: string): PasswordHash {

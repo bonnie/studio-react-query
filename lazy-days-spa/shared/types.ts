@@ -1,4 +1,4 @@
-interface Id { id: number }
+export interface Id { id: number }
 
 export interface NewUser {
   // leaving room for address, phone number, etc to be added here
