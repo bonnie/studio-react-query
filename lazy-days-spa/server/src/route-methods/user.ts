@@ -78,7 +78,7 @@ export async function create(req: Request, res: Response): Promise<Response> {
 export async function remove(req: Request, res: Response): Promise<Response> {
   try {
     const { id } = req.params;
-    await db.deleteItem(db.filenames.users, Number(id));
+    await db.deleteItem<AuthUser>(db.filenames.users, Number(id));
     return res.status(204);
   } catch (e) {
     return res.status(500).json({ message: `could not delete user: ${e}` });
@@ -89,7 +89,7 @@ export async function update(req: Request, res: Response): Promise<Response> {
   try {
     const { id } = req.params;
     const { patch } = req.body;
-    const updatedUser = await db.updateItem(
+    const updatedUser = await db.updateItem<AuthUser>(
       Number(id),
       db.filenames.users,
       patch,

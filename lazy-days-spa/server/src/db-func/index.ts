@@ -51,11 +51,11 @@ async function addNewItem(
   filename: filenames,
   newItemData: NewAppointment,
 ): Promise<Appointment>;
-async function addNewItem(
+async function addNewItem<T extends JsonDataType>(
   filename: filenames,
   newItemData: NewAuthUser | NewAppointment,
 ): Promise<AuthUser | Appointment> {
-  const items = await getJSONfromFile(filename);
+  const items = await getJSONfromFile<T>(filename);
 
   // all keys are strings in JS; must map to number for TS
   const ids: number[] = Object.keys(items).map(Number);
@@ -69,12 +69,12 @@ async function addNewItem(
 }
 
 /* ****** Delete item ***** */
-async function deleteItem(
+async function deleteItem<T extends JsonDataType>(
   filename: filenames,
   itemId: number,
 ): Promise<number> {
   try {
-    const items = await getJSONfromFile(filename);
+    const items = await getJSONfromFile<T>(filename);
     const foundItemArray = items.filter((i) => i.id === itemId);
     if (foundItemArray.length !== 1) {
       throw new Error(`Could not find item id ${itemId} in ${filename}`);
@@ -91,13 +91,13 @@ async function deleteItem(
 
 /* ****** Update item ***** */
 // eslint-disable-next-line max-lines-per-function
-async function updateItem(
+async function updateItem<T extends JsonDataType>(
   itemId: number,
   filename: filenames,
   itemPatch: Operation[],
-): Promise<JsonDataType> {
+): Promise<T> {
   try {
-    const items = await getJSONfromFile(filename);
+    const items = await getJSONfromFile<T>(filename);
 
     // find the item
     const foundItems = items.filter((item) => item.id === itemId);

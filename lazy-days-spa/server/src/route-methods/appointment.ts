@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 
+import { Appointment } from '../../../shared/types';
 import db from '../db-func/index.js';
 
 export async function get(req: Request, res: Response): Promise<Response> {
@@ -31,7 +32,7 @@ export async function create(req: Request, res: Response): Promise<Response> {
 export async function remove(req: Request, res: Response): Promise<Response> {
   const { id } = req.params;
   try {
-    await db.deleteItem(db.filenames.appointments, Number(id));
+    await db.deleteItem<Appointment>(db.filenames.appointments, Number(id));
     return res.status(204);
   } catch (e) {
     return res
@@ -44,7 +45,7 @@ export async function update(req: Request, res: Response): Promise<Response> {
   try {
     const { id } = req.params;
     const { patch } = req.body;
-    const updatedAppointment = await db.updateItem(
+    const updatedAppointment = await db.updateItem<Appointment>(
       Number(id),
       db.filenames.appointments,
       patch,
