@@ -87,11 +87,18 @@ export async function remove(req: Request, res: Response): Promise<Response> {
 
 export async function update(req: Request, res: Response): Promise<Response> {
   try {
-    const { user } = req.body;
-    const newUserData = db.updateItem(db.filenames.users, user);
-    return res.status(200).json({ user: newUserData });
+    const { id } = req.params;
+    const { patch } = req.body;
+    const updatedUser = await db.updateItem(
+      Number(id),
+      db.filenames.users,
+      patch,
+    );
+    return res.status(200).json({ user: updatedUser });
   } catch (e) {
-    return res.status(500).json({ message: `could not update user: ${e}` });
+    return res
+      .status(500)
+      .json({ message: `could not update appointment: ${e}` });
   }
 }
 

@@ -4,6 +4,7 @@
 //
 // This "database" is horribly inefficient and will be a problem
 // when Lazy Days Spa opens to hundreds of locations globally.
+import { applyPatch, Operation } from 'fast-json-patch';
 import { promises as fs } from 'fs';
 import path from 'path';
 
@@ -31,7 +32,9 @@ async function getJSONfromFile(
 async function getJSONfromFile(
   filename: filenames.treatments,
 ): Promise<Treatment[]>;
-async function getJSONfromFile(filename) {
+async function getJSONfromFile(
+  filename: filenames,
+): Promise<Array<AuthUser | Appointment | Treatment>> {
   const filePath = path.join(dbPath, filename);
   const data = await fs.readFile(filePath);
   return JSON.parse(data.toString());
@@ -46,7 +49,10 @@ async function writeJSONToFile(
   filename: filenames.appointments,
   data: Appointment[],
 ): Promise<void>;
-async function writeJSONToFile(filename, data) {
+async function writeJSONToFile(
+  filename: filenames,
+  data: Array<User | Appointment>,
+): Promise<void> {
   const filePath = path.join(dbPath, filename);
   const jsonData = JSON.stringify(data);
   await fs.writeFile(filePath, jsonData, { flag: 'w' });
@@ -61,7 +67,10 @@ async function addNewItem(
   filename: filenames.appointments,
   newItemData: NewAppointment,
 ): Promise<Appointment>;
-async function addNewItem(filename, newItemData) {
+async function addNewItem(
+  filename: filenames,
+  newItemData: (NewUser & PasswordHash) | NewAppointment,
+): Promise<AuthUser | Appointment> {
   const items = await getJSONfromFile(filename);
 
   // all keys are strings in JS; must map to number for TS
@@ -84,15 +93,15 @@ async function deleteItem(
   filename: filenames.appointments,
   itemId: number,
 ): Promise<number>;
-async function deleteItem(filename, itemId) {
+async function deleteItem(
+  filename: filenames,
+  itemId: number,
+): Promise<number> {
   try {
     const items = await getJSONfromFile(filename);
     const foundItemArray = items.filter((i) => i.id === itemId);
     if (foundItemArray.length !== 1) {
-      return {
-        error: `Could not find item id ${itemId} in ${filename}`,
-        status: 400,
-      };
+      throw new Error(`Could not find item id ${itemId} in ${filename}`);
     }
     const updatedItems = items.filter((i) => i.id !== itemId);
     await writeJSONToFile(filename, updatedItems);
@@ -106,34 +115,46 @@ async function deleteItem(filename, itemId) {
 
 /* ****** Update item ***** */
 async function updateItem(
+  itemId: number,
   filename: filenames.users,
-  updatedItemData: User,
-): Promise<AuthUser>;
+  itemPatch: Operation[],
+): Promise<User>;
 async function updateItem(
+  itemId: number,
   filename: filenames.appointments,
-  updatedItemData: Appointment,
+  itemPatch: Operation[],
 ): Promise<Appointment>;
-async function updateItem(filename, updatedItemData) {
+// eslint-disable-next-line max-lines-per-function
+async function updateItem(
+  itemId: number,
+  filename: filenames.users | filenames.appointments,
+  itemPatch: Operation[],
+): Promise<User | Appointment> {
   try {
     const items = await getJSONfromFile(filename);
-    let found = false;
+
+    // find the item
+    const foundItems = items.filter((item) => item.id === itemId);
+    if (foundItems.length !== 1) {
+      throw new Error(`Could not find item with id ${itemId}`);
+    }
+
+    // apply the patch
+    const updatedData = applyPatch(foundItems[0], itemPatch).newDocument;
+
+    // write the new item data. Note: this whole function is horribly inefficient and
+    // would be much improved with a real db.
     items.forEach((item, i) => {
-      if (item.id === updatedItemData.id) {
-        items[i] = updatedItemData;
-        found = true;
+      if (item.id === itemId) {
+        items[i] = updatedData;
       }
     });
-    if (found === false) {
-      return {
-        error: `Could not find item id ${updatedItemData.id} in ${filename}`,
-        status: 400,
-      };
-    }
+
     await writeJSONToFile(filename, items);
-    return updatedItemData;
+    return updatedData;
   } catch (e) {
     throw new Error(
-      `Could not delete item id ${updatedItemData.id} from ${filename}: ${e}`,
+      `Could not delete item id ${itemId} from ${filename}: ${e}`,
     );
   }
 }

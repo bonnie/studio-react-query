@@ -42,16 +42,18 @@ export async function remove(req: Request, res: Response): Promise<Response> {
 
 export async function update(req: Request, res: Response): Promise<Response> {
   try {
-    const { appointment } = req.body;
+    const { id } = req.params;
+    const { patch } = req.body;
     const updatedAppointment = await db.updateItem(
+      Number(id),
       db.filenames.appointments,
-      appointment,
+      patch,
     );
     return res.status(200).json({ appointment: updatedAppointment });
   } catch (e) {
     return res
       .status(500)
-      .json({ message: `could not update appointments: ${e}` });
+      .json({ message: `could not update appointment: ${e}` });
   }
 }
 
