@@ -4,7 +4,7 @@
 //
 // This "database" is horribly inefficient and will be a problem
 // when Lazy Days Spa opens to hundreds of locations globally.
-import { applyPatch, Operation } from 'fast-json-patch';
+import jsonPatch from 'fast-json-patch';
 import { promises as fs } from 'fs';
 import path from 'path';
 
@@ -43,6 +43,7 @@ async function writeJSONToFile<T extends JsonDataType>(
 // NOTE: there are issues with enums in overloads, which is why
 // I don't specify exactly which filename in the overload (and
 // why I didn't overload the other functions and used T instead)
+// https://stackoverflow.com/questions/53848410/typescript-function-overloading-with-enum
 async function addNewItem(
   filename: filenames,
   newItemData: NewAuthUser,
@@ -90,11 +91,13 @@ async function deleteItem<T extends JsonDataType>(
 }
 
 /* ****** Update item ***** */
+const { applyPatch } = jsonPatch;
 // eslint-disable-next-line max-lines-per-function
 async function updateItem<T extends JsonDataType>(
   itemId: number,
   filename: filenames,
-  itemPatch: Operation[],
+  // should be fast-json-patch Operation, but I can't destructure on import
+  itemPatch: any[],
 ): Promise<T> {
   try {
     const items = await getJSONfromFile<T>(filename);

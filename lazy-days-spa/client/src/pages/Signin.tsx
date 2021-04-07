@@ -1,11 +1,11 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { ReactElement, useState } from 'react';
-import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { Redirect } from 'react-router-dom';
 
 import { useAuth } from '../hooks/useAuth';
+import { StyledToast } from './common/StyledToast';
 
 // eslint-disable-next-line max-lines-per-function
 export function Signin(): ReactElement {
@@ -22,6 +22,9 @@ export function Signin(): ReactElement {
   if (auth.user) {
     return <Redirect to={`/user/${auth.user.id}`} />;
   }
+
+  const errorMessage = auth.error || error;
+  console.log('ERROR', !!errorMessage);
 
   const onSubmit = (
     event: React.FormEvent<HTMLFormElement>,
@@ -91,9 +94,11 @@ export function Signin(): ReactElement {
           Sign in
         </Button>
       </Form>
-      {(auth.error || error) && (
-        <Alert variant="danger">{auth.error || error}</Alert>
-      )}
+      <StyledToast
+        title={null}
+        message={errorMessage}
+        isOpen={!!errorMessage}
+      />
     </>
   );
 }
