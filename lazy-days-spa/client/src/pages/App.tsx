@@ -7,10 +7,12 @@ import { SpaNavbar } from './SpaNavbar';
 
 export function App(): ReactElement {
   return (
-    <Container className="App">
-      <Loading />
+    <>
       <SpaNavbar />
-      <Routes />
-    </Container>
+      <Container className="App">
+        <Loading />
+        <Routes />
+      </Container>
+    </>
   );
 }

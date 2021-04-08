@@ -1,10 +1,14 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { ReactElement, useState } from 'react';
 import Button from 'react-bootstrap/Button';
+import Col from 'react-bootstrap/Col';
+import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
 import { Redirect } from 'react-router-dom';
 
 import { useAuth } from '../hooks/useAuth';
+import { BackgroundImage } from './common/BackgroundImage';
 import { StyledToast } from './common/StyledToast';
 
 // eslint-disable-next-line max-lines-per-function
@@ -24,7 +28,6 @@ export function Signin(): ReactElement {
   }
 
   const errorMessage = auth.error || error;
-  console.log('ERROR', !!errorMessage);
 
   const onSubmit = (
     event: React.FormEvent<HTMLFormElement>,
@@ -51,9 +54,10 @@ export function Signin(): ReactElement {
   };
 
   return (
-    <>
+    <Container className="mt-5">
+      <BackgroundImage />
       <Form noValidate onSubmit={onSubmit}>
-        <Form.Group controlId="formBasicEmail">
+        <Form.Group controlId="formBasicEmail" style={{ maxWidth: 400 }}>
           <Form.Label>Email address</Form.Label>
           <Form.Control
             required
@@ -66,7 +70,7 @@ export function Signin(): ReactElement {
             Please enter a valid email.
           </Form.Control.Feedback>
         </Form.Group>
-        <Form.Group controlId="formBasicPassword">
+        <Form.Group controlId="formBasicPassword" style={{ maxWidth: 400 }}>
           <Form.Label>Password</Form.Label>
           <Form.Control
             required
@@ -79,26 +83,28 @@ export function Signin(): ReactElement {
             Please enter a password.
           </Form.Control.Feedback>
         </Form.Group>
-        <Button
-          variant="outline"
-          type="submit"
-          onClick={() => setAction('signup')}
-        >
-          Sign up
-        </Button>
-        <Button
-          variant="primary"
-          type="submit"
-          onClick={() => setAction('signin')}
-        >
-          Sign in
-        </Button>
+        <div style={{ maxWidth: 400, textAlign: 'right' }}>
+          <Button
+            variant="outline"
+            type="submit"
+            onClick={() => setAction('signup')}
+          >
+            Sign up
+          </Button>
+          <Button
+            variant="green"
+            type="submit"
+            onClick={() => setAction('signin')}
+          >
+            Sign in
+          </Button>
+        </div>
       </Form>
       <StyledToast
         title={null}
         message={errorMessage}
         isOpen={!!errorMessage}
       />
-    </>
+    </Container>
   );
 }

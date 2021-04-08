@@ -1,16 +1,17 @@
 import React, { ReactElement } from 'react';
 
-import splashImg from '../images/splash.jpg';
+import { BackgroundImage } from './common/BackgroundImage';
 
 export function Home(): ReactElement {
   return (
     <div>
-      <img
-        className="background-image"
-        src={splashImg}
-        alt="peaceful orchids and stacked rocks"
-      />
-      <h1 style={{ textAlign: 'right' }}>Lazy Days Spa</h1>
+      <BackgroundImage />
+      <p
+        className="text-center"
+        style={{ fontFamily: "'Dancing Script', cursive", fontSize: '8em' }}
+      >
+        Lazy Days Spa
+      </p>
     </div>
   );
 }
