@@ -5,15 +5,18 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 
 import { ProvideAuth } from './hooks/useAuth';
+import { ProvideToast } from './hooks/useToast';
 import { App } from './pages/App';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
     <Router>
-      <ProvideAuth>
-        <App />
-      </ProvideAuth>
+      <ProvideToast>
+        <ProvideAuth>
+          <App />
+        </ProvideAuth>
+      </ProvideToast>
     </Router>
   </React.StrictMode>,
   document.getElementById('root'),

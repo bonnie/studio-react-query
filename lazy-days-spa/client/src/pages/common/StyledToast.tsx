@@ -2,36 +2,35 @@ import { ReactElement, useEffect, useState } from 'react';
 import Toast from 'react-bootstrap/Toast';
 
 interface StyledToastProps {
-  title: string | null;
-  message: string;
+  message: string | null;
   isOpen: boolean;
+  setIsOpen: (open: boolean) => void; // communicate back to hook when open status changes
 }
 
 export function StyledToast({
-  title,
   message,
   isOpen,
-}: StyledToastProps): ReactElement {
-  const [open, setOpen] = useState(isOpen);
-
-  // be sure to update state when prop updates
-  useEffect(() => setOpen(isOpen), [isOpen]);
+  setIsOpen,
+}: StyledToastProps): ReactElement | null {
+  // don't show anything if there's no message
+  if (!message) return null;
 
   return (
     <div
       className="p-3 my-2 rounded"
       style={{
         position: 'absolute',
-        bottom: '20px',
+        top: '20px',
+        right: '20px',
         minWidth: '400px',
         zIndex: 1000,
       }}
     >
-      <Toast onClose={() => setOpen(false)} show={open} autohide>
-        <Toast.Header className="bg-danger text-white" closeButton>
-          <strong className="mr-auto">{title}</strong>
+      <Toast onClose={() => setIsOpen(false)} show={isOpen} autohide>
+        <Toast.Header className="bg-green text-white" closeButton>
+          <span className="mr-auto" />
         </Toast.Header>
-        <Toast.Body className="text-danger">{message}</Toast.Body>
+        <Toast.Body className="text-green">{message}</Toast.Body>
       </Toast>
     </div>
   );

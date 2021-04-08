@@ -5,10 +5,10 @@ import React, { createContext, useContext, useState } from 'react';
 import { User } from '../../../shared/types';
 import { axiosInstance } from '../axiosInstance';
 import { USER_LOCALSTORAGE_KEY } from '../constants';
+import { useToast } from './useToast';
 
 interface Auth {
   user: User | null;
-  error: string | null;
   signin: (email: string, password: string) => Promise<void>;
   signup: (email: string, password: string) => Promise<void>;
   signout: () => void;
@@ -31,8 +31,15 @@ export function ProvideAuth({
 
 // Hook for child components to get the auth object,
 // and re-render when it changes.
-export const useAuth = (): Auth | null => {
-  return useContext(authContext);
+export const useAuth = (): Auth => {
+  if (!authContext) {
+    throw new Error('useAuth must be used within a AuthProvider');
+  }
+  const context = useContext(authContext);
+  if (!context) {
+    throw new Error('useAuth is missing context');
+  }
+  return context;
 };
 
 // helper to get user from localstorage
@@ -45,9 +52,9 @@ function getStoredUser(): User | null {
 // eslint-disable-next-line max-lines-per-function
 function useProvideAuth(): Auth {
   const SERVER_ERROR = 'There was an error contacting the server.';
+  const { showToast } = useToast();
 
   const [user, setUser] = useState<User | null>(getStoredUser());
-  const [error, setError] = useState<string | null>(null);
 
   async function serverCall(
     urlEndpoint: string,
@@ -55,7 +62,6 @@ function useProvideAuth(): Auth {
     password: string,
   ): Promise<void> {
     try {
-      setError(null);
       const response = await axiosInstance({
         url: urlEndpoint,
         method: 'POST',
@@ -64,7 +70,7 @@ function useProvideAuth(): Auth {
       });
 
       if (response.status === 400) {
-        setError(response.data.message);
+        showToast(response.data.message);
         return;
       }
 
@@ -75,7 +81,7 @@ function useProvideAuth(): Auth {
           JSON.stringify(response.data.user),
         );
     } catch (errorResponse) {
-      setError(errorResponse?.response?.data?.message || SERVER_ERROR);
+      showToast(errorResponse?.response?.data?.message || SERVER_ERROR);
     }
   }
 
@@ -88,7 +94,6 @@ function useProvideAuth(): Auth {
 
   // remove user from state and localStorage
   function signout(): void {
-    setError(null);
     setUser(null);
     localStorage.removeItem(USER_LOCALSTORAGE_KEY);
   }
@@ -96,7 +101,6 @@ function useProvideAuth(): Auth {
   // Return the user object and auth methods
   return {
     user,
-    error,
     signin,
     signup,
     signout,

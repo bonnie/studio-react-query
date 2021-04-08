@@ -1,48 +1,39 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { ReactElement, useState } from 'react';
 import Button from 'react-bootstrap/Button';
-import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
-import Row from 'react-bootstrap/Row';
 import { Redirect } from 'react-router-dom';
 
 import { useAuth } from '../hooks/useAuth';
+import { useToast } from '../hooks/useToast';
 import { BackgroundImage } from './common/BackgroundImage';
-import { StyledToast } from './common/StyledToast';
 
 // eslint-disable-next-line max-lines-per-function
 export function Signin(): ReactElement {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [action, setAction] = useState('');
-  const [error, setError] = useState('');
   const auth = useAuth();
-
-  if (auth === null) {
-    throw new Error('useAuth being called outside Provider');
-  }
+  const { showToast } = useToast();
 
   if (auth.user) {
     return <Redirect to={`/user/${auth.user.id}`} />;
   }
-
-  const errorMessage = auth.error || error;
 
   const onSubmit = (
     event: React.FormEvent<HTMLFormElement>,
     // eslint-disable-next-line sonarjs/cognitive-complexity
   ) => {
     event.preventDefault();
-    setError('');
 
     if (!email) {
-      setError('please enter an email');
+      showToast('please enter an email');
       return;
     }
 
     if (!password) {
-      setError('please enter a password');
+      showToast('please enter a password');
       return;
     }
 
@@ -100,11 +91,6 @@ export function Signin(): ReactElement {
           </Button>
         </div>
       </Form>
-      <StyledToast
-        title={null}
-        message={errorMessage}
-        isOpen={!!errorMessage}
-      />
     </Container>
   );
 }

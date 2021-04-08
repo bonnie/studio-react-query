@@ -17,12 +17,12 @@ export function SpaNavbar(): ReactElement {
         </span>
       </Navbar.Brand>
       <Nav className="mr-auto">
-        <Link className="green-nav" component={Nav.Link} to="/treatments">
+        <Nav.Link as={Link} to="/treatments">
           Treatments
-        </Link>
-        <Link className="green-nav" component={Nav.Link} to="/book">
+        </Nav.Link>
+        <Nav.Link as={Link} to="/book">
           Schedule a treatment
-        </Link>
+        </Nav.Link>
       </Nav>
       {auth && auth.user ? (
         <>
