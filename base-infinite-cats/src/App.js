@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import "./App.css";
 
+const CAT_APIKEY = process.env.REACT_APP_CATAPI_KEY;
+
 function App() {
   const [searchTerm, setSearchTerm] = useState();
 
