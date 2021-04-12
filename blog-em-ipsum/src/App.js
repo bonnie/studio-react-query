@@ -5,7 +5,7 @@ import { Posts } from "./Posts";
 import "./App.css";
 
 // Create a client
-const queryClient = new QueryClient();
+export const queryClient = new QueryClient();
 
 function App() {
   return (

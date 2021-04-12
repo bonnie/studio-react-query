@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useInfiniteQuery } from "react-query";
+import { useState, useEffect } from "react";
+import { useQuery, useQueryClient } from "react-query";
 import { PostDetail } from "./PostDetail";
 const maxPostPage = 10;
 
@@ -13,19 +13,27 @@ async function fetchPosts(page) {
 export function Posts() {
   const [currentPage, setCurrentPage] = useState(0);
   const [selectedPost, setSelectedPost] = useState(null);
+  const queryClient = useQueryClient();
 
-  const {
-    data,
-    isFetching,
-    error,
-    fetchNextPage,
-    fetchPreviousPage,
-  } = useInfiniteQuery("posts", () => fetchPosts(currentPage), {
-    staleTime: 5000,
-    keepPreviousData: true,
-  });
+  const { data, isFetching, isLoading, error } = useQuery(
+    ["posts", currentPage],
+    () => fetchPosts(currentPage),
+    {
+      staleTime: 5000,
+      // If set, any previous data will be kept when fetching new data because the query key changed.
+      keepPreviousData: true,
+    }
+  );
 
-  if (isFetching) {
+  // Prefetch the next page
+  useEffect(() => {
+    if (currentPage < maxPostPage - 2) {
+      const newPage = currentPage + 1;
+      queryClient.prefetchQuery(["posts", newPage], () => fetchPosts(newPage));
+    }
+  }, [currentPage, queryClient]);
+
+  if (isLoading) {
     return <h3>Loading!</h3>;
   }
 
@@ -39,11 +47,10 @@ export function Posts() {
   }
 
   if (!data) return null;
-
   return (
     <>
       <ul>
-        {data.pages[currentPage].map((post) => (
+        {data.map((post) => (
           <li
             key={post.id}
             className="post-title"
@@ -58,17 +65,18 @@ export function Posts() {
           disabled={currentPage < 1}
           onClick={() => {
             setCurrentPage(currentPage - 1);
-            fetchPreviousPage({ pageParam: currentPage });
           }}
         >
           Previous page
         </button>
         <span>Page {currentPage + 1}</span>
+        {isFetching ? <span>loading...</span> : null}
         <button
+          // can use indicator from data (e.g. !data.nextPage) if available
           disabled={currentPage > maxPostPage - 2}
           onClick={() => {
+            console.log("setting current page to", currentPage + 1);
             setCurrentPage(currentPage + 1);
-            fetchNextPage({ pageParam: currentPage });
           }}
         >
           Next page
