@@ -6,7 +6,7 @@ import { useAuth } from '../../hooks/useAuth';
 export function UserProfile(): ReactElement {
   const auth = useAuth();
 
-  if (!auth?.user) {
+  if (!auth.user) {
     return <Redirect to="/signin" />;
   }
 

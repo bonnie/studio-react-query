@@ -3,8 +3,6 @@ import React, { ReactElement, useState } from 'react';
 import { Treatment } from './Treatment';
 
 export function Treatments(): ReactElement {
-  const [selectedTreatmentId, setSelectedTreatmentId] = useState<number>();
-  return (
-    <div>{selectedTreatmentId && <Treatment id={selectedTreatmentId} />}</div>
-  );
+  const [selectedId, setSelectedId] = useState<number>();
+  return <div>{selectedId && <Treatment id={selectedId} />}</div>;
 }
