@@ -3,26 +3,33 @@ export interface Id {
 }
 
 export interface NewUser {
-  // leaving room for address, phone number, etc to be added here
   email: string;
+  address?: string;
+  phoneNum?: string;
   token?: string;
 }
 
 export type User = Id & NewUser;
 
-export interface NewAppointment {
+export interface Appointment extends Id {
   dateTime: Date;
-  userId?: number;
   treatmentId: number;
+}
+
+export interface BookedAppointment extends Appointment {
+  userId: number;
+  // staff should have its own model, but it's not necessary for this course
   staffName: string;
 }
 
-export type Appointment = Id & NewAppointment;
-
-export interface Treatment {
-  id: number;
+export interface TreatmentLight extends Id {
   name: string;
   durationInMinutes: number;
+}
+
+export interface TreatmentFull extends TreatmentLight {
   imageUrl: string;
   description: string;
+  // staff should have its own model, but it's not necessary for this course
+  staff: string[];
 }

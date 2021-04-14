@@ -80,6 +80,7 @@ function useProvideAuth(): Auth {
           USER_LOCALSTORAGE_KEY,
           JSON.stringify(response.data.user),
         );
+      // TODO: prefetch user profile
     } catch (errorResponse) {
       showToast(errorResponse?.response?.data?.message || SERVER_ERROR);
     }
@@ -94,6 +95,7 @@ function useProvideAuth(): Auth {
 
   // remove user from state and localStorage
   function signout(): void {
+    // TODO: invalidate cached user profile
     setUser(null);
     localStorage.removeItem(USER_LOCALSTORAGE_KEY);
   }
