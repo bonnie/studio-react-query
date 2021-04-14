@@ -5,9 +5,9 @@ import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import { Redirect } from 'react-router-dom';
 
-import { useAuth } from '../hooks/useAuth';
-import { useToast } from '../hooks/useToast';
-import { BackgroundImage } from './common/BackgroundImage';
+import { useAuth } from '../../hooks/useAuth';
+import { useToast } from '../../hooks/useToast';
+import { BackgroundImage } from '../common/BackgroundImage';
 
 // eslint-disable-next-line max-lines-per-function
 export function Signin(): ReactElement {

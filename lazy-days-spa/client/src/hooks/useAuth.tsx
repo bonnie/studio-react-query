@@ -56,7 +56,7 @@ function useProvideAuth(): Auth {
 
   const [user, setUser] = useState<User | null>(getStoredUser());
 
-  async function serverCall(
+  async function authServerCall(
     urlEndpoint: string,
     email: string,
     password: string,
@@ -86,10 +86,10 @@ function useProvideAuth(): Auth {
   }
 
   async function signin(email: string, password: string): Promise<void> {
-    serverCall('/signin', email, password);
+    authServerCall('/signin', email, password);
   }
   async function signup(email: string, password: string): Promise<void> {
-    serverCall('/user', email, password);
+    authServerCall('/user', email, password);
   }
 
   // remove user from state and localStorage

@@ -1,4 +1,6 @@
-export interface Id { id: number }
+export interface Id {
+  id: number;
+}
 
 export interface NewUser {
   // leaving room for address, phone number, etc to be added here
@@ -6,7 +8,7 @@ export interface NewUser {
   token?: string;
 }
 
-export type User = Id & NewUser & { appointments?: Appointment[]};
+export type User = Id & NewUser;
 
 export interface NewAppointment {
   dateTime: Date;

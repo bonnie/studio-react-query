@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
 
-import { BackgroundImage } from './common/BackgroundImage';
+import { BackgroundImage } from '../common/BackgroundImage';
 
 export function Home(): ReactElement {
   return (

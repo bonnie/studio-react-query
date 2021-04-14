@@ -7,11 +7,10 @@ import React, {
   createContext,
   ReactElement,
   useContext,
-  useEffect,
   useState,
 } from 'react';
 
-import { StyledToast } from '../pages/common/StyledToast';
+import { StyledToast } from '../components/common/StyledToast';
 
 interface Toast {
   showToast: (message: string | null) => void;

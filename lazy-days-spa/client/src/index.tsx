@@ -4,9 +4,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 
+import { App } from './components/app/App';
 import { ProvideAuth } from './hooks/useAuth';
 import { ProvideToast } from './hooks/useToast';
-import { App } from './pages/App';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
