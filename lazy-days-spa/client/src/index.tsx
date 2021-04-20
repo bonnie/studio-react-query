@@ -6,17 +6,14 @@ import { BrowserRouter as Router } from 'react-router-dom';
 
 import { App } from './components/app/App';
 import { ProvideAuth } from './hooks/useAuth';
-import { ProvideToast } from './hooks/useToast';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
     <Router>
-      <ProvideToast>
-        <ProvideAuth>
-          <App />
-        </ProvideAuth>
-      </ProvideToast>
+      <ProvideAuth>
+        <App />
+      </ProvideAuth>
     </Router>
   </React.StrictMode>,
   document.getElementById('root'),

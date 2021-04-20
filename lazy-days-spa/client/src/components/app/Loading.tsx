@@ -1,5 +1,5 @@
+import { Spinner, Text } from '@chakra-ui/react';
 import React, { ReactElement } from 'react';
-import Spinner from 'react-bootstrap/Spinner';
 
 export function Loading(): ReactElement {
   // will use React Query `useIsFetching` to determine whether or not to display
@@ -8,10 +8,20 @@ export function Loading(): ReactElement {
   const display = isFetching ? 'inherit' : 'none';
 
   return (
-    <div className="loading-spinner">
-      <Spinner animation="border" role="status" style={{ display }}>
-        <span className="sr-only">Loading...</span>
-      </Spinner>
-    </div>
+    <Spinner
+      thickness="4px"
+      speed="0.65s"
+      emptyColor="olive.200"
+      color="olive.800"
+      role="status"
+      position="fixed"
+      zIndex="9999"
+      top="50%"
+      left="50%"
+      transform="translate(-50%, -50%)"
+      display={display}
+    >
+      <Text display="none">Loading...</Text>
+    </Spinner>
   );
 }

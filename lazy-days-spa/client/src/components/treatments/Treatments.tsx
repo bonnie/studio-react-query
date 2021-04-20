@@ -1,8 +1,14 @@
-import React, { ReactElement, useState } from 'react';
-
-import { Treatment } from './Treatment';
+import { Container } from '@chakra-ui/react';
+import React, { ReactElement } from 'react';
 
 export function Treatments(): ReactElement {
-  const [selectedId, setSelectedId] = useState<number>();
-  return <div>{selectedId && <Treatment id={selectedId} />}</div>;
+  // replace with data from React Query
+  const treatments = [];
+  return (
+    <Container>
+      {treatments.map((tData) => (
+        <div />
+      ))}
+    </Container>
+  );
 }

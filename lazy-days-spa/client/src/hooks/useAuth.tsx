@@ -1,11 +1,11 @@
 // Adapted from https://usehooks.com/useAuth/
 // Easy to understand React Hook recipes by Gabe Ragland
+import { useToast } from '@chakra-ui/react';
 import React, { createContext, useContext, useState } from 'react';
 
 import { User } from '../../../shared/types';
 import { axiosInstance } from '../axiosInstance';
 import { USER_LOCALSTORAGE_KEY } from '../constants';
-import { useToast } from './useToast';
 
 interface Auth {
   user: User | null;
@@ -52,9 +52,19 @@ function getStoredUser(): User | null {
 // eslint-disable-next-line max-lines-per-function
 function useProvideAuth(): Auth {
   const SERVER_ERROR = 'There was an error contacting the server.';
-  const { showToast } = useToast();
+  const toast = useToast();
 
   const [user, setUser] = useState<User | null>(getStoredUser());
+
+  type toastStatus = 'info' | 'warning' | 'success' | 'error' | undefined;
+  function showToast(message: string, status: toastStatus): void {
+    toast({
+      title: message,
+      variant: 'subtle',
+      status,
+      isClosable: true,
+    });
+  }
 
   async function authServerCall(
     urlEndpoint: string,
@@ -70,7 +80,7 @@ function useProvideAuth(): Auth {
       });
 
       if (response.status === 400) {
-        showToast(response.data.message);
+        showToast(response.data.message, 'warning');
         return;
       }
 
@@ -82,7 +92,10 @@ function useProvideAuth(): Auth {
         );
       // TODO: prefetch user profile
     } catch (errorResponse) {
-      showToast(errorResponse?.response?.data?.message || SERVER_ERROR);
+      showToast(
+        errorResponse?.response?.data?.message || SERVER_ERROR,
+        'error',
+      );
     }
   }
 

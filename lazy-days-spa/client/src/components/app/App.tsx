@@ -1,21 +1,19 @@
+import { Box, ChakraProvider } from '@chakra-ui/react';
 import React, { ReactElement } from 'react';
-import Container from 'react-bootstrap/Container';
 
-import { useToast } from '../../hooks/useToast';
+import { theme } from '../../theme';
 import { Loading } from './Loading';
+import { Navbar } from './Navbar';
 import { Routes } from './Routes';
-import { SpaNavbar } from './SpaNavbar';
 
 export function App(): ReactElement {
-  const { Toast } = useToast();
   return (
-    <>
-      <SpaNavbar />
-      <Container className="App">
+    <ChakraProvider theme={theme}>
+      <Navbar />
+      <Box>
         <Loading />
-        <Toast />
         <Routes />
-      </Container>
-    </>
+      </Box>
+    </ChakraProvider>
   );
 }

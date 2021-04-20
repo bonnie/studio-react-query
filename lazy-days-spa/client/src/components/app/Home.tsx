@@ -1,17 +1,17 @@
+import { Flex, Icon, Text } from '@chakra-ui/react';
 import React, { ReactElement } from 'react';
+import { GiFlowerPot } from 'react-icons/gi';
 
 import { BackgroundImage } from '../common/BackgroundImage';
 
 export function Home(): ReactElement {
   return (
-    <div>
+    <Flex align="center" justify="center" height="84vh">
       <BackgroundImage />
-      <p
-        className="text-center"
-        style={{ fontFamily: "'Dancing Script', cursive", fontSize: '8em' }}
-      >
+      <Text textAlign="center" fontFamily="Forum, sans-serif" fontSize="6em">
+        <Icon m={4} verticalAlign="top" as={GiFlowerPot} />
         Lazy Days Spa
-      </p>
-    </div>
+      </Text>
+    </Flex>
   );
 }
