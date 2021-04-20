@@ -56,12 +56,14 @@ function useProvideAuth(): Auth {
 
   const [user, setUser] = useState<User | null>(getStoredUser());
 
+  // TODO: get this from chakra
   type toastStatus = 'info' | 'warning' | 'success' | 'error' | undefined;
   function showToast(message: string, status: toastStatus): void {
     toast({
       title: message,
       variant: 'subtle',
       status,
+      duration: 90000,
       isClosable: true,
     });
   }

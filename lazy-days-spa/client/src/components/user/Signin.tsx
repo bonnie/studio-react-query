@@ -34,7 +34,7 @@ export function Signin(): ReactElement {
       <Flex minH="84vh" align="center" justify="center">
         <Stack spacing={8} mx="auto" maxW="lg" py={12} px={6}>
           <Stack align="center">
-            <Heading fontSize="4xl">Sign in to your account</Heading>
+            <Heading>Sign in to your account</Heading>
           </Stack>
           <Box rounded="lg" bg="white" boxShadow="lg" p={8}>
             <Stack spacing={4}>
