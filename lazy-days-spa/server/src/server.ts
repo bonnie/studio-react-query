@@ -1,12 +1,11 @@
 /* eslint-disable import/no-unresolved */
-import { json } from 'body-parser';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import esMain from 'es-main';
-import express from 'express';
-import jwt from 'express-jwt';
+import express, { json } from 'express';
 
 import { User as UserType } from '../../shared/types';
+import { validateUser } from './middlewares';
 import appointmentRoutes from './route-methods/appointment.js';
 // add .js for ts-node; https://github.com/microsoft/TypeScript/issues/41887#issuecomment-741902030
 import treatmentRoutes from './route-methods/treatment.js';
@@ -38,6 +37,7 @@ app.use(
   }),
 );
 
+/* ********* middlewares ********* */
 // use middleware to serve static images
 app.use(express.static('public'));
 
@@ -50,24 +50,13 @@ app.use(json());
 app.post('/signin', userRoutes.auth);
 
 // user profile protected by jwt
-app.get(
-  '/user/:id',
-  jwt({
-    // process.env.EXPRESS_SECRET is checked for truthiness on app startup
-    // the || is to satisfy typescript
-    secret: process.env.EXPRESS_SECRET || 'NOT SO SECRET',
-    algorithms: ['HS256'],
-    requestProperty: 'auth',
-  }),
-  userRoutes.get,
-);
+app.get('/user/:id', validateUser, userRoutes.get);
 
 app.post('/user', userRoutes.create);
-app.delete('/user/:id', userRoutes.remove);
-app.patch('/user/:id', userRoutes.update);
+app.delete('/user/:id', validateUser, userRoutes.remove);
+app.patch('/user/:id', validateUser, userRoutes.update);
 
-app.get('/appointments', appointmentRoutes.get);
-app.post('/appointment', appointmentRoutes.create);
+app.get('/appointments/:month/:year', appointmentRoutes.get);
 app.delete('/appointment/:id', appointmentRoutes.remove);
 app.patch('/appointment/:id', appointmentRoutes.update);
 

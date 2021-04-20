@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import { User } from '../../../shared/types';
 import { AuthUser, createJWT, hashPassword, passwordIsValid } from '../auth.js';
 import db from '../db-func/index.js';
+import { AuthRequest } from '../middlewares';
 
 function removePasswordData(user: AuthUser): User {
   // use "object rest operator" to remove properties in a typescript-friendly way
@@ -12,39 +13,36 @@ function removePasswordData(user: AuthUser): User {
 }
 
 // eslint-disable-next-line max-lines-per-function
-export async function get(req: Request, res: Response): Promise<Response> {
+export async function get(req: AuthRequest, res: Response): Promise<Response> {
   try {
-    const requestedId = Number(req.params.id);
-
-    // check that the token matches the id url param (decoded token resides in req.user)
-    if (req.auth?.id !== requestedId) return res.status(401);
-
-    // find the user
-    const users = await db.getUsers();
-    const userArray = users.filter((u) => u.id === requestedId);
-
-    // throw error if not found (or more than one is found!)
-    if (userArray.length !== 1) {
-      return res
-        .status(400)
-        .json({ message: `Could not find user with id ${requestedId}` });
-    }
-
     // remove password data from user object
-    const user = removePasswordData(userArray[0]);
+    const user = removePasswordData(req.userData);
 
+    // return user and appointments
+    return res.status(200).json({ user });
+  } catch (e) {
+    return res.status(500).json({ message: `could not get user: ${e}` });
+  }
+}
+
+export async function getUserAppointments(
+  req: AuthRequest,
+  res: Response,
+): Promise<Response> {
+  const paramId = Number(req.params.id);
+  try {
     // get user's appointments
     const appointments = await db.getAppointments();
     const userAppointments = Object.values(appointments).filter(
-      (a) => a.userId === requestedId,
+      (a) => a.userId === paramId,
     );
-
-    // return user and appointments
-    return res
-      .status(200)
-      .json({ user: { ...user, appointments: userAppointments } });
+    return res.status(200).json({
+      appointments: userAppointments,
+    });
   } catch (e) {
-    return res.status(500).json({ message: `could not get user: ${e}` });
+    return res.status(500).json({
+      message: `could not get user appointments for id ${paramId}: ${e}`,
+    });
   }
 }
 
@@ -58,7 +56,7 @@ export async function create(req: Request, res: Response): Promise<Response> {
     }
 
     const userPasswordData = hashPassword(password);
-    const newUser = await db.addNewItem(db.filenames.users, {
+    const newUser = await db.addUser({
       email,
       ...userPasswordData,
     });
@@ -75,7 +73,10 @@ export async function create(req: Request, res: Response): Promise<Response> {
   }
 }
 
-export async function remove(req: Request, res: Response): Promise<Response> {
+export async function remove(
+  req: AuthRequest,
+  res: Response,
+): Promise<Response> {
   try {
     const { id } = req.params;
     await db.deleteItem<AuthUser>(db.filenames.users, Number(id));
@@ -85,10 +86,18 @@ export async function remove(req: Request, res: Response): Promise<Response> {
   }
 }
 
-export async function update(req: Request, res: Response): Promise<Response> {
+export async function update(
+  req: AuthRequest,
+  res: Response,
+): Promise<Response> {
   try {
     const { id } = req.params;
     const { patch } = req.body;
+    if (!patch) {
+      return res
+        .status(400)
+        .json({ message: 'this endpoint requires a patch in the body' });
+    }
     const updatedUser = await db.updateItem<AuthUser>(
       Number(id),
       db.filenames.users,

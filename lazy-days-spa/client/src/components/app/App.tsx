@@ -2,7 +2,7 @@ import React, { ReactElement } from 'react';
 import Container from 'react-bootstrap/Container';
 
 import { useToast } from '../../hooks/useToast';
-import { Loading } from '../common/Loading';
+import { Loading } from './Loading';
 import { Routes } from './Routes';
 import { SpaNavbar } from './SpaNavbar';
 

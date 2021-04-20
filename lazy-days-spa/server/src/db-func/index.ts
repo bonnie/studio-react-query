@@ -4,11 +4,11 @@
 //
 // This "database" is horribly inefficient and will be a problem
 // when Lazy Days Spa opens to hundreds of locations globally.
-import jsonPatch from 'fast-json-patch';
+import jsonPatch, { Operation } from 'fast-json-patch';
 import { promises as fs } from 'fs';
 import path from 'path';
 
-import { Appointment, NewAppointment, Treatment } from '../../../shared/types';
+import { Appointment, Treatment } from '../../../shared/types';
 import { AuthUser, NewAuthUser } from '../auth';
 
 type JsonDataType = AuthUser | Appointment | Treatment;
@@ -39,36 +39,6 @@ async function writeJSONToFile<T extends JsonDataType>(
   await fs.writeFile(filePath, jsonData, { flag: 'w' });
 }
 
-/* ****** Add new item ***** */
-// NOTE: there are issues with enums in overloads, which is why
-// I don't specify exactly which filename in the overload (and
-// why I didn't overload the other functions and used T instead)
-// https://stackoverflow.com/questions/53848410/typescript-function-overloading-with-enum
-async function addNewItem(
-  filename: filenames,
-  newItemData: NewAuthUser,
-): Promise<AuthUser>;
-async function addNewItem(
-  filename: filenames,
-  newItemData: NewAppointment,
-): Promise<Appointment>;
-async function addNewItem<T extends JsonDataType>(
-  filename: filenames,
-  newItemData: NewAuthUser | NewAppointment,
-): Promise<AuthUser | Appointment> {
-  const items = await getJSONfromFile<T>(filename);
-
-  // all keys are strings in JS; must map to number for TS
-  const ids: number[] = Object.keys(items).map(Number);
-  const maxId = ids.reduce((tempMaxId: number, itemId: number) => {
-    return itemId > tempMaxId ? itemId : tempMaxId;
-  }, 0);
-  const newItemId = maxId + 1;
-  const newItem = { ...newItemData, id: newItemId };
-  await writeJSONToFile(filename, [...items, newItem]);
-  return newItem;
-}
-
 /* ****** Delete item ***** */
 async function deleteItem<T extends JsonDataType>(
   filename: filenames,
@@ -97,7 +67,7 @@ async function updateItem<T extends JsonDataType>(
   itemId: number,
   filename: filenames,
   // should be fast-json-patch Operation, but I can't destructure on import
-  itemPatch: any[],
+  itemPatch: Operation[],
 ): Promise<T> {
   try {
     const items = await getJSONfromFile<T>(filename);
@@ -132,6 +102,19 @@ export async function getAppointments(): Promise<Appointment[]> {
   return getJSONfromFile<Appointment>(filenames.appointments);
 }
 
+export async function getAppointmentsByMonthYear(
+  month: number,
+  year: number,
+): Promise<Appointment[]> {
+  // yet another place where inefficiency is ridiculous compared to a real db
+  const allAppointments = await getAppointments();
+  return allAppointments.filter(
+    (appointment) =>
+      appointment.dateTime.getMonth() === month &&
+      appointment.dateTime.getFullYear() === year,
+  );
+}
+
 export async function getTreatments(): Promise<Treatment[]> {
   return getJSONfromFile<Treatment>(filenames.treatments);
 }
@@ -140,12 +123,31 @@ export function getUsers(): Promise<AuthUser[]> {
   return getJSONfromFile<AuthUser>(filenames.users);
 }
 
+/* ****** Add new user ***** */
+async function addUser(newUserData: NewAuthUser): Promise<AuthUser> {
+  const users = await getUsers();
+
+  // get the max id from the existing ids
+  const ids: number[] = Object.values(users).map((user) => user.id);
+  const maxId = ids.reduce((tempMaxId: number, itemId: number) => {
+    return itemId > tempMaxId ? itemId : tempMaxId;
+  }, 0);
+
+  // the new user will have an id of the max id plus 1
+  const newUserId = maxId + 1;
+
+  const newUser = { ...newUserData, id: newUserId };
+  await writeJSONToFile(filenames.users, [...users, newUser]);
+  return newUser;
+}
+
 export default {
   filenames,
-  addNewItem,
+  addUser,
   deleteItem,
   updateItem,
   getUsers,
   getAppointments,
+  getAppointmentsByMonthYear,
   getTreatments,
 };
