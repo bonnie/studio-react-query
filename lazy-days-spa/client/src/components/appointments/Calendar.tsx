@@ -1,15 +1,11 @@
-import {
-  Box,
-  Grid,
-  Heading,
-  HStack,
-  IconButton,
-  Stack,
-  Text,
-} from '@chakra-ui/react';
+/* eslint-disable max-lines-per-function */
+import { Box, Grid, Heading, HStack, IconButton } from '@chakra-ui/react';
 import moment from 'moment';
 import React, { ReactElement, useState } from 'react';
 import { TiArrowLeftThick, TiArrowRightThick } from 'react-icons/ti';
+
+import { useAppointments } from '../../hooks/useQueryHooks/useAppointments';
+import { DateBox } from './DateBox';
 
 interface MonthData {
   startDate: moment.Moment; // first day of the month
@@ -31,24 +27,13 @@ function getMonthData(initialDate: moment.Moment): MonthData {
   return { startDate, firstDOW, lastDate, monthName, month, year };
 }
 
-interface DateBoxProps {
-  date: number;
-  gridColumn?: number;
-}
-DateBox.defaultProps = { gridColumn: null };
-function DateBox({ date, gridColumn }: DateBoxProps): ReactElement {
-  return (
-    <Box w="100%" h={20} bg="olive.50" gridColumnStart={gridColumn}>
-      <Stack m={2}>
-        <Text textAlign="right">{date}</Text>
-      </Stack>
-    </Box>
-  );
-}
-
 export function Calendar(): ReactElement {
   const [monthData, setMonthData] = useState(getMonthData(moment()));
-  function updateMonth(increment) {
+
+  // TODO: replace with hook
+  const { appointments } = useAppointments();
+
+  function updateMonth(increment: number): void {
     setMonthData((prevData) =>
       // the clone is necessary to prevent mutation
       getMonthData(prevData.startDate.clone().add(increment, 'months')),
@@ -73,9 +58,16 @@ export function Calendar(): ReactElement {
       </HStack>
       <Grid templateColumns="repeat(7, 1fr)" gap={4} m={10}>
         {/* first day needs a grid column */}
-        <DateBox date={1} gridColumn={monthData.firstDOW} />
+        <DateBox
+          date={1}
+          gridColumn={monthData.firstDOW}
+          appointments={appointments[1]}
+        />
+        {/* the rest of the days will follow */}
         {[...Array(monthData.lastDate)].map((_, i) =>
-          i > 0 ? <DateBox key={i} date={i + 1} /> : null,
+          i > 0 ? (
+            <DateBox key={i} date={i + 1} appointments={appointments[i + 1]} />
+          ) : null,
         )}
       </Grid>
     </Box>
