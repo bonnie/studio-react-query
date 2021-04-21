@@ -10,13 +10,11 @@ import {
   HStack,
   Input,
   Stack,
-  useColorModeValue,
 } from '@chakra-ui/react';
 import React, { ReactElement, useState } from 'react';
 import { Redirect } from 'react-router-dom';
 
 import { useAuth } from '../../hooks/useAuth';
-import { BackgroundImage } from '../common/BackgroundImage';
 
 // eslint-disable-next-line max-lines-per-function
 export function Signin(): ReactElement {

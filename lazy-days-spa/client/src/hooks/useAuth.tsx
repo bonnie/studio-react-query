@@ -63,7 +63,6 @@ function useProvideAuth(): Auth {
       title: message,
       variant: 'subtle',
       status,
-      duration: 90000,
       isClosable: true,
     });
   }
