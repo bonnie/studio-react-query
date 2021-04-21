@@ -3,7 +3,7 @@ import jwt from 'express-jwt';
 import { ParamsDictionary } from 'express-serve-static-core';
 import { Operation } from 'fast-json-patch';
 
-import db from '../db-func';
+import db from '../db-func/index.js';
 
 export interface idParamsInterface extends ParamsDictionary {
   id: string;
@@ -49,21 +49,9 @@ export const validateUser: RequestHandler<
     if (req.auth?.id !== requestedId) {
       res.status(401).send();
     } else {
-      // find the user
-      const users = await db.getUsers();
-      const userArray = users.filter((u) => u.id === requestedId);
-
-      // throw error if not found (or more than one is found!)
-      if (userArray.length !== 1) {
-        res
-          .status(400)
-          .json({ message: `Could not find user with id ${requestedId}` })
-          .send();
-      } else {
-        // otherwise, add user data to request
-        [req.userData] = userArray;
-        next();
-      }
+      // find the user; will throw error if user doesn't exist
+      await db.getUserById(requestedId);
+      next();
     }
   } catch (error) {
     next(error);

@@ -5,7 +5,7 @@ import esMain from 'es-main';
 import express, { json } from 'express';
 
 import { User as UserType } from '../../shared/types';
-import { validateUser } from './middlewares';
+import { validateUser } from './middlewares/index.js';
 import appointmentRoutes from './route-methods/appointment.js';
 // add .js for ts-node; https://github.com/microsoft/TypeScript/issues/41887#issuecomment-741902030
 import treatmentRoutes from './route-methods/treatment.js';

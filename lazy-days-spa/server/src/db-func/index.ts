@@ -123,12 +123,20 @@ export function getUsers(): Promise<AuthUser[]> {
   return getJSONfromFile<AuthUser>(filenames.users);
 }
 
+export async function getUserById(userId: number): Promise<AuthUser> {
+  const users = await getUsers();
+  const userData = users.filter((u) => u.id === userId);
+  if (userData.length < 1) throw new Error('user not found');
+  if (userData.length < 1) throw new Error('duplicate user found');
+  return userData[0];
+}
+
 /* ****** Add new user ***** */
 async function addUser(newUserData: NewAuthUser): Promise<AuthUser> {
   const users = await getUsers();
 
   // get the max id from the existing ids
-  const ids: number[] = Object.values(users).map((user) => user.id);
+  const ids: number[] = Object.values(users).map((u) => u.id);
   const maxId = ids.reduce((tempMaxId: number, itemId: number) => {
     return itemId > tempMaxId ? itemId : tempMaxId;
   }, 0);
@@ -147,6 +155,7 @@ export default {
   deleteItem,
   updateItem,
   getUsers,
+  getUserById,
   getAppointments,
   getAppointmentsByMonthYear,
   getTreatments,

@@ -15,8 +15,13 @@ function removePasswordData(user: AuthUser): User {
 // eslint-disable-next-line max-lines-per-function
 export async function get(req: AuthRequest, res: Response): Promise<Response> {
   try {
+    if (!req.auth) throw new Error('Cannot get user without login');
+
+    // get fresh user data
+    const userData = await db.getUserById(req.auth.id);
+
     // remove password data from user object
-    const user = removePasswordData(req.userData);
+    const user = removePasswordData(userData);
 
     // return user and appointments
     return res.status(200).json({ user });
