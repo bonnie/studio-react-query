@@ -37,7 +37,7 @@ export function Navbar(): ReactElement {
           </NavLink>
           <HStack as="nav" spacing={4}>
             {Links.map((link) => (
-              <NavLink key={link} to={link}>
+              <NavLink key={link} to={`/${link}`}>
                 {link}
               </NavLink>
             ))}

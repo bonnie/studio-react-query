@@ -1,6 +1,6 @@
 import { Box, HStack, Text } from '@chakra-ui/react';
 import moment from 'moment';
-import React, { ReactElement } from 'react';
+import { ReactElement } from 'react';
 
 import { Appointment as AppointmentType } from '../../../../shared/types';
 import { useAuth } from '../../auth/useAuth';

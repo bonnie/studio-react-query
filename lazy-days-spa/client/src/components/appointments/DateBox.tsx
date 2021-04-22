@@ -18,7 +18,7 @@ export function DateBox({
 }: DateBoxProps): ReactElement {
   return (
     <Box w="100%" h={20} bg="olive.50" gridColumnStart={gridColumn}>
-      <Stack m={2}>
+      <Stack m={2} spacing={1}>
         <Text fontSize="xs" textAlign="right">
           {date}
         </Text>

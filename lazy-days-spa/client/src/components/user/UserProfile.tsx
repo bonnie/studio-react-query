@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import { ReactElement } from 'react';
 import { Redirect } from 'react-router-dom';
 
 import { useAuth } from '../../auth/useAuth';

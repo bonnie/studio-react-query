@@ -1,5 +1,5 @@
 import { HStack } from '@chakra-ui/react';
-import React, { ReactElement } from 'react';
+import { ReactElement } from 'react';
 
 import { Treatment } from './Treatment';
 import { useTreatments } from './useTreatments';
