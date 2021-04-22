@@ -18,7 +18,7 @@ export function useAppointments(): UseAppointments {
     1: [
       {
         id: 10,
-        treatmentId: 1,
+        treatmentName: 'massage',
         userId: 1,
         dateTime: moment().toDate(),
       },
@@ -26,7 +26,7 @@ export function useAppointments(): UseAppointments {
     6: [
       {
         id: 12,
-        treatmentId: 2,
+        treatmentName: 'scrub',
         dateTime: moment().add(2, 'hours').toDate(),
       },
     ],

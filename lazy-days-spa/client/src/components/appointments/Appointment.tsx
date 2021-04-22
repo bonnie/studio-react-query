@@ -35,7 +35,7 @@ export function Appointment({
       onClick={clickable ? reserveAppointment : undefined}
     >
       <Text fontSize="xs">
-        {time} {appointmentData.treatmentId}
+        {time} {appointmentData.treatmentName}
       </Text>
     </Box>
   );

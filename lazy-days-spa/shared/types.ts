@@ -13,7 +13,10 @@ export type User = Id & NewUser;
 
 export interface Appointment extends Id {
   dateTime: Date;
-  treatmentId: number;
+  // this should be a treatmentId, which would be reasonable if this were
+  // a real db. For ease, I'm going to "cheat" and just give the name as
+  // a string here.
+  treatmentName: string;
   //  userId is only present if the appointment is booked
   userId?: number;
 }
