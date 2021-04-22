@@ -3,7 +3,7 @@ import { ReactElement, ReactNode } from 'react';
 import { GiFlowerPot } from 'react-icons/gi';
 import { Link as RouterLink, useHistory } from 'react-router-dom';
 
-import { useAuth } from '../../hooks/useAuth';
+import { useAuth } from '../../auth/useAuth';
 
 const Links = ['Treatments', 'Calendar'];
 

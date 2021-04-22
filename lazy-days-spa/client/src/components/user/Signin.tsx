@@ -14,7 +14,7 @@ import {
 import React, { ReactElement, useState } from 'react';
 import { Redirect } from 'react-router-dom';
 
-import { useAuth } from '../../hooks/useAuth';
+import { useAuth } from '../../auth/useAuth';
 
 // eslint-disable-next-line max-lines-per-function
 export function Signin(): ReactElement {

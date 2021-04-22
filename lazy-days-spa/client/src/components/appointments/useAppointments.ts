@@ -1,11 +1,36 @@
 import { useToast } from '@chakra-ui/react';
 import moment from 'moment';
 
-import { Appointment } from '../../../../shared/types';
-import { useAuth } from '../useAuth';
+import { useAuth } from '../../auth/useAuth';
+import { AppointmentDateMap } from './types';
+import { transformAppointmentData } from './utils';
+
+const fakeAppointments = [
+  {
+    id: 10,
+    treatmentName: 'Massage',
+    userId: 1,
+    dateTime: moment().toDate(),
+  },
+  {
+    id: 11,
+    treatmentName: 'Massage',
+    dateTime: moment().add(-1, 'hours').toDate(),
+  },
+  {
+    id: 12,
+    treatmentName: 'Scrub',
+    dateTime: moment().add(2, 'hours').subtract(4, 'days').toDate(),
+  },
+  {
+    id: 13,
+    treatmentName: 'Facial',
+    dateTime: moment().add(3, 'days').toDate(),
+  },
+];
 
 interface UseAppointments {
-  appointments: Record<number, Appointment[]>;
+  appointments: AppointmentDateMap;
   setAppointment: (appointmentId: number) => void;
 }
 
@@ -14,23 +39,8 @@ export function useAppointments(): UseAppointments {
   const toast = useToast();
 
   // TODO: update with useQuery!
-  const appointments = {
-    1: [
-      {
-        id: 10,
-        treatmentName: 'massage',
-        userId: 1,
-        dateTime: moment().toDate(),
-      },
-    ],
-    6: [
-      {
-        id: 12,
-        treatmentName: 'scrub',
-        dateTime: moment().add(2, 'hours').toDate(),
-      },
-    ],
-  };
+  const appointments = transformAppointmentData(fakeAppointments);
+
   function setAppointment(appointmentId: number): void {
     const userId = user?.id;
     if (!userId) {

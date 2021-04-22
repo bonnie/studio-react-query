@@ -1,10 +1,10 @@
-import { Box, Text } from '@chakra-ui/react';
+import { Box, HStack, Text } from '@chakra-ui/react';
 import moment from 'moment';
 import React, { ReactElement } from 'react';
 
 import { Appointment as AppointmentType } from '../../../../shared/types';
-import { useAuth } from '../../hooks/useAuth';
-import { useAppointments } from '../../hooks/useQueryHooks/useAppointments';
+import { useAuth } from '../../auth/useAuth';
+import { useAppointments } from './useAppointments';
 import { getAppointmentColor } from './utils';
 
 interface AppointmentProps {
@@ -34,9 +34,14 @@ export function Appointment({
       as={clickable ? 'button' : 'div'}
       onClick={clickable ? reserveAppointment : undefined}
     >
-      <Text fontSize="xs">
-        {time} {appointmentData.treatmentName}
-      </Text>
+      <HStack justify="space-between">
+        <Text as="span" fontSize="xs">
+          {time}
+        </Text>
+        <Text as="span" fontSize="xs">
+          {appointmentData.treatmentName}
+        </Text>
+      </HStack>
     </Box>
   );
 }

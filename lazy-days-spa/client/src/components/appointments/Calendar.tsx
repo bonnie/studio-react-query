@@ -4,8 +4,8 @@ import moment from 'moment';
 import React, { ReactElement, useState } from 'react';
 import { TiArrowLeftThick, TiArrowRightThick } from 'react-icons/ti';
 
-import { useAppointments } from '../../hooks/useQueryHooks/useAppointments';
 import { DateBox } from './DateBox';
+import { useAppointments } from './useAppointments';
 
 interface MonthData {
   startDate: moment.Moment; // first day of the month

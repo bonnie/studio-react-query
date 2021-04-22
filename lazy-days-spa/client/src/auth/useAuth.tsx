@@ -86,11 +86,13 @@ function useProvideAuth(): Auth {
       }
 
       setUser(response.data.user);
-      if (response?.data?.user?.token)
+      if (response?.data?.user?.token) {
         localStorage.setItem(
           USER_LOCALSTORAGE_KEY,
           JSON.stringify(response.data.user),
         );
+        showToast(`Logged in as ${response.data.user.email}`, 'info');
+      }
       // TODO: prefetch user profile
     } catch (errorResponse) {
       showToast(
