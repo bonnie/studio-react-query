@@ -20,7 +20,6 @@ export function Treatment({ treatmentData }: TreatmentProps): ReactElement {
   return (
     <Center py={12}>
       <Box
-        role="group"
         p={6}
         maxW="330px"
         w="full"
@@ -35,23 +34,6 @@ export function Treatment({ treatmentData }: TreatmentProps): ReactElement {
           mt={-12}
           pos="relative"
           height="230px"
-          _after={{
-            transition: 'all .3s ease',
-            content: '""',
-            w: 'full',
-            h: 'full',
-            pos: 'absolute',
-            top: 5,
-            left: 0,
-            backgroundImage: `${baseImageUrl}/${treatmentData.imageUrl}`,
-            filter: 'blur(15px)',
-            zIndex: -1,
-          }}
-          _groupHover={{
-            _after: {
-              filter: 'blur(20px)',
-            },
-          }}
         >
           <Image
             rounded="lg"
