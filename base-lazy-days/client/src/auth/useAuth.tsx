@@ -5,7 +5,7 @@ import React, { createContext, useContext, useState } from 'react';
 
 import { User } from '../../../shared/types';
 import { axiosInstance } from '../axiosInstance';
-import { USER_LOCALSTORAGE_KEY } from '../constants';
+import { toastOptions, USER_LOCALSTORAGE_KEY } from '../constants';
 
 interface Auth {
   user: User | null;
@@ -52,20 +52,9 @@ function getStoredUser(): User | null {
 // eslint-disable-next-line max-lines-per-function
 function useProvideAuth(): Auth {
   const SERVER_ERROR = 'There was an error contacting the server.';
-  const toast = useToast();
+  const toast = useToast(toastOptions);
 
   const [user, setUser] = useState<User | null>(getStoredUser());
-
-  // TODO: get this from chakra
-  type toastStatus = 'info' | 'warning' | 'success' | 'error' | undefined;
-  function showToast(message: string, status: toastStatus): void {
-    toast({
-      title: message,
-      variant: 'subtle',
-      status,
-      isClosable: true,
-    });
-  }
 
   async function authServerCall(
     urlEndpoint: string,
@@ -81,7 +70,7 @@ function useProvideAuth(): Auth {
       });
 
       if (response.status === 400) {
-        showToast(response.data.message, 'warning');
+        toast({ title: response.data.message, status: 'warning' });
         return;
       }
 
@@ -91,14 +80,17 @@ function useProvideAuth(): Auth {
           USER_LOCALSTORAGE_KEY,
           JSON.stringify(response.data.user),
         );
-        showToast(`Logged in as ${response.data.user.email}`, 'info');
+        toast({
+          title: `Logged in as ${response.data.user.email}`,
+          status: 'info',
+        });
       }
       // TODO: prefetch user profile
     } catch (errorResponse) {
-      showToast(
-        errorResponse?.response?.data?.message || SERVER_ERROR,
-        'error',
-      );
+      toast({
+        title: errorResponse?.response?.data?.message || SERVER_ERROR,
+        status: 'error',
+      });
     }
   }
 
