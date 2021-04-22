@@ -30,7 +30,7 @@ export function Navbar(): ReactElement {
 
   return (
     <Box bg="gray.900" px={4}>
-      <Flex h={16} alignItems="center" justifyContent="flex-start">
+      <Flex h={16} alignItems="center" justify="space-between">
         <HStack spacing={8} alignItems="center">
           <NavLink to="/">
             <Icon w={8} h={8} as={GiFlowerPot} />
@@ -42,18 +42,16 @@ export function Navbar(): ReactElement {
               </NavLink>
             ))}
           </HStack>
-          <HStack alignSelf="end">
-            {auth && auth.user ? (
-              <>
-                <NavLink to={`/user/${auth.user.id}`}>
-                  {auth.user.email}
-                </NavLink>
-                <Button onClick={() => auth.signout()}>Sign out</Button>
-              </>
-            ) : (
-              <Button onClick={() => history.push('signin')}>Sign in</Button>
-            )}
-          </HStack>
+        </HStack>
+        <HStack>
+          {auth && auth.user ? (
+            <>
+              <NavLink to={`/user/${auth.user.id}`}>{auth.user.email}</NavLink>
+              <Button onClick={() => auth.signout()}>Sign out</Button>
+            </>
+          ) : (
+            <Button onClick={() => history.push('signin')}>Sign in</Button>
+          )}
         </HStack>
       </Flex>
     </Box>

@@ -4,8 +4,9 @@ export interface Id {
 
 export interface NewUser {
   email: string;
+  name?: string;
   address?: string;
-  phoneNum?: string;
+  phone?: string;
   token?: string;
 }
 
