@@ -1,4 +1,4 @@
-import { Box, ChakraProvider } from '@chakra-ui/react';
+import { ChakraProvider } from '@chakra-ui/react';
 import { ReactElement } from 'react';
 
 import { ProvideAuth } from '../../auth/useAuth';
@@ -12,10 +12,8 @@ export function App(): ReactElement {
     <ChakraProvider theme={theme}>
       <ProvideAuth>
         <Navbar />
-        <Box>
-          <Loading />
-          <Routes />
-        </Box>
+        <Loading />
+        <Routes />
       </ProvideAuth>
     </ChakraProvider>
   );
