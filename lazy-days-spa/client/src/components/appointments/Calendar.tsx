@@ -60,7 +60,7 @@ export function Calendar(): ReactElement {
         {/* first day needs a grid column */}
         <DateBox
           date={1}
-          gridColumn={monthData.firstDOW}
+          gridColumn={monthData.firstDOW + 1}
           appointments={appointments[1]}
         />
         {/* the rest of the days will follow */}

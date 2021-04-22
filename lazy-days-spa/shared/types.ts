@@ -21,9 +21,17 @@ export interface Appointment extends Id {
   userId?: number;
 }
 
+export interface TreatmentImageCredit {
+  authorName: string;
+  authorLink: string;
+  platformName: string;
+  platformLink: string;
+}
+
 export interface Treatment extends Id {
   name: string;
   durationInMinutes: number;
   imageUrl: string;
+  imageCredit: TreatmentImageCredit;
   description: string;
 }
