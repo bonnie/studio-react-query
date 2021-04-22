@@ -17,10 +17,11 @@ import { useAuth } from '../../auth/useAuth';
 import { useUserProfile } from './useUserProfile';
 
 export function UserProfile(): ReactElement {
-  const { userData } = useUserProfile();
+  const { userData, updateUser } = useUserProfile();
 
   const formElements = ['name', 'address', 'phone'];
   const [formData, setFormData] = useState({
+    id: userData.id,
     email: userData.email,
     name: userData.name,
     address: userData.address,
@@ -75,7 +76,7 @@ export function UserProfile(): ReactElement {
                 />
               </FormControl>
             ))}
-            <Button type="submit">Update</Button>
+            <Button onClick={() => updateUser(formData)}>Update</Button>
           </Stack>
         </Box>
       </Stack>

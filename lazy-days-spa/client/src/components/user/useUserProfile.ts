@@ -1,8 +1,8 @@
 import type { User } from '../../../../shared/types';
-import { useAuth } from '../../auth/useAuth';
 
 interface UseUserProfile {
   userData: User;
+  updateUser: (userData: User) => void;
 }
 
 const fakeUser = {
@@ -14,9 +14,11 @@ const fakeUser = {
   token: 'abc123',
 };
 
-export function useUserProfile(): UseUserProfile {
-  const { user } = useAuth();
+function fakeUpdateFunction(userData: User) {
+  // placeholder before ReactQuery
+}
 
+export function useUserProfile(): UseUserProfile {
   // TODO replace with React Query
-  return { userData: fakeUser };
+  return { userData: fakeUser, updateUser: fakeUpdateFunction };
 }
