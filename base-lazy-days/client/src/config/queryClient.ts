@@ -5,7 +5,11 @@
 
 // export function queryErrorHandler(error: unknown): void {
 //   // error is unknown because in js, anything can be an error (e.g. throw(5))
-//   const title = error instanceof Error ? error : 'error connecting to server';
+//   const title =
+//     error instanceof Error
+//       ? // remove the initial 'Error: ' that accompanies many errors
+//         error.toString().replace(/^Error:\s*/, '')
+//       : 'error connecting to server';
 //   toast({ title, status: 'error', variant: 'subtle', isClosable: true });
 // }
 
