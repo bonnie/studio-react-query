@@ -1,7 +1,7 @@
-import { useToast } from '@chakra-ui/react';
 import moment from 'moment';
 
 import { useAuth } from '../../auth/useAuth';
+import { useCustomToast } from '../app/useCustomToast';
 import { AppointmentDateMap } from './types';
 import { transformAppointmentData } from './utils';
 
@@ -36,7 +36,7 @@ interface UseAppointments {
 
 export function useAppointments(): UseAppointments {
   const { user } = useAuth();
-  const toast = useToast();
+  const toast = useCustomToast();
 
   // TODO: update with useQuery!
   const appointments = transformAppointmentData(fakeAppointments);
@@ -47,9 +47,7 @@ export function useAppointments(): UseAppointments {
       // if the user isn't logged in, show an error
       toast({
         title: 'you must be logged in to reserve an appointment',
-        variant: 'subtle',
         status: 'warning',
-        isClosable: true,
       });
     } else {
       // TODO: update with useQuery

@@ -1,10 +1,9 @@
-import { useToast } from '@chakra-ui/react';
+import { useCustomToast } from '../app/useCustomToast';
 import moment from 'moment';
 
 import { useAuth } from '../../auth/useAuth';
 import { AppointmentDateMap } from './types';
 import { transformAppointmentData } from './utils';
-import { toastOptions } from '../../constants';
 
 const fakeAppointments = [
   {
@@ -37,7 +36,7 @@ interface UseAppointments {
 
 export function useAppointments(): UseAppointments {
   const { user } = useAuth();
-  const toast = useToast(toastOptions);
+  const toast = useCustomToast();
 
   // TODO: update with useQuery!
   const appointments = transformAppointmentData(fakeAppointments);

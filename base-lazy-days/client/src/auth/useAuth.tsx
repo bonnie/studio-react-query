@@ -1,11 +1,11 @@
 // Adapted from https://usehooks.com/useAuth/
 // Easy to understand React Hook recipes by Gabe Ragland
-import { useToast } from '@chakra-ui/react';
+import { useCustomToast } from '../components/app/useCustomToast';
 import React, { createContext, useContext, useState } from 'react';
 
 import { User } from '../../../shared/types';
 import { axiosInstance } from '../axiosInstance';
-import { toastOptions, USER_LOCALSTORAGE_KEY } from '../constants';
+import { USER_LOCALSTORAGE_KEY } from '../constants';
 
 interface Auth {
   user: User | null;
@@ -52,7 +52,7 @@ function getStoredUser(): User | null {
 // eslint-disable-next-line max-lines-per-function
 function useProvideAuth(): Auth {
   const SERVER_ERROR = 'There was an error contacting the server.';
-  const toast = useToast(toastOptions);
+  const toast = useCustomToast();
 
   const [user, setUser] = useState<User | null>(getStoredUser());
 
