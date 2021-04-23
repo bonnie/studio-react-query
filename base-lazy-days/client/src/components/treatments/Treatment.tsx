@@ -28,12 +28,7 @@ export function Treatment({ treatmentData }: TreatmentProps): ReactElement {
         pos="relative"
         zIndex={1}
       >
-        <Box
-          rounded="lg"
-          mt={-12}
-          pos="relative"
-          height="230px"
-        >
+        <Box rounded="lg" mt={-12} pos="relative" height="230px">
           <Image
             rounded="lg"
             height={230}

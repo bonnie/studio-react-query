@@ -1,7 +1,7 @@
-import { useCustomToast } from '../app/useCustomToast';
 import moment from 'moment';
 
 import { useAuth } from '../../auth/useAuth';
+import { useCustomToast } from '../app/useCustomToast';
 import { AppointmentDateMap } from './types';
 import { transformAppointmentData } from './utils';
 

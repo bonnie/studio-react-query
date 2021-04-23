@@ -1,5 +1,5 @@
 // centralized error toast creator for React Query errors
-// (to be used with useQuery and useMutation onError options) 
+// (to be used with useQuery and useMutation onError options)
 import { useCustomToast } from './useCustomToast';
 
 export function useQueryError(): (error: unknown) => void {
