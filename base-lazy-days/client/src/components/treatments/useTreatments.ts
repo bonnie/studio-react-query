@@ -1,4 +1,5 @@
 import type { Treatment } from '../../../../shared/types';
+import { axiosInstance } from '../../axiosInstance';
 
 const fakeTreatments = [
   {
@@ -49,6 +50,12 @@ const fakeTreatments = [
       'Invigorate your body and spirit with a scented Himalayan salt scrub.',
   },
 ];
+
+// for when we need a query function for useQuery
+// async function getTreatments(): Promise<Treatment[]> {
+//   const { data } = await axiosInstance.get('/treatments');
+//   return data;
+// }
 
 interface UseTreatments {
   treatments: Treatment[];

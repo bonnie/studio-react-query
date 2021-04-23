@@ -4,8 +4,8 @@
 // const toast = createStandaloneToast();
 
 // export function queryErrorHandler(error: unknown): void {
-//   const title =
-//     typeof error === 'string' ? error : 'error connecting to server';
+//   // error is unknown because in js, anything can be an error (e.g. throw(5))
+//   const title = error instanceof Error ? error : 'error connecting to server';
 //   toast({ title, status: 'error', variant: 'subtle', isClosable: true });
 // }
 

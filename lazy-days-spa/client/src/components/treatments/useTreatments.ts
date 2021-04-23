@@ -3,7 +3,7 @@ import { useQuery } from 'react-query';
 import type { Treatment } from '../../../../shared/types';
 import { axiosInstance } from '../../axiosInstance';
 
-async function getTreatments() {
+async function getTreatments(): Promise<Treatment[]> {
   const { data } = await axiosInstance.get('/treatments');
   return data;
 }
