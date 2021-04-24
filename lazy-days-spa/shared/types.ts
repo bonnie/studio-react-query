@@ -22,7 +22,8 @@ export interface Appointment extends Id {
   userId?: number;
 }
 
-export interface TreatmentImageCredit {
+export interface Image {
+  fileName: string;
   authorName: string;
   authorLink: string;
   platformName: string;
@@ -32,7 +33,12 @@ export interface TreatmentImageCredit {
 export interface Treatment extends Id {
   name: string;
   durationInMinutes: number;
-  imageUrl: string;
-  imageCredit: TreatmentImageCredit;
+  image: Image;
   description: string;
+}
+
+export interface Staff extends Id {
+  name: string;
+  treatmentNames: string[]; // in a more robust app, these might be treatment IDs
+  image: Image;
 }

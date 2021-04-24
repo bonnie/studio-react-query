@@ -1,4 +1,4 @@
-import { extendTheme } from '@chakra-ui/react';
+import { extendTheme, withDefaultColorScheme } from '@chakra-ui/react';
 
 export const theme = extendTheme({
   styles: {
@@ -28,28 +28,5 @@ export const theme = extendTheme({
       900: '#051005',
     },
   },
-  components: {
-    Button: {
-      baseStyle: {
-        fontWeight: '500',
-      },
-      variants: {
-        outline: {
-          border: '2px solid',
-          borderColor: 'olive.500',
-          color: 'olive.700',
-        },
-        solid: {
-          bg: 'olive.500',
-          color: 'white',
-          _hover: {
-            bg: 'olive.300',
-          },
-        },
-      },
-      defaultProps: {
-        variant: 'solid',
-      },
-    },
-  },
+  // withDefaultColorScheme({ colorScheme: "brand" }),
 });
