@@ -51,13 +51,13 @@ export function Calendar(): ReactElement {
   }
   return (
     <Box>
-      <HStack m={5} spacing={8} justify="center">
+      <HStack mt={10} spacing={8} justify="center">
         <IconButton
           aria-label="previous month"
           onClick={() => updateMonth(-1)}
           icon={<TiArrowLeftThick />}
         />
-        <Heading size="2xl" minW="40%" textAlign="center">
+        <Heading minW="40%" textAlign="center">
           {monthData.monthName} {monthData.year}
         </Heading>
         <IconButton
@@ -76,7 +76,7 @@ export function Calendar(): ReactElement {
           Only show available
         </Checkbox>
       </HStack>
-      <Grid templateColumns="repeat(7, 1fr)" gap={4} m={10}>
+      <Grid templateColumns="repeat(7, 1fr)" gap={4} my={5} mx={10}>
         {/* first day needs a grid column */}
         <DateBox
           date={1}
