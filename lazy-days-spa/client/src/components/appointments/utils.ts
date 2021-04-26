@@ -13,12 +13,12 @@ export function getAppointmentColor(
   }
   const textColor = 'white';
 
-  switch (appointmentData.treatmentName) {
-    case 'Massage':
+  switch (appointmentData.treatmentName.toLowerCase()) {
+    case 'massage':
       return [textColor, 'purple.700'];
-    case 'Scrub':
+    case 'scrub':
       return [textColor, 'blue.700'];
-    case 'Facial':
+    case 'facial':
       return [textColor, 'green.700'];
     default:
       return [textColor, 'black'];

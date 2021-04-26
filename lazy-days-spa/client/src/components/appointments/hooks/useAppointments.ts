@@ -10,7 +10,7 @@ async function getAppointments(
   month: string,
 ): Promise<AppointmentDateMap> {
   const { data } = await axiosInstance.get(`/appointments/${year}/${month}`);
-  return data;
+  return data.appointments;
 }
 
 export function useAppointments(

@@ -41,7 +41,7 @@ export function Calendar(): ReactElement {
   // TODO: implement with React Query
   const [showAll, setShowAll] = useState(false);
 
-  const appointments = useAppointments(monthData.month, monthData.year);
+  const appointments = useAppointments(monthData.year, monthData.month);
 
   function updateMonth(increment: number): void {
     setMonthData((prevData) =>
