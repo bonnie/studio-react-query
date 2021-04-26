@@ -1,5 +1,4 @@
 {
-  "workbench.colorTheme": "Abyss",
   "eslint.workingDirectories": ["client"],
   "eslint.options": {
     "configFile": ".eslintrc.json"

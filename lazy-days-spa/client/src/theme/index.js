@@ -28,5 +28,5 @@ export const theme = extendTheme({
       900: '#051005',
     },
   },
-  // withDefaultColorScheme({ colorScheme: "brand" }),
+  // withDefaultColorScheme({ colorScheme: "olive" }),
 });
