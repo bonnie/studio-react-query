@@ -16,6 +16,7 @@ dotenv.config();
 if (!process.env.EXPRESS_SECRET) {
   // eslint-disable-next-line no-console
   console.error('EXPRESS_SECRET must be defined in .env\nEXITING.');
+  process.exit(-1);
 }
 
 // typing for Express request with jwt

@@ -8,16 +8,17 @@ import jsonPatch, { Operation } from 'fast-json-patch';
 import { promises as fs } from 'fs';
 import path from 'path';
 
-import { Appointment, Treatment } from '../../../shared/types';
+import { Appointment, Staff, Treatment } from '../../../shared/types';
 import { AuthUser, NewAuthUser } from '../auth';
 
-type JsonDataType = AuthUser | Appointment | Treatment;
+type JsonDataType = AuthUser | Appointment | Treatment | Staff;
 
 const dbPath = 'db';
 export enum filenames {
   users = 'users.json',
   appointments = 'appointments.json',
   treatments = 'treatments.json',
+  staff = 'staff.json',
 }
 
 /* ****** Read from file ***** */
@@ -119,6 +120,10 @@ export async function getTreatments(): Promise<Treatment[]> {
   return getJSONfromFile<Treatment>(filenames.treatments);
 }
 
+export async function getStaff(): Promise<Staff[]> {
+  return getJSONfromFile<Staff>(filenames.staff);
+}
+
 export function getUsers(): Promise<AuthUser[]> {
   return getJSONfromFile<AuthUser>(filenames.users);
 }
@@ -158,5 +163,6 @@ export default {
   getUserById,
   getAppointments,
   getAppointmentsByMonthYear,
+  getStaff,
   getTreatments,
 };

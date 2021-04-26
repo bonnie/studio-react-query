@@ -5,9 +5,10 @@ import esMain from 'es-main';
 import express, { json } from 'express';
 
 import { User as UserType } from '../../shared/types';
+// add .js for ts-node; https://github.com/microsoft/TypeScript/issues/41887#issuecomment-741902030
 import { validateUser } from './middlewares/index.js';
 import appointmentRoutes from './route-methods/appointment.js';
-// add .js for ts-node; https://github.com/microsoft/TypeScript/issues/41887#issuecomment-741902030
+import staffRoutes from './route-methods/staff.js';
 import treatmentRoutes from './route-methods/treatment.js';
 import userRoutes from './route-methods/user.js';
 
@@ -15,6 +16,7 @@ dotenv.config();
 if (!process.env.EXPRESS_SECRET) {
   // eslint-disable-next-line no-console
   console.error('EXPRESS_SECRET must be defined in .env\nEXITING.');
+  process.exit(-1);
 }
 
 // typing for Express request with jwt
@@ -61,6 +63,7 @@ app.delete('/appointment/:id', appointmentRoutes.remove);
 app.patch('/appointment/:id', appointmentRoutes.update);
 
 app.get('/treatments', treatmentRoutes.get);
+app.get('/staff', staffRoutes.get);
 /* *********** END: routes ********* */
 
 if (esMain(import.meta)) {

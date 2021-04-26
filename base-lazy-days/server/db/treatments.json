@@ -3,8 +3,8 @@
     "id": 1,
     "name": "Massage",
     "durationInMinutes": 60,
-    "imageUrl": "massage.jpg",
-    "imageCredit": {
+    "image": {
+      "fileName": "massage.jpg",
       "authorName": "Mariolh",
       "authorLink": "https://pixabay.com/users/mariolh-62451/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=567021",
       "platformName": "Pixabay",
@@ -16,12 +16,12 @@
     "id": 2,
     "name": "Facial",
     "durationInMinutes": 30,
-    "imageUrl": "facial.jpg",
-    "imageCredit": {
+    "image": {
+      "fileName": "facial.jpg",
       "authorName": "engin akyurt",
       "authorLink": "https://unsplash.com/@enginakyurt?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText",
       "platformName": "Unsplash",
-      "platformLink": "https://unsplash.com/s/photos/facial-spa?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText"
+      "platformLink": "https://unsplash.com/"
     },
     "description": "Give your face a healthy glow with this cleansing treatment."
   },
@@ -29,8 +29,8 @@
     "id": 3,
     "name": "Scrub",
     "durationInMinutes": 15,
-    "imageUrl": "scrub.jpg",
-    "imageCredit": {
+    "image": {
+      "fileName": "scrub.jpg",
       "authorName": "Monfocus",
       "authorLink": "https://pixabay.com/users/monfocus-2516394/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=5475880",
       "platformName": "Pixabay",

@@ -5,7 +5,7 @@ import { Link as RouterLink, useHistory } from 'react-router-dom';
 
 import { useAuth } from '../../auth/useAuth';
 
-const Links = ['Treatments', 'Calendar'];
+const Links = ['Treatments', 'Staff', 'Calendar'];
 
 const NavLink = ({ to, children }: { to: string; children: ReactNode }) => (
   <Link
