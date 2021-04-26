@@ -22,6 +22,8 @@ export interface Appointment extends Id {
   userId?: number;
 }
 
+export type AppointmentDateMap = Record<number, Appointment[]>;
+
 export interface Image {
   fileName: string;
   authorName: string;

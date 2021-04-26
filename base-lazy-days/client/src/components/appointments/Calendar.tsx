@@ -12,7 +12,7 @@ import { ReactElement, useState } from 'react';
 import { TiArrowLeftThick, TiArrowRightThick } from 'react-icons/ti';
 
 import { DateBox } from './DateBox';
-import { useAppointments } from './useAppointments';
+import { useAppointments } from './hooks/useAppointments';
 
 interface MonthData {
   startDate: moment.Moment; // first day of the month
@@ -38,10 +38,11 @@ export function Calendar(): ReactElement {
   const [monthData, setMonthData] = useState(getMonthData(moment()));
 
   // show all appointments, or just the available ones?
+  // TODO: implement with React Query
   const [showAll, setShowAll] = useState(false);
 
-  // TODO: replace with hook
-  const { appointments } = useAppointments();
+  // TODO: make dependent on monthData.month and monthData.year
+  const appointments = useAppointments();
 
   function updateMonth(increment: number): void {
     setMonthData((prevData) =>

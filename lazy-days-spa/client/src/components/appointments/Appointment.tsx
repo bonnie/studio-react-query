@@ -4,7 +4,7 @@ import { ReactElement } from 'react';
 
 import { Appointment as AppointmentType } from '../../../../shared/types';
 import { useAuth } from '../../auth/useAuth';
-import { useAppointments } from './useAppointments';
+import { useSetAppointment } from './hooks/useSetAppointment';
 import { getAppointmentColor } from './utils';
 
 interface AppointmentProps {
@@ -15,14 +15,17 @@ export function Appointment({
   appointmentData,
 }: AppointmentProps): ReactElement {
   const { user } = useAuth();
-  const { setAppointment } = useAppointments();
+  const setAppointment = useSetAppointment(appointmentData.id);
   const [textColor, bgColor] = getAppointmentColor(appointmentData, user?.id);
 
   // can this appointment be reserved or un-reserved by this user?
   const clickable =
     user?.id &&
     (!appointmentData.userId || appointmentData.userId === user?.id);
-  const reserveAppointment = () => setAppointment(appointmentData.id);
+  const reserveAppointment =
+    clickable && user?.id
+      ? () => setAppointment(appointmentData.id)
+      : undefined;
 
   const time = moment(appointmentData.dateTime).format('h a');
   return (
@@ -32,7 +35,7 @@ export function Appointment({
       bgColor={bgColor}
       color={textColor}
       as={clickable ? 'button' : 'div'}
-      onClick={clickable ? reserveAppointment : undefined}
+      onClick={reserveAppointment}
     >
       <HStack justify="space-between">
         <Text as="span" fontSize="xs">

@@ -62,12 +62,7 @@ const fakeStaff = [
 //   return data;
 // }
 
-interface UseStaff {
-  staff: Staff[];
-}
-export function useStaff(): UseStaff {
+export function useStaff(): Staff[] {
   // TODO: get data from server via useQuery
-  return {
-    staff: fakeStaff,
-  };
+  return fakeStaff;
 }

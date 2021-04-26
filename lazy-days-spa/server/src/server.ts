@@ -58,8 +58,7 @@ app.post('/user', userRoutes.create);
 app.delete('/user/:id', validateUser, userRoutes.remove);
 app.patch('/user/:id', validateUser, userRoutes.update);
 
-app.get('/appointments/:month/:year', appointmentRoutes.get);
-app.delete('/appointment/:id', appointmentRoutes.remove);
+app.get('/appointments/:year/:month', appointmentRoutes.get);
 app.patch('/appointment/:id', appointmentRoutes.update);
 
 app.get('/treatments', treatmentRoutes.get);

@@ -10,8 +10,8 @@ export function AllStaff(): ReactElement {
   const [filter, setFilter] = useState('all');
 
   // replace with data from React Query
-  const { staff } = useStaff();
-  const { treatments } = useTreatments();
+  const staff = useStaff();
+  const treatments = useTreatments();
 
   return (
     <Box>

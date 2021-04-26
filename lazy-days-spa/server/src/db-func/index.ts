@@ -8,8 +8,14 @@ import jsonPatch, { Operation } from 'fast-json-patch';
 import { promises as fs } from 'fs';
 import path from 'path';
 
-import { Appointment, Staff, Treatment } from '../../../shared/types';
+import {
+  Appointment,
+  AppointmentDateMap,
+  Staff,
+  Treatment,
+} from '../../../shared/types';
 import { AuthUser, NewAuthUser } from '../auth';
+import { createAppointments } from './appointmentUtils.js';
 
 type JsonDataType = AuthUser | Appointment | Treatment | Staff;
 
@@ -104,16 +110,17 @@ export async function getAppointments(): Promise<Appointment[]> {
 }
 
 export async function getAppointmentsByMonthYear(
-  month: number,
-  year: number,
-): Promise<Appointment[]> {
+  month: string,
+  year: string,
+): Promise<AppointmentDateMap> {
   // yet another place where inefficiency is ridiculous compared to a real db
-  const allAppointments = await getAppointments();
-  return allAppointments.filter(
+  const savedAppointments = await getAppointments();
+  const thisMonthSavedAppointments = savedAppointments.filter(
     (appointment) =>
-      appointment.dateTime.getMonth() === month &&
-      appointment.dateTime.getFullYear() === year,
+      appointment.dateTime.getMonth() === Number(month) &&
+      appointment.dateTime.getFullYear() === Number(year),
   );
+  return createAppointments(year, month, thisMonthSavedAppointments);
 }
 
 export async function getTreatments(): Promise<Treatment[]> {

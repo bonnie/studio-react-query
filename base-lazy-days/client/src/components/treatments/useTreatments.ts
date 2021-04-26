@@ -56,12 +56,7 @@ const fakeTreatments = [
 //   return data;
 // }
 
-interface UseTreatments {
-  treatments: Treatment[];
-}
-export function useTreatments(): UseTreatments {
+export function useTreatments(): Treatment[] {
   // TODO: get data from server via useQuery
-  return {
-    treatments: fakeTreatments,
-  };
+  return fakeTreatments;
 }
