@@ -1,9 +1,9 @@
 import { Box, Heading, HStack, Radio, RadioGroup } from '@chakra-ui/react';
 import { ReactElement, useState } from 'react';
 
-import { useTreatments } from '../treatments/useTreatments';
+import { useTreatments } from '../treatments/hooks/useTreatments';
+import { useStaff } from './hooks/useStaff';
 import { Staff } from './Staff';
-import { useStaff } from './useStaff';
 
 export function AllStaff(): ReactElement {
   // for filtering staff by treatment

@@ -1,5 +1,5 @@
-import type { Treatment } from '../../../../shared/types';
-import { axiosInstance } from '../../axiosInstance';
+import type { Treatment } from '../../../../../shared/types';
+import { axiosInstance } from '../../../axiosInstance';
 
 const fakeTreatments = [
   {

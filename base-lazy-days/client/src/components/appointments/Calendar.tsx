@@ -14,7 +14,7 @@ import { TiArrowLeftThick, TiArrowRightThick } from 'react-icons/ti';
 import { DateBox } from './DateBox';
 import { useAppointments } from './hooks/useAppointments';
 
-interface MonthData {
+interface MonthYear {
   startDate: moment.Moment; // first day of the month
   firstDOW: number; // day of week; 0 === Sunday
   lastDate: number; // last date of the month
@@ -24,7 +24,7 @@ interface MonthData {
 }
 
 // get calendar-relevant data for the month containing initialDate
-function getMonthData(initialDate: moment.Moment): MonthData {
+function getMonthYearDetails(initialDate: moment.Moment): MonthYear {
   const month = initialDate.format('MM');
   const year = initialDate.format('YYYY');
   const startDate = moment(`${year}${month}01`);
@@ -36,19 +36,19 @@ function getMonthData(initialDate: moment.Moment): MonthData {
 
 export function Calendar(): ReactElement {
   const currentDate = moment();
-  const [monthData, setMonthData] = useState(getMonthData(currentDate));
+  const [monthYear, setMonthYear] = useState(getMonthYearDetails(currentDate));
 
   // show all appointments, or just the available ones?
   // TODO: implement with React Query
   const [showAll, setShowAll] = useState(false);
 
-  // TODO: make dependent on monthData.month and monthData.year
+  // TODO: make dependent on monthYear.month and monthYear.year
   const appointments = useAppointments();
 
   function updateMonth(increment: number): void {
-    setMonthData((prevData) =>
+    setMonthYear((prevData) =>
       // the clone is necessary to prevent mutation
-      getMonthData(prevData.startDate.clone().add(increment, 'months')),
+      getMonthYearDetails(prevData.startDate.clone().add(increment, 'months')),
     );
   }
   return (
@@ -58,10 +58,10 @@ export function Calendar(): ReactElement {
           aria-label="previous month"
           onClick={() => updateMonth(-1)}
           icon={<TiArrowLeftThick />}
-          isDisabled={monthData.startDate < currentDate}
+          isDisabled={monthYear.startDate < currentDate}
         />
         <Heading minW="40%" textAlign="center">
-          {monthData.monthName} {monthData.year}
+          {monthYear.monthName} {monthYear.year}
         </Heading>
         <IconButton
           aria-label="next month"
@@ -83,11 +83,11 @@ export function Calendar(): ReactElement {
         {/* first day needs a grid column */}
         <DateBox
           date={1}
-          gridColumn={monthData.firstDOW + 1}
+          gridColumn={monthYear.firstDOW + 1}
           appointments={appointments[1]}
         />
         {/* the rest of the days will follow */}
-        {[...Array(monthData.lastDate)].map((_, i) =>
+        {[...Array(monthYear.lastDate)].map((_, i) =>
           i > 0 ? (
             <DateBox key={i} date={i + 1} appointments={appointments[i + 1]} />
           ) : null,

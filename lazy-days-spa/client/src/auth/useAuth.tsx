@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState } from 'react';
 
 import { User } from '../../../shared/types';
 import { axiosInstance } from '../axiosInstance';
-import { useCustomToast } from '../components/app/useCustomToast';
+import { useCustomToast } from '../components/app/hooks/useCustomToast';
 import { USER_LOCALSTORAGE_KEY } from '../constants';
 
 interface Auth {

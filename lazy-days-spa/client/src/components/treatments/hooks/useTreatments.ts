@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient } from 'react-query';
 
-import type { Treatment } from '../../../../shared/types';
-import { axiosInstance } from '../../axiosInstance';
+import type { Treatment } from '../../../../../shared/types';
+import { axiosInstance } from '../../../axiosInstance';
 
 const TREATMENTS_QUERY_KEY = 'treatments';
 

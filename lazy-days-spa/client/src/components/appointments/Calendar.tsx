@@ -8,78 +8,36 @@ import {
   IconButton,
 } from '@chakra-ui/react';
 import moment from 'moment';
-import { ReactElement, useEffect, useState } from 'react';
+import { ReactElement, useState } from 'react';
 import { TiArrowLeftThick, TiArrowRightThick } from 'react-icons/ti';
-import { useQuery } from 'react-query';
 
-import { AppointmentDateMap } from '../../../../shared/types';
-import { axiosInstance } from '../../axiosInstance';
 import { DateBox } from './DateBox';
-import { APPOINTMENTS_KEY } from './hooks/constants';
-
-async function getAppointments(
-  year: string,
-  month: string,
-): Promise<AppointmentDateMap> {
-  const { data } = await axiosInstance.get(`/appointments/${year}/${month}`);
-  return data.appointments;
-}
-
-interface MonthData {
-  startDate: moment.Moment; // first day of the month
-  firstDOW: number; // day of week; 0 === Sunday
-  lastDate: number; // last date of the month
-  monthName: string; // name of the month
-  month: string; // two digit month number
-  year: string; // four digit year
-}
-
-// get calendar-relevant data for the month containing initialDate
-function getMonthData(initialDate: moment.Moment): MonthData {
-  const month = initialDate.format('MM');
-  const year = initialDate.format('YYYY');
-  const startDate = moment(`${year}${month}01`);
-  const firstDOW = Number(startDate.format('d'));
-  const lastDate = Number(startDate.clone().endOf('month').format('DD'));
-  const monthName = startDate.format('MMMM');
-  return { startDate, firstDOW, lastDate, monthName, month, year };
-}
+import { useAppointments } from './hooks/useAppointments';
 
 export function Calendar(): ReactElement {
   const currentDate = moment();
-  const [monthData, setMonthData] = useState(getMonthData(currentDate));
 
   // show all appointments, or just the available ones?
   // TODO: implement with React Query
   const [showAll, setShowAll] = useState(false);
 
-  const { data: appointments = [] } = useQuery(
-    [APPOINTMENTS_KEY, monthData.year, monthData.month],
-    () => getAppointments(monthData.year, monthData.month),
-  );
-
-  function updateMonth(increment: number): void {
-    setMonthData((prevData) =>
-      // the clone is necessary to prevent mutation
-      getMonthData(prevData.startDate.clone().add(increment, 'months')),
-    );
-  }
+  const { appointments, monthYear, updateMonthYear } = useAppointments();
 
   return (
     <Box>
       <HStack mt={10} spacing={8} justify="center">
         <IconButton
           aria-label="previous month"
-          onClick={() => updateMonth(-1)}
+          onClick={() => updateMonthYear(-1)}
           icon={<TiArrowLeftThick />}
-          isDisabled={monthData.startDate < currentDate}
+          isDisabled={monthYear.startDate < currentDate}
         />
         <Heading minW="40%" textAlign="center">
-          {monthData.monthName} {monthData.year}
+          {monthYear.monthName} {monthYear.year}
         </Heading>
         <IconButton
           aria-label="next month"
-          onClick={() => updateMonth(1)}
+          onClick={() => updateMonthYear(1)}
           icon={<TiArrowRightThick />}
         />
         <Checkbox
@@ -97,11 +55,11 @@ export function Calendar(): ReactElement {
         {/* first day needs a grid column */}
         <DateBox
           date={1}
-          gridColumn={monthData.firstDOW + 1}
+          gridColumn={monthYear.firstDOW + 1}
           appointments={appointments[1]}
         />
         {/* the rest of the days will follow */}
-        {[...Array(monthData.lastDate)].map((_, i) =>
+        {[...Array(monthYear.lastDate)].map((_, i) =>
           i > 0 ? (
             <DateBox key={i} date={i + 1} appointments={appointments[i + 1]} />
           ) : null,

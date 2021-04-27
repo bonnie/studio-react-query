@@ -1,7 +1,7 @@
 import { useQuery } from 'react-query';
 
-import type { Staff } from '../../../../shared/types';
-import { axiosInstance } from '../../axiosInstance';
+import type { Staff } from '../../../../../shared/types';
+import { axiosInstance } from '../../../axiosInstance';
 
 // for when we need a query function for useQuery
 async function getStaff(): Promise<Staff[]> {

@@ -1,7 +1,7 @@
 import { Appointment } from '../../../../../shared/types';
 import { useAuth } from '../../../auth/useAuth';
 import { axiosInstance } from '../../../axiosInstance';
-import { useCustomToast } from '../../app/useCustomToast';
+import { useCustomToast } from '../../app/hooks/useCustomToast';
 import { APPOINTMENTS_KEY } from './constants';
 
 // for when we need a query function for useQuery

@@ -1,5 +1,5 @@
-import type { Staff } from '../../../../shared/types';
-import { axiosInstance } from '../../axiosInstance';
+import type { Staff } from '../../../../../shared/types';
+import { axiosInstance } from '../../../axiosInstance';
 
 const fakeStaff = [
   {

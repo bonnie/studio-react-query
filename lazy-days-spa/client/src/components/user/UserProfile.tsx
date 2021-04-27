@@ -14,7 +14,7 @@ import { ReactElement, useState } from 'react';
 import { Redirect } from 'react-router-dom';
 
 import { useAuth } from '../../auth/useAuth';
-import { useUserProfile } from './useUserProfile';
+import { useUserProfile } from './hooks/useUserProfile';
 
 export function UserProfile(): ReactElement {
   const { userData, updateUser } = useUserProfile();
