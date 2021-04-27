@@ -1,16 +1,12 @@
 import { Box, Heading, HStack, Radio, RadioGroup } from '@chakra-ui/react';
-import { ReactElement, useState } from 'react';
+import { ReactElement } from 'react';
 
 import { useTreatments } from '../treatments/hooks/useTreatments';
 import { useStaff } from './hooks/useStaff';
 import { Staff } from './Staff';
 
 export function AllStaff(): ReactElement {
-  // for filtering staff by treatment
-  const [filter, setFilter] = useState('all');
-
-  // replace with data from React Query
-  const { staff } = useStaff();
+  const { staff, filter, setFilter } = useStaff();
   const { treatments } = useTreatments();
 
   return (

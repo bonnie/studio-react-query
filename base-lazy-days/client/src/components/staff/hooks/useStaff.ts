@@ -1,5 +1,6 @@
 import type { Staff } from '../../../../../shared/types';
 import { axiosInstance } from '../../../axiosInstance';
+import { filterByTreatment } from '../utils';
 
 const fakeStaff = [
   {
@@ -44,7 +45,7 @@ const fakeStaff = [
   {
     id: 4,
     name: 'Mateo',
-    treatmentNames: ['scrub', 'massage'],
+    treatmentNames: ['massage'],
     image: {
       fileName: 'mateo.jpg',
       authorName: 'Luis Quintero',
