@@ -45,10 +45,12 @@ export function Calendar(): ReactElement {
   // TODO: make dependent on monthYear.month and monthYear.year
   const appointments = useAppointments();
 
-  function updateMonth(increment: number): void {
+  function updateMonthYear(monthIncrement: number): void {
     setMonthYear((prevData) =>
       // the clone is necessary to prevent mutation
-      getMonthYearDetails(prevData.startDate.clone().add(increment, 'months')),
+      getMonthYearDetails(
+        prevData.startDate.clone().add(monthIncrement, 'months'),
+      ),
     );
   }
   return (
@@ -56,7 +58,7 @@ export function Calendar(): ReactElement {
       <HStack mt={10} spacing={8} justify="center">
         <IconButton
           aria-label="previous month"
-          onClick={() => updateMonth(-1)}
+          onClick={() => updateMonthYear(-1)}
           icon={<TiArrowLeftThick />}
           isDisabled={monthYear.startDate < currentDate}
         />
@@ -65,7 +67,7 @@ export function Calendar(): ReactElement {
         </Heading>
         <IconButton
           aria-label="next month"
-          onClick={() => updateMonth(1)}
+          onClick={() => updateMonthYear(1)}
           icon={<TiArrowRightThick />}
         />
         <Checkbox

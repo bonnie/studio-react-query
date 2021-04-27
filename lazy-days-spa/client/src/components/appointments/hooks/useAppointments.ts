@@ -1,6 +1,6 @@
 import moment from 'moment';
-import { useState } from 'react';
-import { useQuery } from 'react-query';
+import { useEffect, useState } from 'react';
+import { useQuery, useQueryClient } from 'react-query';
 
 import { AppointmentDateMap } from '../../../../../shared/types';
 import { axiosInstance } from '../../../axiosInstance';
@@ -26,6 +26,11 @@ export function getMonthYearDetails(initialDate: moment.Moment): MonthYear {
   return { startDate, firstDOW, lastDate, monthName, month, year };
 }
 
+function getUpdatedMonthYear(monthYear: MonthYear, monthIncrement: number) {
+  // the clone is necessary to prevent mutation
+  return monthYear.startDate.clone().add(monthIncrement, 'months');
+}
+
 async function getAppointments(
   year: string,
   month: string,
@@ -37,18 +42,29 @@ async function getAppointments(
 interface UseAppointments {
   appointments: AppointmentDateMap;
   monthYear: MonthYear;
-  updateMonthYear: (increment: number) => void;
+  updateMonthYear: (monthIncrement: number) => void;
 }
 
 export function useAppointments(): UseAppointments {
   // relocated from Calendar.tsx
   const currentDate = moment();
   const [monthYear, setMonthYear] = useState(getMonthYearDetails(currentDate));
+  const queryClient = useQueryClient();
 
-  function updateMonthYear(increment: number): void {
+  useEffect(() => {
+    // assume increment of one month
+    const nextMonthYear = getMonthYearDetails(
+      getUpdatedMonthYear(monthYear, 1),
+    );
+    queryClient.prefetchQuery(
+      [APPOINTMENTS_KEY, nextMonthYear.year, nextMonthYear.month],
+      () => getAppointments(nextMonthYear.year, nextMonthYear.month),
+    );
+  }, [queryClient, monthYear]);
+
+  function updateMonthYear(monthIncrement: number): void {
     setMonthYear((prevData) =>
-      // the clone is necessary to prevent mutation
-      getMonthYearDetails(prevData.startDate.clone().add(increment, 'months')),
+      getMonthYearDetails(getUpdatedMonthYear(prevData, monthIncrement)),
     );
   }
 
@@ -56,6 +72,7 @@ export function useAppointments(): UseAppointments {
   const { data = placeholderData } = useQuery(
     [APPOINTMENTS_KEY, monthYear.year, monthYear.month],
     () => getAppointments(monthYear.year, monthYear.month),
+    { keepPreviousData: true },
   );
 
   return {

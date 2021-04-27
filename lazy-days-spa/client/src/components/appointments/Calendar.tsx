@@ -10,6 +10,7 @@ import {
 import moment from 'moment';
 import { ReactElement, useState } from 'react';
 import { TiArrowLeftThick, TiArrowRightThick } from 'react-icons/ti';
+import { useQueryClient } from 'react-query';
 
 import { DateBox } from './DateBox';
 import { useAppointments } from './hooks/useAppointments';
