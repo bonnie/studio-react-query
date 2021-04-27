@@ -1,4 +1,11 @@
+import moment from 'moment';
+
 import type { Appointment } from '../../../../shared/types';
+
+export function appointmentInPast(appointmentData: Appointment): boolean {
+  const now = moment();
+  return moment(appointmentData.dateTime) < now;
+}
 
 export function getAppointmentColor(
   appointmentData: Appointment,
@@ -6,7 +13,7 @@ export function getAppointmentColor(
 ): [string, string] {
   const taken = !!appointmentData.userId;
 
-  if (taken) {
+  if (taken || appointmentInPast(appointmentData)) {
     const textColor = 'black';
     const bgColor = appointmentData.userId === userId ? 'white' : 'gray.300';
     return [textColor, bgColor];

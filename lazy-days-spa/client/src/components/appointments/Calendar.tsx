@@ -8,11 +8,22 @@ import {
   IconButton,
 } from '@chakra-ui/react';
 import moment from 'moment';
-import { ReactElement, useState } from 'react';
+import { ReactElement, useEffect, useState } from 'react';
 import { TiArrowLeftThick, TiArrowRightThick } from 'react-icons/ti';
+import { useQuery } from 'react-query';
 
+import { AppointmentDateMap } from '../../../../shared/types';
+import { axiosInstance } from '../../axiosInstance';
 import { DateBox } from './DateBox';
-import { useAppointments } from './hooks/useAppointments';
+import { APPOINTMENTS_KEY } from './hooks/constants';
+
+async function getAppointments(
+  year: string,
+  month: string,
+): Promise<AppointmentDateMap> {
+  const { data } = await axiosInstance.get(`/appointments/${year}/${month}`);
+  return data.appointments;
+}
 
 interface MonthData {
   startDate: moment.Moment; // first day of the month
@@ -29,19 +40,23 @@ function getMonthData(initialDate: moment.Moment): MonthData {
   const year = initialDate.format('YYYY');
   const startDate = moment(`${year}${month}01`);
   const firstDOW = Number(startDate.format('d'));
-  const lastDate = Number(startDate.endOf('month').format('DD'));
+  const lastDate = Number(startDate.clone().endOf('month').format('DD'));
   const monthName = startDate.format('MMMM');
   return { startDate, firstDOW, lastDate, monthName, month, year };
 }
 
 export function Calendar(): ReactElement {
-  const [monthData, setMonthData] = useState(getMonthData(moment()));
+  const currentDate = moment();
+  const [monthData, setMonthData] = useState(getMonthData(currentDate));
 
   // show all appointments, or just the available ones?
   // TODO: implement with React Query
   const [showAll, setShowAll] = useState(false);
 
-  const appointments = useAppointments(monthData.year, monthData.month);
+  const { data: appointments = [] } = useQuery(
+    [APPOINTMENTS_KEY, monthData.year, monthData.month],
+    () => getAppointments(monthData.year, monthData.month),
+  );
 
   function updateMonth(increment: number): void {
     setMonthData((prevData) =>
@@ -49,6 +64,7 @@ export function Calendar(): ReactElement {
       getMonthData(prevData.startDate.clone().add(increment, 'months')),
     );
   }
+
   return (
     <Box>
       <HStack mt={10} spacing={8} justify="center">
@@ -56,6 +72,7 @@ export function Calendar(): ReactElement {
           aria-label="previous month"
           onClick={() => updateMonth(-1)}
           icon={<TiArrowLeftThick />}
+          isDisabled={monthData.startDate < currentDate}
         />
         <Heading minW="40%" textAlign="center">
           {monthData.monthName} {monthData.year}

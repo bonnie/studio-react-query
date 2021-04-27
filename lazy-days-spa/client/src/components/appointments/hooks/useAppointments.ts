@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useQuery } from 'react-query';
 
 import { AppointmentDateMap } from '../../../../../shared/types';
@@ -13,14 +14,25 @@ async function getAppointments(
   return data.appointments;
 }
 
-export function useAppointments(
-  year: string,
-  month: string,
-): AppointmentDateMap {
+interface UseAppointments {
+  appointments: AppointmentDateMap;
+  setDate: (year: string, month: string) => void;
+}
+
+export function useAppointments(year: string, month: string): UseAppointments {
+  const [currentDate, setCurrentDate] = useState({ year, month });
+
   const placeholderData: AppointmentDateMap = {};
   const { data } = useQuery(APPOINTMENTS_KEY, () =>
-    getAppointments(year, month),
+    getAppointments(currentDate.year, currentDate.month),
   );
 
-  return data ?? placeholderData;
+  function setDate(newYear: string, newMonth: string) {
+    setCurrentDate({ year: newYear, month: newMonth });
+  }
+
+  return {
+    appointments: data ?? placeholderData,
+    setDate,
+  };
 }

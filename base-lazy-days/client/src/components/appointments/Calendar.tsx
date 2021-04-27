@@ -29,13 +29,14 @@ function getMonthData(initialDate: moment.Moment): MonthData {
   const year = initialDate.format('YYYY');
   const startDate = moment(`${year}${month}01`);
   const firstDOW = Number(startDate.format('d'));
-  const lastDate = Number(startDate.endOf('month').format('DD'));
+  const lastDate = Number(startDate.clone().endOf('month').format('DD'));
   const monthName = startDate.format('MMMM');
   return { startDate, firstDOW, lastDate, monthName, month, year };
 }
 
 export function Calendar(): ReactElement {
-  const [monthData, setMonthData] = useState(getMonthData(moment()));
+  const currentDate = moment();
+  const [monthData, setMonthData] = useState(getMonthData(currentDate));
 
   // show all appointments, or just the available ones?
   // TODO: implement with React Query
@@ -57,6 +58,7 @@ export function Calendar(): ReactElement {
           aria-label="previous month"
           onClick={() => updateMonth(-1)}
           icon={<TiArrowLeftThick />}
+          isDisabled={monthData.startDate < currentDate}
         />
         <Heading minW="40%" textAlign="center">
           {monthData.monthName} {monthData.year}

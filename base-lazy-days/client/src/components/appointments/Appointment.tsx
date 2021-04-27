@@ -2,10 +2,22 @@ import { Box, HStack, Text } from '@chakra-ui/react';
 import moment from 'moment';
 import { ReactElement } from 'react';
 
-import { Appointment as AppointmentType } from '../../../../shared/types';
+import { Appointment as AppointmentType, User } from '../../../../shared/types';
 import { useAuth } from '../../auth/useAuth';
 import { useSetAppointment } from './hooks/useSetAppointment';
-import { getAppointmentColor } from './utils';
+import { appointmentInPast, getAppointmentColor } from './utils';
+
+// determine whether this appointment can be reserved / un-reserved by logged-in user
+function isClickable(
+  user: User | null,
+  appointmentData: AppointmentType,
+): boolean {
+  return !!(
+    user?.id &&
+    (!appointmentData.userId || appointmentData.userId === user?.id) &&
+    !appointmentInPast(appointmentData)
+  );
+}
 
 interface AppointmentProps {
   appointmentData: AppointmentType;
@@ -18,16 +30,21 @@ export function Appointment({
   const setAppointment = useSetAppointment(appointmentData.id);
   const [textColor, bgColor] = getAppointmentColor(appointmentData, user?.id);
 
-  // can this appointment be reserved or un-reserved by this user?
-  const clickable =
-    user?.id &&
-    (!appointmentData.userId || appointmentData.userId === user?.id);
-  const reserveAppointment =
-    clickable && user?.id
-      ? () => setAppointment(appointmentData.id)
-      : undefined;
+  const clickable = isClickable(user, appointmentData);
+  let reserveAppointment: undefined | (() => void);
+  let hoverCss = {};
 
-  const time = moment(appointmentData.dateTime).format('h a');
+  // turn the lozenge into a button if it's clickable
+  if (clickable) {
+    reserveAppointment = () => setAppointment(appointmentData.id);
+    hoverCss = {
+      transform: 'translateY(-1px)',
+      boxShadow: 'md',
+      cursor: 'pointer',
+    };
+  }
+
+  const appointmentHour = moment(appointmentData.dateTime).format('h a');
   return (
     <Box
       borderRadius="lg"
@@ -36,10 +53,11 @@ export function Appointment({
       color={textColor}
       as={clickable ? 'button' : 'div'}
       onClick={reserveAppointment}
+      _hover={hoverCss}
     >
       <HStack justify="space-between">
         <Text as="span" fontSize="xs">
-          {time}
+          {appointmentHour}
         </Text>
         <Text as="span" fontSize="xs">
           {appointmentData.treatmentName}
