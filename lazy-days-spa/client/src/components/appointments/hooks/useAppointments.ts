@@ -1,9 +1,23 @@
 import moment from 'moment';
-import { useEffect, useState } from 'react';
-import { useQuery, useQueryClient } from 'react-query';
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
+import {
+  QueryFunction,
+  QueryKey,
+  QueryObserverOptions,
+  useQuery,
+  useQueryClient,
+} from 'react-query';
 
 import { AppointmentDateMap } from '../../../../../shared/types';
+import { useAuth } from '../../../auth/useAuth';
 import { axiosInstance } from '../../../axiosInstance';
+import { getAvailableAppointments } from '../utils';
 import { APPOINTMENTS_KEY } from './constants';
 
 interface MonthYear {
@@ -43,6 +57,8 @@ interface UseAppointments {
   appointments: AppointmentDateMap;
   monthYear: MonthYear;
   updateMonthYear: (monthIncrement: number) => void;
+  showAll: boolean;
+  setShowAll: Dispatch<SetStateAction<boolean>>;
 }
 
 export function useAppointments(): UseAppointments {
@@ -51,16 +67,42 @@ export function useAppointments(): UseAppointments {
   const [monthYear, setMonthYear] = useState(getMonthYearDetails(currentDate));
   const queryClient = useQueryClient();
 
+  // for showing all appointments or just available ones
+  const [showAll, setShowAll] = useState(false);
+  const { user } = useAuth();
+
+  // stable function for select
+  const selectFn = useCallback(
+    (data: AppointmentDateMap) => getAvailableAppointments(data, user),
+    [user],
+  );
+
+  const createQueryParams = useCallback(
+    (
+      queryMonthYear: MonthYear,
+    ): [
+      QueryKey,
+      QueryFunction<AppointmentDateMap>,
+      QueryObserverOptions<AppointmentDateMap>,
+    ] => {
+      return [
+        [APPOINTMENTS_KEY, queryMonthYear.year, queryMonthYear.month],
+        () => getAppointments(queryMonthYear.year, queryMonthYear.month),
+        { keepPreviousData: true, select: showAll ? undefined : selectFn },
+      ];
+    },
+    [showAll, selectFn],
+  );
+
   useEffect(() => {
     // assume increment of one month
     const nextMonthYear = getMonthYearDetails(
       getUpdatedMonthYear(monthYear, 1),
     );
-    queryClient.prefetchQuery(
-      [APPOINTMENTS_KEY, nextMonthYear.year, nextMonthYear.month],
-      () => getAppointments(nextMonthYear.year, nextMonthYear.month),
+    queryClient.prefetchQuery<AppointmentDateMap>(
+      ...createQueryParams(nextMonthYear),
     );
-  }, [queryClient, monthYear]);
+  }, [queryClient, monthYear, createQueryParams]);
 
   function updateMonthYear(monthIncrement: number): void {
     setMonthYear((prevData) =>
@@ -69,15 +111,15 @@ export function useAppointments(): UseAppointments {
   }
 
   const placeholderData: AppointmentDateMap = {};
-  const { data = placeholderData } = useQuery(
-    [APPOINTMENTS_KEY, monthYear.year, monthYear.month],
-    () => getAppointments(monthYear.year, monthYear.month),
-    { keepPreviousData: true },
+  const { data = placeholderData } = useQuery<AppointmentDateMap>(
+    ...createQueryParams(monthYear),
   );
 
   return {
     appointments: data,
     monthYear,
     updateMonthYear,
+    showAll,
+    setShowAll,
   };
 }
