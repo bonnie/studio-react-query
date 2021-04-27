@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-import type { Appointment } from '../../../../shared/types';
+import type { Appointment, AppointmentDateMap } from '../../../../shared/types';
 
 export function appointmentInPast(appointmentData: Appointment): boolean {
   const now = moment();
@@ -30,4 +30,19 @@ export function getAppointmentColor(
     default:
       return [textColor, 'black'];
   }
+}
+
+export function getAvailableAppointments(
+  appointments: AppointmentDateMap,
+): AppointmentDateMap {
+  // clone so as not to mutate argument directly
+  const filteredAppointments = { ...appointments };
+
+  Object.keys(filteredAppointments).forEach((date) => {
+    filteredAppointments[date] = filteredAppointments[date].filter(
+      (appointment: Appointment) => !appointment.userId,
+    );
+  });
+
+  return filteredAppointments;
 }
