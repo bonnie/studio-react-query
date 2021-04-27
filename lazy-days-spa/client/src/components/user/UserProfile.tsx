@@ -68,7 +68,7 @@ export function UserProfile(): ReactElement {
               <FormErrorMessage>Email may not be blank</FormErrorMessage>
             </FormControl>
             {formElements.map((element) => (
-              <FormControl id={element}>
+              <FormControl key={element} id={element}>
                 <FormLabel>{element}</FormLabel>
                 <Input
                   value={formData[element]}
