@@ -1,25 +1,31 @@
+import { useState } from 'react';
+import { useQuery } from 'react-query';
+
 import type { User } from '../../../../../shared/types';
+import { getStoredUser } from '../../../auth/utils';
+import { axiosInstance } from '../../../axiosInstance';
 import { queryKeys } from '../../../react-query/constants';
+
+async function getUser(userId: number | undefined): Promise<User | null> {
+  if (userId) {
+    const { data } = await axiosInstance.get(`/users/$userId`);
+    return data.user;
+  }
+  return Promise.resolve(null);
+}
 
 interface UseUser {
   user: User | null;
   updateUser: (userData: User | null) => void;
 }
 
-const fakeUser = {
-  id: 1,
-  name: 'Test Q. Test',
-  email: 'test@test.com',
-  address: '123 Main Street',
-  phone: '555-555-5555',
-  token: 'abc123',
-};
-
 function fakeUpdateFunction(userData: User | null) {
   // placeholder before ReactQuery
 }
 
 export function useUser(): UseUser {
-  // TODO replace with React Query
-  return { user: fakeUser, updateUser: fakeUpdateFunction };
+  const [user, setUser] = useState(getStoredUser());
+
+  const { data } = useQuery(queryKeys.user, () => getUser(user?.id));
+  return { user, updateUser: fakeUpdateFunction };
 }

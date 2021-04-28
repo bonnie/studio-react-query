@@ -1,5 +1,11 @@
 import type { User } from '../../../../../shared/types';
+import { axiosInstance } from '../../../axiosInstance';
 import { queryKeys } from '../../../react-query/constants';
+
+// async function getUser(userId: number) {
+//   const { data } = await axiosInstance.get(`/users/$userId`);
+//   return data.user;
+// }
 
 interface UseUser {
   user: User | null;

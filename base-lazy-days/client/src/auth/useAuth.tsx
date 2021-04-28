@@ -1,15 +1,15 @@
 import { axiosInstance } from '../axiosInstance';
 import { useCustomToast } from '../components/app/hooks/useCustomToast';
+import { queryKeys } from '../react-query/constants';
 import { deleteStoredUser, setStoredUser } from './utils';
 
-interface Auth {
+interface UseAuth {
   signin: (email: string, password: string) => Promise<void>;
   signup: (email: string, password: string) => Promise<void>;
   signout: () => void;
 }
 
-// Provider hook that creates auth object and handles state
-export function useAuth(): Auth {
+export function useAuth(): UseAuth {
   const SERVER_ERROR = 'There was an error contacting the server.';
   const toast = useCustomToast();
 
