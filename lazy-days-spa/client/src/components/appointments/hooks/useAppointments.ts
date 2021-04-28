@@ -111,12 +111,12 @@ export function useAppointments(): UseAppointments {
   }
 
   const placeholderData: AppointmentDateMap = {};
-  const { data = placeholderData } = useQuery<AppointmentDateMap>(
+  const { data: appointments = placeholderData } = useQuery<AppointmentDateMap>(
     ...createQueryParams(monthYear),
   );
 
   return {
-    appointments: data,
+    appointments,
     monthYear,
     updateMonthYear,
     showAll,

@@ -1,5 +1,5 @@
 import { User } from '../../../shared/types';
-import { USER_LOCALSTORAGE_KEY } from './constants';
+import { USER_LOCALSTORAGE_KEY } from '../constants';
 
 // helper to get user from localstorage
 export function getStoredUser(): User | null {

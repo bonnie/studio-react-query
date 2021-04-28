@@ -1,6 +1,7 @@
 // Adapted from https://usehooks.com/useAuth/
 // Easy to understand React Hook recipes by Gabe Ragland
 import { createContext, useContext, useState } from 'react';
+import { useQueryClient } from 'react-query';
 
 import { User } from '../../../shared/types';
 import { axiosInstance } from '../axiosInstance';

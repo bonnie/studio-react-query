@@ -26,11 +26,15 @@ export function useStaff(): UseStaff {
   );
 
   const placeholderData: Staff[] = [];
-  const { data = placeholderData } = useQuery(queryKeys.staff, getStaff, {
-    select: filter !== 'all' ? selectFn : undefined,
-  });
+  const { data: staff = placeholderData } = useQuery(
+    queryKeys.staff,
+    getStaff,
+    {
+      select: filter !== 'all' ? selectFn : undefined,
+    },
+  );
   return {
-    staff: data,
+    staff,
     filter,
     setFilter,
   };

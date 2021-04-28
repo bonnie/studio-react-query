@@ -9,15 +9,13 @@ async function getTreatments(): Promise<Treatment[]> {
   return data;
 }
 
-interface UseTreatments {
-  treatments: Treatment[];
-}
-export function useTreatments(): UseTreatments {
+export function useTreatments(): Treatment[] {
   const placeholderData: Treatment[] = [];
-  const { data } = useQuery(queryKeys.treatments, getTreatments);
-  return {
-    treatments: data ?? placeholderData,
-  };
+  const { data: treatments = placeholderData } = useQuery(
+    queryKeys.treatments,
+    getTreatments,
+  );
+  return treatments;
 }
 
 export function usePrefetchTreatments(): void {

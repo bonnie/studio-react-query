@@ -1,5 +1,3 @@
-import { createContext, useContext } from 'react';
-
 import { axiosInstance } from '../axiosInstance';
 import { useCustomToast } from '../components/app/hooks/useCustomToast';
 import { deleteStoredUser, setStoredUser } from './utils';
@@ -10,37 +8,8 @@ interface Auth {
   signout: () => void;
 }
 
-const authContext = createContext<Auth | null>(null);
-
-interface ProvideAuthProps {
-  children: React.ReactNode;
-}
-
-// Provider component that wraps your app and makes auth object,
-// available to any child component that calls useAuth().
-export function ProvideAuth({
-  children,
-}: ProvideAuthProps): React.ReactElement {
-  const auth = useProvideAuth();
-  return <authContext.Provider value={auth}>{children}</authContext.Provider>;
-}
-
-// Hook for child components to get the auth object,
-// and re-render when it changes.
-export const useAuth = (): Auth => {
-  if (!authContext) {
-    throw new Error('useAuth must be used within a AuthProvider');
-  }
-  const context = useContext(authContext);
-  if (!context) {
-    throw new Error('useAuth is missing context');
-  }
-  return context;
-};
-
 // Provider hook that creates auth object and handles state
-// eslint-disable-next-line max-lines-per-function
-function useProvideAuth(): Auth {
+export function useAuth(): Auth {
   const SERVER_ERROR = 'There was an error contacting the server.';
   const toast = useCustomToast();
 
