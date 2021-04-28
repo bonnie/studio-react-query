@@ -13,30 +13,23 @@ import {
 import { ReactElement, useState } from 'react';
 import { Redirect } from 'react-router-dom';
 
-import { useAuth } from '../../auth/useAuth';
-import { useUserProfile } from './hooks/useUserProfile';
+import type { User } from '../../../../shared/types';
+import { useUser } from './hooks/useUser';
 
 export function UserProfile(): ReactElement {
-  const { userData, updateUser } = useUserProfile();
+  const { user, updateUser } = useUser();
 
   const formElements = ['name', 'address', 'phone'];
-  const [formData, setFormData] = useState({
-    id: userData.id,
-    email: userData.email,
-    name: userData.name,
-    address: userData.address,
-    phone: userData.phone,
-  });
+  const [formData, setFormData] = useState<User | null>(user);
   const [dirty, setDirty] = useState({ email: false });
 
-  const auth = useAuth();
-
-  if (!auth.user) {
+  if (!user || !formData) {
     return <Redirect to="/signin" />;
   }
 
   function updateForm(fieldName: string, value: string) {
     setFormData((prevData) => {
+      if (!prevData) return null;
       const newData = { ...prevData };
       newData[fieldName] = value;
       return newData;

@@ -1,11 +1,12 @@
 // Adapted from https://usehooks.com/useAuth/
 // Easy to understand React Hook recipes by Gabe Ragland
-import React, { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 
 import { User } from '../../../shared/types';
 import { axiosInstance } from '../axiosInstance';
 import { useCustomToast } from '../components/app/hooks/useCustomToast';
 import { USER_LOCALSTORAGE_KEY } from './constants';
+import { getStoredUser } from './utils';
 
 interface Auth {
   user: User | null;
@@ -42,12 +43,6 @@ export const useAuth = (): Auth => {
   return context;
 };
 
-// helper to get user from localstorage
-function getStoredUser(): User | null {
-  const storedUser = localStorage.getItem(USER_LOCALSTORAGE_KEY);
-  return storedUser ? JSON.parse(storedUser) : null;
-}
-
 // Provider hook that creates auth object and handles state
 // eslint-disable-next-line max-lines-per-function
 function useProvideAuth(): Auth {
@@ -62,26 +57,23 @@ function useProvideAuth(): Auth {
     password: string,
   ): Promise<void> {
     try {
-      const response = await axiosInstance({
+      const { data, status } = await axiosInstance({
         url: urlEndpoint,
         method: 'POST',
         data: { email, password },
         headers: { 'Content-Type': 'application/json' },
       });
 
-      if (response.status === 400) {
-        toast({ title: response.data.message, status: 'warning' });
+      if (status === 400) {
+        toast({ title: data.message, status: 'warning' });
         return;
       }
 
-      setUser(response.data.user);
-      if (response?.data?.user?.token) {
-        localStorage.setItem(
-          USER_LOCALSTORAGE_KEY,
-          JSON.stringify(response.data.user),
-        );
+      if (data?.user?.token) {
+        setUser(data.user);
+        localStorage.setItem(USER_LOCALSTORAGE_KEY, JSON.stringify(data.user));
         toast({
-          title: `Logged in as ${response.data.user.email}`,
+          title: `Logged in as ${data.user.email}`,
           status: 'info',
         });
       }

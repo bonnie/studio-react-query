@@ -13,14 +13,14 @@ import { Routes } from './Routes';
 export function App(): ReactElement {
   return (
     <ChakraProvider theme={theme}>
-      <ProvideAuth>
-        <QueryClientProvider client={queryClient}>
+      <QueryClientProvider client={queryClient}>
+        <ProvideAuth>
           <Navbar />
           <Loading />
           <Routes />
           {process.env.NODE_ENV === 'development' && <ReactQueryDevtools />}
-        </QueryClientProvider>
-      </ProvideAuth>
+        </ProvideAuth>
+      </QueryClientProvider>
     </ChakraProvider>
   );
 }

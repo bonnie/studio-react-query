@@ -1,9 +1,9 @@
 import type { User } from '../../../../../shared/types';
 import { queryKeys } from '../../../react-query/constants';
 
-interface UseUserProfile {
-  userData: User;
-  updateUser: (userData: User) => void;
+interface UseUser {
+  user: User | null;
+  updateUser: (userData: User | null) => void;
 }
 
 const fakeUser = {
@@ -15,11 +15,11 @@ const fakeUser = {
   token: 'abc123',
 };
 
-function fakeUpdateFunction(userData: User) {
+function fakeUpdateFunction(userData: User | null) {
   // placeholder before ReactQuery
 }
 
-export function useUserProfile(): UseUserProfile {
+export function useUser(): UseUser {
   // TODO replace with React Query
-  return { userData: fakeUser, updateUser: fakeUpdateFunction };
+  return { user: fakeUser, updateUser: fakeUpdateFunction };
 }

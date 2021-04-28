@@ -15,9 +15,9 @@ import {
 } from 'react-query';
 
 import { AppointmentDateMap } from '../../../../../shared/types';
-import { useAuth } from '../../../auth/useAuth';
 import { axiosInstance } from '../../../axiosInstance';
 import { queryKeys } from '../../../react-query/constants';
+import { useUser } from '../../user/hooks/useUser';
 import { getAvailableAppointments } from '../utils';
 
 interface MonthYear {
@@ -69,7 +69,7 @@ export function useAppointments(): UseAppointments {
 
   // for showing all appointments or just available ones
   const [showAll, setShowAll] = useState(false);
-  const { user } = useAuth();
+  const { user } = useUser();
 
   // stable function for select
   const selectFn = useCallback(

@@ -49,7 +49,6 @@
     "jest-dom/prefer-required": "error",
     "jest-dom/prefer-to-have-attribute": "error",
     "react/prop-types": ["off"],
-    "sonarjs/cognitive-complexity": ["error", 5],
     "react/jsx-filename-extension": [1, { "extensions": [".tsx", ".jsx"] }],
     "import/extensions": ["error", "never"],
     "import/prefer-default-export": 0,

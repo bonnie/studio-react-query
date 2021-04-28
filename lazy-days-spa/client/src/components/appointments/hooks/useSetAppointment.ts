@@ -1,8 +1,8 @@
 import { Appointment } from '../../../../../shared/types';
-import { useAuth } from '../../../auth/useAuth';
 import { axiosInstance } from '../../../axiosInstance';
 import { queryKeys } from '../../../react-query/constants';
 import { useCustomToast } from '../../app/hooks/useCustomToast';
+import { useUser } from '../../user/hooks/useUser';
 
 // for when we need a query function for useQuery
 // async function setAppointmentUser(
@@ -21,7 +21,7 @@ import { useCustomToast } from '../../app/hooks/useCustomToast';
 export function useSetAppointment(
   appointmentId: number,
 ): (appointmentId: number) => void {
-  const { user } = useAuth();
+  const { user } = useUser();
   const toast = useCustomToast();
 
   function setAppointment(): void {

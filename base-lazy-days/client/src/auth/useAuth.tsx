@@ -1,15 +1,10 @@
-// Adapted from https://usehooks.com/useAuth/
-// Easy to understand React Hook recipes by Gabe Ragland
-import React, { createContext, useContext, useState } from 'react';
+import { createContext, useContext } from 'react';
 
-import { User } from '../../../shared/types';
 import { axiosInstance } from '../axiosInstance';
 import { useCustomToast } from '../components/app/hooks/useCustomToast';
-import { USER_LOCALSTORAGE_KEY } from './constants';
-import { getStoredUser } from './utils';
+import { deleteStoredUser, setStoredUser } from './utils';
 
 interface Auth {
-  user: User | null;
   signin: (email: string, password: string) => Promise<void>;
   signup: (email: string, password: string) => Promise<void>;
   signout: () => void;
@@ -49,8 +44,6 @@ function useProvideAuth(): Auth {
   const SERVER_ERROR = 'There was an error contacting the server.';
   const toast = useCustomToast();
 
-  const [user, setUser] = useState<User | null>(getStoredUser());
-
   async function authServerCall(
     urlEndpoint: string,
     email: string,
@@ -70,14 +63,15 @@ function useProvideAuth(): Auth {
       }
 
       if (data?.user?.token) {
-        setUser(data.user);
-        localStorage.setItem(USER_LOCALSTORAGE_KEY, JSON.stringify(data.user));
+        // add user to local storage
+        setStoredUser(data.user);
+
         toast({
           title: `Logged in as ${data.user.email}`,
           status: 'info',
         });
+        // TODO: pre-populate user profile in React Query client
       }
-      // TODO: prefetch user profile
     } catch (errorResponse) {
       toast({
         title: errorResponse?.response?.data?.message || SERVER_ERROR,
@@ -93,16 +87,13 @@ function useProvideAuth(): Auth {
     authServerCall('/user', email, password);
   }
 
-  // remove user from state and localStorage
   function signout(): void {
-    // TODO: invalidate cached user profile
-    setUser(null);
-    localStorage.removeItem(USER_LOCALSTORAGE_KEY);
+    // TODO: invalidate user data in React Query client
+    deleteStoredUser();
   }
 
   // Return the user object and auth methods
   return {
-    user,
     signin,
     signup,
     signout,
