@@ -7,7 +7,7 @@ import { Staff } from './Staff';
 
 export function AllStaff(): ReactElement {
   const { staff, filter, setFilter } = useStaff();
-  const { treatments } = useTreatments();
+  const treatments = useTreatments();
 
   return (
     <Box>
