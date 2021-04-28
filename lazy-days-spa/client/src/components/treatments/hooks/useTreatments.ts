@@ -2,8 +2,7 @@ import { useQuery, useQueryClient } from 'react-query';
 
 import type { Treatment } from '../../../../../shared/types';
 import { axiosInstance } from '../../../axiosInstance';
-
-const TREATMENTS_QUERY_KEY = 'treatments';
+import { queryKeys } from '../../../react-query/constants';
 
 async function getTreatments(): Promise<Treatment[]> {
   const { data } = await axiosInstance.get('/treatments');
@@ -15,7 +14,7 @@ interface UseTreatments {
 }
 export function useTreatments(): UseTreatments {
   const placeholderData: Treatment[] = [];
-  const { data } = useQuery(TREATMENTS_QUERY_KEY, getTreatments);
+  const { data } = useQuery(queryKeys.treatments, getTreatments);
   return {
     treatments: data ?? placeholderData,
   };
@@ -23,5 +22,5 @@ export function useTreatments(): UseTreatments {
 
 export function usePrefetchTreatments(): void {
   const queryClient = useQueryClient();
-  queryClient.prefetchQuery(TREATMENTS_QUERY_KEY, getTreatments);
+  queryClient.prefetchQuery(queryKeys.treatments, getTreatments);
 }

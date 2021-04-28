@@ -1,4 +1,5 @@
 import type { User } from '../../../../../shared/types';
+import { queryKeys } from '../../../react-query/constants';
 
 interface UseUserProfile {
   userData: User;

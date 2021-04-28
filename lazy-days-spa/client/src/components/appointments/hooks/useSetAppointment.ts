@@ -1,8 +1,8 @@
 import { Appointment } from '../../../../../shared/types';
 import { useAuth } from '../../../auth/useAuth';
 import { axiosInstance } from '../../../axiosInstance';
+import { queryKeys } from '../../../react-query/constants';
 import { useCustomToast } from '../../app/hooks/useCustomToast';
-import { APPOINTMENTS_KEY } from './constants';
 
 // for when we need a query function for useQuery
 // async function setAppointmentUser(

@@ -17,8 +17,8 @@ import {
 import { AppointmentDateMap } from '../../../../../shared/types';
 import { useAuth } from '../../../auth/useAuth';
 import { axiosInstance } from '../../../axiosInstance';
+import { queryKeys } from '../../../react-query/constants';
 import { getAvailableAppointments } from '../utils';
-import { APPOINTMENTS_KEY } from './constants';
 
 interface MonthYear {
   startDate: moment.Moment; // first day of the month
@@ -86,7 +86,7 @@ export function useAppointments(): UseAppointments {
       QueryObserverOptions<AppointmentDateMap>,
     ] => {
       return [
-        [APPOINTMENTS_KEY, queryMonthYear.year, queryMonthYear.month],
+        [queryKeys.appointments, queryMonthYear.year, queryMonthYear.month],
         () => getAppointments(queryMonthYear.year, queryMonthYear.month),
         { keepPreviousData: true, select: showAll ? undefined : selectFn },
       ];

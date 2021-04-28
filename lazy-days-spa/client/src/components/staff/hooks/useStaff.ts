@@ -3,6 +3,7 @@ import { useQuery } from 'react-query';
 
 import type { Staff } from '../../../../../shared/types';
 import { axiosInstance } from '../../../axiosInstance';
+import { queryKeys } from '../../../react-query/constants';
 import { filterByTreatment } from '../utils';
 
 // for when we need a query function for useQuery
@@ -25,7 +26,7 @@ export function useStaff(): UseStaff {
   );
 
   const placeholderData: Staff[] = [];
-  const { data = placeholderData } = useQuery('staff', getStaff, {
+  const { data = placeholderData } = useQuery(queryKeys.staff, getStaff, {
     select: filter !== 'all' ? selectFn : undefined,
   });
   return {

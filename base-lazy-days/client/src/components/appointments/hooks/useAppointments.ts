@@ -2,8 +2,8 @@ import moment from 'moment';
 
 import { Appointment } from '../../../../../shared/types';
 import { axiosInstance } from '../../../axiosInstance';
+import { queryKeys } from '../../../react-query/constants';
 import { AppointmentDateMap } from '../types';
-import { APPOINTMENTS_KEY } from './constants';
 
 const fakeAppointments = {
   1: [

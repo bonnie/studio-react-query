@@ -4,7 +4,7 @@ import { QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 
 import { ProvideAuth } from '../../auth/useAuth';
-import { queryClient } from '../../config/queryClient';
+import { queryClient } from '../../react-query/queryClient';
 import { theme } from '../../theme';
 import { Loading } from './Loading';
 import { Navbar } from './Navbar';
