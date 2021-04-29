@@ -12,7 +12,11 @@ async function getUser(userId: number | undefined): Promise<User | null> {
   return data.user;
 }
 
-export function useUser(): { user: User | null } {
+interface UseUser {
+  user: User | null;
+}
+
+export function useUser(): UseUser {
   const [user, setUser] = useState<User | null>(getStoredUser());
 
   useQuery(queryKeys.user, () => getUser(user?.id), {

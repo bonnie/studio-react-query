@@ -15,15 +15,19 @@ import { Redirect } from 'react-router-dom';
 
 import type { User } from '../../../../shared/types';
 import { useUser } from './hooks/useUser';
+import { UserAppointments } from './UserAppointments';
 
 export function UserProfile(): ReactElement {
-  const { user, updateUser } = useUser();
+  const { user } = useUser();
+  const updateUser = (newData: User | null) => {
+    // replace with mutation hook
+  };
 
   const formElements = ['name', 'address', 'phone'];
   const [formData, setFormData] = useState<User | null>(user);
   const [dirty, setDirty] = useState({ email: false });
 
-  if (!user || !formData) {
+  if (!user) {
     return <Redirect to="/signin" />;
   }
 
@@ -39,6 +43,7 @@ export function UserProfile(): ReactElement {
   return (
     <Flex minH="84vh" align="center" justify="center">
       <Stack spacing={8} mx="auto" w="xl" py={12} px={6}>
+        <UserAppointments />
         <Stack align="center">
           <Heading>Your information</Heading>
         </Stack>
@@ -47,12 +52,12 @@ export function UserProfile(): ReactElement {
             <FormControl
               id="email"
               isRequired
-              isInvalid={!formData.email && dirty.email}
+              isInvalid={!formData?.email && dirty.email}
             >
               <FormLabel>Email address</FormLabel>
               <Input
                 type="email"
-                value={formData.email}
+                value={formData?.email}
                 onChange={(e) => updateForm('email', e.target.value)}
                 onBlur={() =>
                   setDirty((prevDirty) => ({ ...prevDirty, email: true }))
@@ -64,7 +69,7 @@ export function UserProfile(): ReactElement {
               <FormControl key={element} id={element}>
                 <FormLabel>{element}</FormLabel>
                 <Input
-                  value={formData[element]}
+                  value={formData ? formData[element] : null}
                   onChange={(e) => updateForm(element, e.target.value)}
                 />
               </FormControl>

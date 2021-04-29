@@ -14,11 +14,11 @@ import { ReactElement } from 'react';
 import { ImCancelCircle } from 'react-icons/im';
 import { Redirect } from 'react-router-dom';
 
-import { useAuth } from '../../auth/useAuth';
+import { useUser } from './hooks/useUser';
 import { useUserAppointments } from './hooks/useUserAppointments';
 
 export function UserAppointments(): ReactElement {
-  const { user } = useAuth();
+  const { user } = useUser();
   const userAppointments = useUserAppointments();
   const { cancelAppointment } = useSetAppointment();
 

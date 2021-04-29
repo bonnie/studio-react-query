@@ -18,6 +18,10 @@ const fakeUser = {
   token: 'abc123',
 };
 
-export function useUser(): { user: User | null } {
+interface UseUser {
+  user: User | null;
+}
+
+export function useUser(): UseUser {
   return { user: fakeUser };
 }
