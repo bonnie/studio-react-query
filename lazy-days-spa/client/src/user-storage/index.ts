@@ -1,5 +1,6 @@
 import { User } from '../../../shared/types';
-import { USER_LOCALSTORAGE_KEY } from '../constants';
+
+export const USER_LOCALSTORAGE_KEY = 'lazyday_user';
 
 // helper to get user from localstorage
 export function getStoredUser(): User | null {
@@ -11,6 +12,6 @@ export function setStoredUser(user: User): void {
   localStorage.setItem(USER_LOCALSTORAGE_KEY, JSON.stringify(user));
 }
 
-export function deleteStoredUser(): void {
+export function clearStoredUser(): void {
   localStorage.removeItem(USER_LOCALSTORAGE_KEY);
 }

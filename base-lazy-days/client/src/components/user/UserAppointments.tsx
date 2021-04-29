@@ -4,6 +4,7 @@ import {
   Heading,
   IconButton,
   Table,
+  Tbody,
   Td,
   Text,
   Tr,
@@ -12,15 +13,52 @@ import { useSetAppointment } from 'components/appointments/hooks/useSetAppointme
 import dayjs from 'dayjs';
 import { ReactElement } from 'react';
 import { ImCancelCircle } from 'react-icons/im';
-import { Redirect } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 
+import type { Appointment } from '../../../../shared/types';
 import { useUser } from './hooks/useUser';
 import { useUserAppointments } from './hooks/useUserAppointments';
+
+interface AppointmentsTableProps {
+  userAppointments: Appointment[];
+}
+
+function AppointmentsTable({
+  userAppointments,
+}: AppointmentsTableProps): ReactElement {
+  const { cancelAppointment } = useSetAppointment();
+
+  return (
+    <Table variant="simple" m={10} maxWidth="500px">
+      <Tbody>
+        {userAppointments.map((appointment) => (
+          <Tr key={appointment.id}>
+            <Td>
+              <Text>{dayjs(appointment.dateTime).format('MMM D')}</Text>
+            </Td>
+            <Td>
+              <Text>{dayjs(appointment.dateTime).format('h a')}</Text>
+            </Td>
+            <Td>
+              <Text>{appointment.treatmentName}</Text>
+            </Td>
+            <Td>
+              <IconButton
+                aria-label="cancel appointment"
+                onClick={() => cancelAppointment(appointment.id)}
+                icon={<ImCancelCircle />}
+              />
+            </Td>
+          </Tr>
+        ))}
+      </Tbody>
+    </Table>
+  );
+}
 
 export function UserAppointments(): ReactElement {
   const { user } = useUser();
   const userAppointments = useUserAppointments();
-  const { cancelAppointment } = useSetAppointment();
 
   if (!user) {
     return <Redirect to="/signin" />;
@@ -32,28 +70,11 @@ export function UserAppointments(): ReactElement {
         Your Appointments
       </Heading>
       <Center>
-        <Table variant="simple" m={10} maxWidth="500px">
-          {userAppointments.map((appointment) => (
-            <Tr key={appointment.id}>
-              <Td>
-                <Text>{dayjs(appointment.dateTime).format('MMM D')}</Text>
-              </Td>
-              <Td>
-                <Text>{dayjs(appointment.dateTime).format('h a')}</Text>
-              </Td>
-              <Td>
-                <Text>{appointment.treatmentName}</Text>
-              </Td>
-              <Td>
-                <IconButton
-                  aria-label="cancel appointment"
-                  onClick={() => cancelAppointment(appointment.id)}
-                  icon={<ImCancelCircle />}
-                />
-              </Td>
-            </Tr>
-          ))}
-        </Table>
+        {userAppointments.length > 0 ? (
+          <AppointmentsTable userAppointments={userAppointments} />
+        ) : (
+          <Link to="/Calendar">Book an appointment</Link>
+        )}
       </Center>
     </Box>
   );

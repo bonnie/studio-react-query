@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import esMain from 'es-main';
 import express, { json } from 'express';
+import jwt from 'express-jwt';
 
 import { User as UserType } from '../../shared/types';
 // add .js for ts-node; https://github.com/microsoft/TypeScript/issues/41887#issuecomment-741902030
@@ -46,18 +47,30 @@ app.use(express.static('public'));
 // middleware for parsing json body
 app.use(json());
 
+app.use(
+  '/user/:id',
+  jwt({
+    // process.env.EXPRESS_SECRET is checked for truthiness on app startup
+    // the || is to satisfy typescript
+    secret: process.env.EXPRESS_SECRET || 'NOT SO SECRET',
+    algorithms: ['HS256'],
+    requestProperty: 'auth',
+  }),
+);
+app.use('/user/:id', validateUser);
+
 /* *********** routes ********* */
 
 // verify login
 app.post('/signin', userRoutes.auth);
 
 // user profile protected by jwt
-app.get('/user/:id', validateUser, userRoutes.get);
-app.get('/user/:id/appointments', validateUser, userRoutes.getUserAppointments);
+app.get('/user/:id', userRoutes.get);
+app.get('/user/:id/appointments', userRoutes.getUserAppointments);
 
 app.post('/user', userRoutes.create);
-app.delete('/user/:id', validateUser, userRoutes.remove);
-app.patch('/user/:id', validateUser, userRoutes.update);
+app.delete('/user/:id', userRoutes.remove);
+app.patch('/user/:id', userRoutes.update);
 
 app.get('/appointments/:year/:month', appointmentRoutes.get);
 app.patch('/appointment/:id', appointmentRoutes.update);

@@ -4,6 +4,7 @@ import {
   Heading,
   IconButton,
   Table,
+  Tbody,
   Td,
   Text,
   Tr,
@@ -22,31 +23,35 @@ interface AppointmentsTableProps {
   userAppointments: Appointment[];
 }
 
-function AppointmentsTable({ userAppointments }): ReactElement {
+function AppointmentsTable({
+  userAppointments,
+}: AppointmentsTableProps): ReactElement {
   const { cancelAppointment } = useSetAppointment();
 
   return (
     <Table variant="simple" m={10} maxWidth="500px">
-      {userAppointments.map((appointment) => (
-        <Tr key={appointment.id}>
-          <Td>
-            <Text>{dayjs(appointment.dateTime).format('MMM D')}</Text>
-          </Td>
-          <Td>
-            <Text>{dayjs(appointment.dateTime).format('h a')}</Text>
-          </Td>
-          <Td>
-            <Text>{appointment.treatmentName}</Text>
-          </Td>
-          <Td>
-            <IconButton
-              aria-label="cancel appointment"
-              onClick={() => cancelAppointment(appointment.id)}
-              icon={<ImCancelCircle />}
-            />
-          </Td>
-        </Tr>
-      ))}
+      <Tbody>
+        {userAppointments.map((appointment) => (
+          <Tr key={appointment.id}>
+            <Td>
+              <Text>{dayjs(appointment.dateTime).format('MMM D')}</Text>
+            </Td>
+            <Td>
+              <Text>{dayjs(appointment.dateTime).format('h a')}</Text>
+            </Td>
+            <Td>
+              <Text>{appointment.treatmentName}</Text>
+            </Td>
+            <Td>
+              <IconButton
+                aria-label="cancel appointment"
+                onClick={() => cancelAppointment(appointment.id)}
+                icon={<ImCancelCircle />}
+              />
+            </Td>
+          </Tr>
+        ))}
+      </Tbody>
     </Table>
   );
 }

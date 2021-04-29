@@ -1,11 +1,13 @@
 import type { User } from '../../../../../shared/types';
-import { getStoredUser } from '../../../auth/utils';
-import { axiosInstance } from '../../../axiosInstance';
+import { axiosInstance, getJWTHeader } from '../../../axiosInstance';
 import { queryKeys } from '../../../react-query/constants';
+import { getStoredUser } from '../../../user-storage';
 
 // async function getUser(userId: number | undefined): Promise<User | null> {
 //   if (!userId) return null;
-//   const { data } = await axiosInstance.get(`/users/$userId`);
+//   const { data } = await axiosInstance.get(`/user/${userId}`, {
+//     headers: getJWTHeader(),
+//   });
 //   return data.user;
 // }
 

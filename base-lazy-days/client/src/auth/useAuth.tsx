@@ -1,7 +1,7 @@
 import { axiosInstance } from '../axiosInstance';
 import { useCustomToast } from '../components/app/hooks/useCustomToast';
 import { queryKeys } from '../react-query/constants';
-import { deleteStoredUser, setStoredUser } from './utils';
+import { deleteStoredUser, setStoredUser } from '../user-storage';
 
 interface UseAuth {
   signin: (email: string, password: string) => Promise<void>;

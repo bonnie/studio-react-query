@@ -1,19 +1,18 @@
 import axios, { AxiosRequestConfig } from 'axios';
 
-import { baseUrl, USER_LOCALSTORAGE_KEY } from '../constants';
+import { getStoredUser } from '../user-storage';
+import { baseUrl } from './constants';
 
 interface jwtHeader {
-  'x-access-token'?: string;
+  Authorization?: string;
 }
 
 export function getJWTHeader(): jwtHeader {
-  const storedUser = localStorage.getItem(USER_LOCALSTORAGE_KEY);
-  let token = null;
-  if (storedUser) {
-    token = JSON.parse(storedUser).token;
-  }
+  const storedUser = getStoredUser();
 
-  return token ? { 'x-access-token': token } : {};
+  return storedUser?.token
+    ? { Authorization: `Bearer ${storedUser?.token}` }
+    : {};
 }
 
 const config: AxiosRequestConfig = { baseURL: baseUrl };

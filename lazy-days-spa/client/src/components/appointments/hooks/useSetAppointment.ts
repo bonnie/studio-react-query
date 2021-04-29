@@ -28,13 +28,13 @@ export function useSetAppointment(): UseSetAppointment {
   const toast = useCustomToast();
   const userId = user?.id;
 
-  if (!userId) {
-    // if the user isn't logged in, show a warning
-    toast({
-      title: 'you must be logged in to reserve an appointment',
-      status: 'warning',
-    });
-  }
+  // if (!userId) {
+  //   // if the user isn't logged in, show a warning
+  //   toast({
+  //     title: 'you must be logged in to reserve an appointment',
+  //     status: 'warning',
+  //   });
+  // }
 
   function setAppointment(appointmentId: number): void {
     // if (!userId) return;

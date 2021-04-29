@@ -10,7 +10,7 @@ import {
 import { ReactElement, ReactNode } from 'react';
 
 import type { Image as ImageType } from '../../../../shared/types';
-import { baseImageUrl } from '../../constants';
+import { baseImageUrl } from '../../axiosInstance/constants';
 
 interface CardProps {
   itemName: string;
