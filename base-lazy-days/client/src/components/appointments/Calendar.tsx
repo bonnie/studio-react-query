@@ -7,7 +7,7 @@ import {
   HStack,
   IconButton,
 } from '@chakra-ui/react';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { ReactElement, useState } from 'react';
 import { TiArrowLeftThick, TiArrowRightThick } from 'react-icons/ti';
 
@@ -15,7 +15,7 @@ import { DateBox } from './DateBox';
 import { useAppointments } from './hooks/useAppointments';
 
 interface MonthYear {
-  startDate: moment.Moment; // first day of the month
+  startDate: dayjs.Dayjs; // first day of the month
   firstDOW: number; // day of week; 0 === Sunday
   lastDate: number; // last date of the month
   monthName: string; // name of the month
@@ -24,10 +24,10 @@ interface MonthYear {
 }
 
 // get calendar-relevant data for the month containing initialDate
-function getMonthYearDetails(initialDate: moment.Moment): MonthYear {
+function getMonthYearDetails(initialDate: dayjs.Dayjs): MonthYear {
   const month = initialDate.format('MM');
   const year = initialDate.format('YYYY');
-  const startDate = moment(`${year}${month}01`);
+  const startDate = dayjs(`${year}${month}01`);
   const firstDOW = Number(startDate.format('d'));
   const lastDate = Number(startDate.clone().endOf('month').format('DD'));
   const monthName = startDate.format('MMMM');
@@ -35,7 +35,7 @@ function getMonthYearDetails(initialDate: moment.Moment): MonthYear {
 }
 
 export function Calendar(): ReactElement {
-  const currentDate = moment();
+  const currentDate = dayjs();
   const [monthYear, setMonthYear] = useState(getMonthYearDetails(currentDate));
 
   // show all appointments, or just the available ones?

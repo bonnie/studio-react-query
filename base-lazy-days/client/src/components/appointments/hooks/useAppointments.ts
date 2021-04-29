@@ -1,4 +1,4 @@
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 import { Appointment } from '../../../../../shared/types';
 import { axiosInstance } from '../../../axiosInstance';
@@ -11,24 +11,24 @@ const fakeAppointments = {
       id: 10,
       treatmentName: 'Massage',
       userId: 1,
-      dateTime: moment().toDate(),
+      dateTime: dayjs().toDate(),
     },
     {
       id: 11,
       treatmentName: 'Massage',
-      dateTime: moment().add(-1, 'hours').toDate(),
+      dateTime: dayjs().add(-1, 'hours').toDate(),
     },
   ],
   12: [
     {
       id: 12,
       treatmentName: 'Scrub',
-      dateTime: moment().add(2, 'hours').subtract(4, 'days').toDate(),
+      dateTime: dayjs().add(2, 'hours').subtract(4, 'days').toDate(),
     },
     {
       id: 13,
       treatmentName: 'Facial',
-      dateTime: moment().add(3, 'days').toDate(),
+      dateTime: dayjs().add(3, 'days').toDate(),
     },
   ],
 };

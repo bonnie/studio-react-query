@@ -1,4 +1,4 @@
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 import type {
   Appointment,
@@ -7,8 +7,8 @@ import type {
 } from '../../../../shared/types';
 
 export function appointmentInPast(appointmentData: Appointment): boolean {
-  const now = moment();
-  return moment(appointmentData.dateTime) < now;
+  const now = dayjs();
+  return dayjs(appointmentData.dateTime) < now;
 }
 
 export function getAppointmentColor(
