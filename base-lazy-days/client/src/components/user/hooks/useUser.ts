@@ -9,10 +9,10 @@ import {
   setStoredUser,
 } from '../../../user-storage';
 
-// async function getUser(userId: number | undefined): Promise<User | null> {
-//   if (!userId) return null;
-//   const { data } = await axiosInstance.get(`/user/${userId}`, {
-//     headers: getJWTHeader(),
+// async function getUser(user: User | null): Promise<User | null> {
+//   if (!user) return null;
+//   const { data } = await axiosInstance.get(`/user/${user.id}`, {
+//     headers: getJWTHeader(user),
 //   });
 //   return data.user;
 // }
