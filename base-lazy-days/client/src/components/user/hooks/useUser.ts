@@ -1,7 +1,13 @@
+import { useState } from 'react';
+
 import type { User } from '../../../../../shared/types';
 import { axiosInstance, getJWTHeader } from '../../../axiosInstance';
 import { queryKeys } from '../../../react-query/constants';
-import { getStoredUser } from '../../../user-storage';
+import {
+  clearStoredUser,
+  getStoredUser,
+  setStoredUser,
+} from '../../../user-storage';
 
 // async function getUser(userId: number | undefined): Promise<User | null> {
 //   if (!userId) return null;
@@ -11,19 +17,38 @@ import { getStoredUser } from '../../../user-storage';
 //   return data.user;
 // }
 
-const fakeUser = {
-  id: 1,
-  name: 'Test Q. Test',
-  email: 'test@test.com',
-  address: '123 Main Street',
-  phone: '555-555-5555',
-  token: 'abc123',
-};
-
 interface UseUser {
   user: User | null;
+  updateUser: (user: User) => void;
+  clearUser: () => void;
 }
 
 export function useUser(): UseUser {
-  return { user: fakeUser };
+  const [user, setUser] = useState<User | null>(getStoredUser());
+
+  // TODO: call useQuery to update user data from server
+
+  // meant to be called from useAuth
+  function updateUser(newUser: User): void {
+    // set user in state
+    setUser(newUser);
+
+    // update user in localstorage
+    setStoredUser(newUser);
+
+    // TODO: pre-populate user profile in React Query client
+  }
+
+  // meant to be called from useAuth
+  function clearUser() {
+    // update state
+    setUser(null);
+
+    // remove from localstorage
+    clearStoredUser();
+
+    // TODO: remove from query client
+  }
+
+  return { user, updateUser, clearUser };
 }

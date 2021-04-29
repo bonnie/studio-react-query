@@ -58,6 +58,10 @@ export function useAuth(): UseAuth {
   function signout(): void {
     // clear user from stored user data
     clearUser();
+    toast({
+      title: 'Logged out!',
+      status: 'info',
+    });
   }
 
   // Return the user object and auth methods

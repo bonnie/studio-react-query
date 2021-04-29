@@ -12,6 +12,6 @@ export function setStoredUser(user: User): void {
   localStorage.setItem(USER_LOCALSTORAGE_KEY, JSON.stringify(user));
 }
 
-export function deleteStoredUser(): void {
+export function clearStoredUser(): void {
   localStorage.removeItem(USER_LOCALSTORAGE_KEY);
 }

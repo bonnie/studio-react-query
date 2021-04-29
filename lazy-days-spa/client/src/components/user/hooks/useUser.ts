@@ -1,3 +1,4 @@
+import axios, { AxiosResponse } from 'axios';
 import { useState } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
 
@@ -11,11 +12,21 @@ import {
 } from '../../../user-storage';
 
 async function getUser(userId: number | undefined): Promise<User | null> {
+  const source = axios.CancelToken.source();
+
   if (!userId) return null;
-  const { data } = await axiosInstance.get(`/user/${userId}`, {
+  const axiosResponsePromise = axiosInstance.get(`/user/${userId}`, {
     headers: getJWTHeader(),
+    cancelToken: source.token,
   });
-  return data.user;
+
+  // Cancel the request if React Query calls the `promise.cancel` method
+  // @ts-expect-error (cancel doesn't exist on axiosResponsePromise)
+  axiosResponsePromise.cancel = () => {
+    source.cancel('Query was cancelled by React Query');
+  };
+
+  return (await axiosResponsePromise).data.user;
 }
 
 interface UseUser {
@@ -55,7 +66,7 @@ export function useUser(): UseUser {
     clearStoredUser();
 
     // remove from query client
-    queryClient.invalidateQueries(queryKeys.user);
+    queryClient.setQueryData(queryKeys.user, null);
   }
 
   return { user, updateUser, clearUser };
