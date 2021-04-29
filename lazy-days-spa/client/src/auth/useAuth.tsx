@@ -1,9 +1,6 @@
-import { useQueryClient } from 'react-query';
-
 import { axiosInstance } from '../axiosInstance';
 import { useCustomToast } from '../components/app/hooks/useCustomToast';
-import { queryKeys } from '../react-query/constants';
-import { deleteStoredUser, setStoredUser } from './utils';
+import { useUser } from '../components/user/hooks/useUser';
 
 interface UseAuth {
   signin: (email: string, password: string) => Promise<void>;
@@ -14,7 +11,7 @@ interface UseAuth {
 export function useAuth(): UseAuth {
   const SERVER_ERROR = 'There was an error contacting the server.';
   const toast = useCustomToast();
-  const queryClient = useQueryClient();
+  const { clearUser, updateUser } = useUser();
 
   async function authServerCall(
     urlEndpoint: string,
@@ -35,15 +32,13 @@ export function useAuth(): UseAuth {
       }
 
       if (data?.user?.token) {
-        // add user to local storage
-        setStoredUser(data.user);
-
         toast({
           title: `Logged in as ${data.user.email}`,
           status: 'info',
         });
-        // TODO: pre-populate user profile in React Query client
-        queryClient.setQueryData(queryKeys.user, data.user);
+
+        // update stored user data
+        updateUser(data.user);
       }
     } catch (errorResponse) {
       toast({
@@ -61,9 +56,8 @@ export function useAuth(): UseAuth {
   }
 
   function signout(): void {
-    // invalidate user data in React Query client
-    queryClient.invalidateQueries(queryKeys.user);
-    deleteStoredUser();
+    // clear user from stored user data
+    clearUser();
   }
 
   // Return the user object and auth methods
