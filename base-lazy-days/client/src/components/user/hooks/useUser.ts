@@ -1,16 +1,13 @@
 import type { User } from '../../../../../shared/types';
+import { getStoredUser } from '../../../auth/utils';
 import { axiosInstance } from '../../../axiosInstance';
 import { queryKeys } from '../../../react-query/constants';
 
-// async function getUser(userId: number) {
+// async function getUser(userId: number | undefined): Promise<User | null> {
+//   if (!userId) return null;
 //   const { data } = await axiosInstance.get(`/users/$userId`);
 //   return data.user;
 // }
-
-interface UseUser {
-  user: User | null;
-  updateUser: (userData: User | null) => void;
-}
 
 const fakeUser = {
   id: 1,
@@ -21,11 +18,6 @@ const fakeUser = {
   token: 'abc123',
 };
 
-function fakeUpdateFunction(userData: User | null) {
-  // placeholder before ReactQuery
-}
-
-export function useUser(): UseUser {
-  // TODO replace with React Query
-  return { user: fakeUser, updateUser: fakeUpdateFunction };
+export function useUser(): { user: User | null } {
+  return { user: fakeUser };
 }
