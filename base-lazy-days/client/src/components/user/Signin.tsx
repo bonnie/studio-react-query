@@ -10,7 +10,7 @@ import {
   Input,
   Stack,
 } from '@chakra-ui/react';
-import React, { ReactElement, useState } from 'react';
+import { ReactElement, useState } from 'react';
 import { Redirect } from 'react-router-dom';
 
 import { useAuth } from '../../auth/useAuth';
@@ -23,7 +23,7 @@ export function Signin(): ReactElement {
   const auth = useAuth();
 
   if (auth.user) {
-    return <Redirect to={`/user/${auth.user.id}`} />;
+    return <Redirect to={`/user-appointments/${auth.user.id}`} />;
   }
 
   return (

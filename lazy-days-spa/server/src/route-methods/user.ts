@@ -140,6 +140,7 @@ export async function auth(req: Request, res: Response): Promise<Response> {
 
 export default {
   get,
+  getUserAppointments,
   create,
   remove,
   update,

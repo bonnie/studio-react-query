@@ -1,5 +1,5 @@
 import { Box, HStack, Text } from '@chakra-ui/react';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { ReactElement } from 'react';
 
 import { Appointment as AppointmentType, User } from '../../../../shared/types';
@@ -27,7 +27,7 @@ export function Appointment({
   appointmentData,
 }: AppointmentProps): ReactElement {
   const { user } = useAuth();
-  const setAppointment = useSetAppointment(appointmentData.id);
+  const { setAppointment } = useSetAppointment();
   const [textColor, bgColor] = getAppointmentColor(appointmentData, user?.id);
 
   const clickable = isClickable(user, appointmentData);
@@ -44,7 +44,7 @@ export function Appointment({
     };
   }
 
-  const appointmentHour = moment(appointmentData.dateTime).format('h a');
+  const appointmentHour = dayjs(appointmentData.dateTime).format('h a');
   return (
     <Box
       borderRadius="lg"

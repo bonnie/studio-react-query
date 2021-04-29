@@ -53,6 +53,7 @@ app.post('/signin', userRoutes.auth);
 
 // user profile protected by jwt
 app.get('/user/:id', validateUser, userRoutes.get);
+app.get('/user/:id/appointments', validateUser, userRoutes.getUserAppointments);
 
 app.post('/user', userRoutes.create);
 app.delete('/user/:id', validateUser, userRoutes.remove);

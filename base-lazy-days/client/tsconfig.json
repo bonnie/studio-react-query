@@ -25,10 +25,5 @@
     "noEmit": true,
     "downlevelIteration": true
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "node_modules/@types",
-    "src/components/user/hooks/constants.js"
-  ]
+  "include": ["src/**/*.ts", "src/**/*.tsx", "node_modules/@types"]
 }

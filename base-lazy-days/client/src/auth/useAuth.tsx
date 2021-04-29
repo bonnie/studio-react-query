@@ -1,11 +1,11 @@
 // Adapted from https://usehooks.com/useAuth/
 // Easy to understand React Hook recipes by Gabe Ragland
-import React, { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 
 import { User } from '../../../shared/types';
 import { axiosInstance } from '../axiosInstance';
 import { useCustomToast } from '../components/app/hooks/useCustomToast';
-import { USER_LOCALSTORAGE_KEY } from './constants';
+import { USER_LOCALSTORAGE_KEY } from '../constants';
 import { getStoredUser } from './utils';
 
 interface Auth {

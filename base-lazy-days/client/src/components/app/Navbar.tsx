@@ -41,14 +41,16 @@ export function Navbar(): ReactElement {
                 {link}
               </NavLink>
             ))}
+            {auth.user && (
+              <NavLink to={`/user-appointments/${auth.user.id}`}>
+                My Appointments
+              </NavLink>
+            )}
           </HStack>
         </HStack>
         <HStack>
           {auth && auth.user ? (
-            <>
-              <NavLink to={`/user/${auth.user.id}`}>{auth.user.email}</NavLink>
-              <Button onClick={() => auth.signout()}>Sign out</Button>
-            </>
+            <Button onClick={() => auth.signout()}>Sign out</Button>
           ) : (
             <Button onClick={() => history.push('signin')}>Sign in</Button>
           )}

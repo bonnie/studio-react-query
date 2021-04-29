@@ -18,25 +18,35 @@ import { useCustomToast } from '../../app/hooks/useCustomToast';
 //   return data;
 // }
 
-export function useSetAppointment(
-  appointmentId: number,
-): (appointmentId: number) => void {
+interface UseSetAppointment {
+  setAppointment: (appointmentId: number) => void;
+  cancelAppointment: (appointmentId: number) => void;
+}
+
+export function useSetAppointment(): UseSetAppointment {
   const { user } = useAuth();
   const toast = useCustomToast();
+  const userId = user?.id;
 
-  function setAppointment(): void {
-    const userId = user?.id;
-    if (!userId) {
-      // if the user isn't logged in, show a warning
-      toast({
-        title: 'you must be logged in to reserve an appointment',
-        status: 'warning',
-      });
-    } else {
-      // TODO: update with useMutation
-      // reserve appointment if it's open, or un-reserve if the appointment
-      // belongs to the user
-    }
+  if (!userId) {
+    // if the user isn't logged in, show a warning
+    toast({
+      title: 'you must be logged in to reserve an appointment',
+      status: 'warning',
+    });
   }
-  return setAppointment;
+
+  function setAppointment(appointmentId: number): void {
+    // if (!userId) return;
+    // TODO: update with useMutation
+  }
+  function cancelAppointment(appointmentId: number): void {
+    // if (!userId) return;
+    // TODO: update with useMutation
+  }
+
+  return {
+    setAppointment,
+    cancelAppointment,
+  };
 }

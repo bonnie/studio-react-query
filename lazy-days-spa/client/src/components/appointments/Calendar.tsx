@@ -7,7 +7,7 @@ import {
   HStack,
   IconButton,
 } from '@chakra-ui/react';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { ReactElement } from 'react';
 import { TiArrowLeftThick, TiArrowRightThick } from 'react-icons/ti';
 
@@ -15,7 +15,7 @@ import { DateBox } from './DateBox';
 import { useAppointments } from './hooks/useAppointments';
 
 export function Calendar(): ReactElement {
-  const currentDate = moment();
+  const currentDate = dayjs();
 
   const {
     appointments,
