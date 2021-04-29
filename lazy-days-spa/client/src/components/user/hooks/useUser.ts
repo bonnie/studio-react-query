@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
 
 import type { User } from '../../../../../shared/types';
@@ -30,7 +30,7 @@ export function useUser(): UseUser {
 
   // update user data from server
   useQuery(queryKeys.user, () => getUser(user), {
-    enabled: !!user?.id,
+    enabled: !!user,
     onSuccess: (data) => setUser(data),
   });
 
@@ -48,14 +48,20 @@ export function useUser(): UseUser {
 
   // meant to be called from useAuth
   function clearUser() {
+    // save for invalidating queries after we've nulled out user
+    const userId = user?.id;
+
     // update state
     setUser(null);
 
     // remove from localstorage
     clearStoredUser();
 
-    // remove from query client
+    // reset user to null in query client
     queryClient.setQueryData(queryKeys.user, null);
+
+    // remove user appointments query
+    queryClient.removeQueries([queryKeys.appointments, userId]);
   }
 
   return { user, updateUser, clearUser };

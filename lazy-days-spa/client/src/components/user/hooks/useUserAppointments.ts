@@ -1,33 +1,32 @@
-import dayjs from 'dayjs';
+import { useQuery } from 'react-query';
 
-import type { Appointment } from '../../../../../shared/types';
-import { useAuth } from '../../../auth/useAuth';
+import type { Appointment, User } from '../../../../../shared/types';
+import { axiosInstance, getJWTHeader } from '../../../axiosInstance';
 import { queryKeys } from '../../../react-query/constants';
+import { useUser } from './useUser';
 
 // for when we need a query function for useQuery
-// function getUserAppointments(userId: number | null): Promise<Appointment[]> {
-//   if (userId) {
-//    return axiosInstance.get(`/user/${userId}/appointments`);
-//   } else {
-//      return Promise.resolve(null);
-//   }
-// }
-
-const fakeUserAppointments = [
-  {
-    id: 10,
-    treatmentName: 'Massage',
-    userId: 1,
-    dateTime: dayjs().toDate(),
-  },
-  {
-    id: 13,
-    treatmentName: 'Facial',
-    dateTime: dayjs().add(3, 'days').toDate(),
-  },
-];
+async function getUserAppointments(
+  user: User | null,
+): Promise<Appointment[] | null> {
+  if (!user) return null;
+  const { data } = await axiosInstance.get(`/user/${user.id}/appointments`, {
+    headers: getJWTHeader(user),
+  });
+  return data.appointments;
+}
 
 export function useUserAppointments(): Appointment[] {
-  // TODO replace with React Query
-  return fakeUserAppointments;
+  const { user } = useUser();
+
+  const placeholderData: Appointment[] = [];
+  const { data: userAppointments = placeholderData } = useQuery(
+    [queryKeys.appointments, user?.id],
+    () => getUserAppointments(user),
+    {
+      enabled: !!user,
+    },
+  );
+
+  return userAppointments ?? placeholderData;
 }

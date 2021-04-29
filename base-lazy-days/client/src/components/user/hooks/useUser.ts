@@ -47,7 +47,7 @@ export function useUser(): UseUser {
     // remove from localstorage
     clearStoredUser();
 
-    // TODO: remove from query client
+    // TODO: reset user to null in query client
   }
 
   return { user, updateUser, clearUser };

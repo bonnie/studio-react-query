@@ -1,16 +1,19 @@
 import dayjs from 'dayjs';
 
-import type { Appointment } from '../../../../../shared/types';
-import { useAuth } from '../../../auth/useAuth';
+import type { Appointment, User } from '../../../../../shared/types';
+import { axiosInstance, getJWTHeader } from '../../../axiosInstance';
 import { queryKeys } from '../../../react-query/constants';
+import { useUser } from './useUser';
 
 // for when we need a query function for useQuery
-// function getUserAppointments(userId: number | null): Promise<Appointment[]> {
-//   if (userId) {
-//    return axiosInstance.get(`/user/${userId}/appointments`);
-//   } else {
-//      return Promise.resolve(null);
-//   }
+// async function getUserAppointments(
+//   user: User | null,
+// ): Promise<Appointment[] | null> {
+//   if (!user) return null;
+//   const { data } = await axiosInstance.get(`/user/${user.id}/appointments`, {
+//     headers: getJWTHeader(user),
+//   });
+//   return data.appointments;
 // }
 
 const fakeUserAppointments = [
