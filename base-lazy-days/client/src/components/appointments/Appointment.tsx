@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import { ReactElement } from 'react';
 
 import { Appointment as AppointmentType, User } from '../../../../shared/types';
-import { useAuth } from '../../auth/useAuth';
+import { useUser } from '../user/hooks/useUser';
 import { useSetAppointment } from './hooks/useSetAppointment';
 import { appointmentInPast, getAppointmentColor } from './utils';
 
@@ -26,7 +26,7 @@ interface AppointmentProps {
 export function Appointment({
   appointmentData,
 }: AppointmentProps): ReactElement {
-  const { user } = useAuth();
+  const { user } = useUser();
   const { setAppointment } = useSetAppointment();
   const [textColor, bgColor] = getAppointmentColor(appointmentData, user?.id);
 

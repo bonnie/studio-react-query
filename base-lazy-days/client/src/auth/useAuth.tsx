@@ -1,55 +1,17 @@
-// Adapted from https://usehooks.com/useAuth/
-// Easy to understand React Hook recipes by Gabe Ragland
-import { createContext, useContext, useState } from 'react';
-
-import { User } from '../../../shared/types';
 import { axiosInstance } from '../axiosInstance';
 import { useCustomToast } from '../components/app/hooks/useCustomToast';
-import { USER_LOCALSTORAGE_KEY } from '../constants';
-import { getStoredUser } from './utils';
+import { queryKeys } from '../react-query/constants';
+import { deleteStoredUser, setStoredUser } from './utils';
 
-interface Auth {
-  user: User | null;
+interface UseAuth {
   signin: (email: string, password: string) => Promise<void>;
   signup: (email: string, password: string) => Promise<void>;
   signout: () => void;
 }
 
-const authContext = createContext<Auth | null>(null);
-
-interface ProvideAuthProps {
-  children: React.ReactNode;
-}
-
-// Provider component that wraps your app and makes auth object,
-// available to any child component that calls useAuth().
-export function ProvideAuth({
-  children,
-}: ProvideAuthProps): React.ReactElement {
-  const auth = useProvideAuth();
-  return <authContext.Provider value={auth}>{children}</authContext.Provider>;
-}
-
-// Hook for child components to get the auth object,
-// and re-render when it changes.
-export const useAuth = (): Auth => {
-  if (!authContext) {
-    throw new Error('useAuth must be used within a AuthProvider');
-  }
-  const context = useContext(authContext);
-  if (!context) {
-    throw new Error('useAuth is missing context');
-  }
-  return context;
-};
-
-// Provider hook that creates auth object and handles state
-// eslint-disable-next-line max-lines-per-function
-function useProvideAuth(): Auth {
+export function useAuth(): UseAuth {
   const SERVER_ERROR = 'There was an error contacting the server.';
   const toast = useCustomToast();
-
-  const [user, setUser] = useState<User | null>(getStoredUser());
 
   async function authServerCall(
     urlEndpoint: string,
@@ -70,14 +32,15 @@ function useProvideAuth(): Auth {
       }
 
       if (data?.user?.token) {
-        setUser(data.user);
-        localStorage.setItem(USER_LOCALSTORAGE_KEY, JSON.stringify(data.user));
+        // add user to local storage
+        setStoredUser(data.user);
+
         toast({
           title: `Logged in as ${data.user.email}`,
           status: 'info',
         });
+        // TODO: pre-populate user profile in React Query client
       }
-      // TODO: prefetch user profile
     } catch (errorResponse) {
       toast({
         title: errorResponse?.response?.data?.message || SERVER_ERROR,
@@ -93,16 +56,13 @@ function useProvideAuth(): Auth {
     authServerCall('/user', email, password);
   }
 
-  // remove user from state and localStorage
   function signout(): void {
-    // TODO: invalidate cached user profile
-    setUser(null);
-    localStorage.removeItem(USER_LOCALSTORAGE_KEY);
+    // TODO: invalidate user data in React Query client
+    deleteStoredUser();
   }
 
   // Return the user object and auth methods
   return {
-    user,
     signin,
     signup,
     signout,

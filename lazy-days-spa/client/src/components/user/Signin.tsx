@@ -10,10 +10,11 @@ import {
   Input,
   Stack,
 } from '@chakra-ui/react';
-import React, { ReactElement, useState } from 'react';
+import { ReactElement, useState } from 'react';
 import { Redirect } from 'react-router-dom';
 
 import { useAuth } from '../../auth/useAuth';
+import { useUser } from './hooks/useUser';
 
 // eslint-disable-next-line max-lines-per-function
 export function Signin(): ReactElement {
@@ -21,9 +22,10 @@ export function Signin(): ReactElement {
   const [password, setPassword] = useState('');
   const [dirty, setDirty] = useState({ email: false, password: false });
   const auth = useAuth();
+  const { user } = useUser();
 
-  if (auth.user) {
-    return <Redirect to={`/user-appointments/${auth.user.id}`} />;
+  if (user) {
+    return <Redirect to={`/user/${user.id}`} />;
   }
 
   return (

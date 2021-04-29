@@ -4,6 +4,7 @@ import { GiFlowerPot } from 'react-icons/gi';
 import { Link as RouterLink, useHistory } from 'react-router-dom';
 
 import { useAuth } from '../../auth/useAuth';
+import { useUser } from '../user/hooks/useUser';
 
 const Links = ['Treatments', 'Staff', 'Calendar'];
 
@@ -25,7 +26,8 @@ const NavLink = ({ to, children }: { to: string; children: ReactNode }) => (
 );
 
 export function Navbar(): ReactElement {
-  const auth = useAuth();
+  const { user } = useUser();
+  const { signout } = useAuth();
   const history = useHistory();
 
   return (
@@ -41,16 +43,14 @@ export function Navbar(): ReactElement {
                 {link}
               </NavLink>
             ))}
-            {auth.user && (
-              <NavLink to={`/user-appointments/${auth.user.id}`}>
-                My Appointments
-              </NavLink>
-            )}
           </HStack>
         </HStack>
         <HStack>
-          {auth && auth.user ? (
-            <Button onClick={() => auth.signout()}>Sign out</Button>
+          {user ? (
+            <>
+              <NavLink to={`/user/${user.id}`}>{user.email}</NavLink>
+              <Button onClick={() => signout()}>Sign out</Button>
+            </>
           ) : (
             <Button onClick={() => history.push('signin')}>Sign in</Button>
           )}
