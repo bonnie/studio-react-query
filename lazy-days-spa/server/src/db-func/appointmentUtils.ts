@@ -1,6 +1,6 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable max-lines-per-function */
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 import { Appointment, AppointmentDateMap } from '../../../shared/types';
 
@@ -12,10 +12,10 @@ function padNum(num: number | string): string {
 // utility function to make appointment from date and treatment type
 function makeAppointment(
   treatmentName: string,
-  dateTime: moment.Moment,
+  dateTime: dayjs.Dayjs,
   filledAppointmentsById: Record<number, Appointment>,
 ): Appointment {
-  const id = Number(moment(dateTime).unix());
+  const id = Number(dayjs(dateTime).unix());
 
   // if the appointment is filled, don't make the recurring appointment
   if (filledAppointmentsById[id]) return filledAppointmentsById[id];
@@ -42,7 +42,7 @@ export function createAppointments(
   // make sure month is two digits
   const monthString = padNum(month);
 
-  const startDate = moment(`${year}${monthString}01`);
+  const startDate = dayjs(`${year}${monthString}01`);
   const lastDate = Number(startDate.endOf('month').format('DD'));
 
   // make a map of appointments by id for easy access;
@@ -54,7 +54,7 @@ export function createAppointments(
   const appointments: AppointmentDateMap = {};
   for (let i = 0; i < lastDate; i++) {
     const dayNum = i + 1;
-    const thisDate = moment(`${year}${monthString}${padNum(dayNum)}`);
+    const thisDate = dayjs(`${year}${monthString}${padNum(dayNum)}`);
     const dayofWeek = Number(thisDate.format('d'));
     switch (dayofWeek) {
       case 1:
