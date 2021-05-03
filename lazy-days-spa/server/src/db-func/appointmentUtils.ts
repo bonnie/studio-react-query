@@ -21,11 +21,16 @@ function makeAppointment(
   if (filledAppointmentsById[id]) return filledAppointmentsById[id];
 
   // otherwise, make the recurring appointment
-  return {
+  const appointment: Appointment = {
     id,
     dateTime: dateTime.toDate(),
     treatmentName,
   };
+
+  // assign some appointments as filled based on datetime mod
+  if (dateTime.unix() % 4500 === 0) appointment.userId = 200;
+
+  return appointment;
 }
 
 // generate an appointments object with recurring appointments

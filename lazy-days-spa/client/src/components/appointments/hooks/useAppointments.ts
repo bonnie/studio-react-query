@@ -1,11 +1,5 @@
 import dayjs from 'dayjs';
-import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
+import { Dispatch, SetStateAction, useCallback, useState } from 'react';
 import {
   QueryFunction,
   QueryKey,
@@ -85,11 +79,28 @@ export function useAppointments(): UseAppointments {
       QueryFunction<AppointmentDateMap>,
       QueryObserverOptions<AppointmentDateMap>,
     ] => {
+      function prefetchNextAndPreviousMonth() {
+        const nextMonthYear = getMonthYearDetails(
+          getUpdatedMonthYear(monthYear, 1),
+        );
+        queryClient.prefetchQuery<AppointmentDateMap>(
+          ...createQueryParams(nextMonthYear),
+        );
+
+        const previousMonth = getMonthYearDetails(
+          getUpdatedMonthYear(monthYear, -1),
+        );
+        queryClient.prefetchQuery<AppointmentDateMap>(
+          ...createQueryParams(previousMonth),
+        );
+      }
+
       return [
         [queryKeys.appointments, queryMonthYear.year, queryMonthYear.month],
         () => getAppointments(queryMonthYear.year, queryMonthYear.month),
         {
           keepPreviousData: true,
+          onSuccess: prefetchNextAndPreviousMonth,
           select: showAll ? undefined : selectFn,
           staleTime: 0,
           cacheTime: 300000, // five minutes
@@ -100,18 +111,8 @@ export function useAppointments(): UseAppointments {
         },
       ];
     },
-    [showAll, selectFn],
+    [showAll, selectFn, monthYear, queryClient],
   );
-
-  useEffect(() => {
-    // assume increment of one month
-    const nextMonthYear = getMonthYearDetails(
-      getUpdatedMonthYear(monthYear, 1),
-    );
-    queryClient.prefetchQuery<AppointmentDateMap>(
-      ...createQueryParams(nextMonthYear),
-    );
-  }, [queryClient, monthYear, createQueryParams]);
 
   function updateMonthYear(monthIncrement: number): void {
     setMonthYear((prevData) =>
