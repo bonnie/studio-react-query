@@ -2,7 +2,8 @@
 /* eslint-disable max-lines-per-function */
 import dayjs from 'dayjs';
 
-import { Appointment, AppointmentDateMap } from '../../../shared/types';
+import { Appointment } from '../../../shared/types';
+import db from './index.js';
 
 // utility function to make unpadded month/date numbers into padded
 function padNum(num: number | string): string {
@@ -13,12 +14,12 @@ function padNum(num: number | string): string {
 function makeAppointment(
   treatmentName: string,
   dateTime: dayjs.Dayjs,
-  filledAppointmentsById: Record<number, Appointment>,
+  existingAppointmentsById: Record<number, Appointment>,
 ): Appointment {
   const id = Number(dayjs(dateTime).unix());
 
   // if the appointment is filled, don't make the recurring appointment
-  if (filledAppointmentsById[id]) return filledAppointmentsById[id];
+  if (existingAppointmentsById[id]) return existingAppointmentsById[id];
 
   // otherwise, make the recurring appointment
   const appointment: Appointment = {
@@ -27,117 +28,133 @@ function makeAppointment(
     treatmentName,
   };
 
-  // assign some appointments as filled based on datetime mod
-  if (dateTime.unix() % 4500 === 0) appointment.userId = 200;
+  // assign some appointments as filled by nonexistent "user 100" based on datetime mod
+  if (Math.floor(Math.random() * 10) % 3 === 0) appointment.userId = 100;
 
   return appointment;
 }
 
-// generate an appointments object with recurring appointments
-export function createAppointments(
-  year: string,
-  month: string,
-  filledAppointments: Appointment[],
-): AppointmentDateMap {
-  // make sure month is two digits
-  const monthString = padNum(month);
-
-  const startDate = dayjs(`${year}${monthString}01`);
-  const lastDate = Number(startDate.endOf('month').format('DD'));
+// generate an appointments object with recurring appointments and add to db
+// (if not already there)
+// Meant to be run on server startup
+export async function createAppointments(): Promise<void> {
+  // eslint-disable-next-line no-console
+  console.log('Creating appointments...');
+  const existingAppointments = await db.getAppointments();
 
   // make a map of appointments by id for easy access;
-  const filledAppointmentsById = {};
-  filledAppointments.forEach((a) => {
-    filledAppointmentsById[a.id] = a;
+  const existingAppointmentsById = {};
+  existingAppointments.forEach((a) => {
+    existingAppointmentsById[a.id] = a;
   });
 
-  const appointments: AppointmentDateMap = {};
-  for (let i = 0; i < lastDate; i++) {
-    const dayNum = i + 1;
-    const thisDate = dayjs(`${year}${monthString}${padNum(dayNum)}`);
-    const dayofWeek = Number(thisDate.format('d'));
-    switch (dayofWeek) {
-      case 1:
-        // Mondays: massage 10am, facial 2pm
-        appointments[dayNum] = [
-          makeAppointment(
-            'massage',
-            thisDate.clone().add(10, 'hours'),
-            filledAppointmentsById,
-          ),
-          makeAppointment(
-            'facial',
-            thisDate.clone().add(14, 'hours'),
-            filledAppointmentsById,
-          ),
-        ];
-        break;
-      case 2:
-        // Tuesdays: scrub 1pm, massage 3pm
-        appointments[dayNum] = [
-          makeAppointment(
-            'scrub',
-            thisDate.clone().add(13, 'hours'),
-            filledAppointmentsById,
-          ),
-          makeAppointment(
-            'massage',
-            thisDate.clone().add(15, 'hours'),
-            filledAppointmentsById,
-          ),
-        ];
-        break;
-      case 3:
-        // Wednesdays: facial: 11am, scrub 4pm
-        appointments[dayNum] = [
-          makeAppointment(
-            'facial',
-            thisDate.clone().add(11, 'hours'),
-            filledAppointmentsById,
-          ),
-          makeAppointment(
-            'scrub',
-            thisDate.clone().add(16, 'hours'),
-            filledAppointmentsById,
-          ),
-        ];
-        break;
-      case 4:
-        // Thursdays: scrub: 9am, scrub 1pm
-        appointments[dayNum] = [
-          makeAppointment(
-            'scrub',
-            thisDate.clone().add(9, 'hours'),
-            filledAppointmentsById,
-          ),
-          makeAppointment(
-            'scrub',
-            thisDate.clone().add(13, 'hours'),
-            filledAppointmentsById,
-          ),
-        ];
-        break;
-      case 5:
-        // Fridays: massage: 1pm, massage 3pm
-        appointments[dayNum] = [
-          makeAppointment(
-            'massage',
-            thisDate.clone().add(13, 'hours'),
-            filledAppointmentsById,
-          ),
-          makeAppointment(
-            'massage',
-            thisDate.clone().add(15, 'hours'),
-            filledAppointmentsById,
-          ),
-        ];
-        break;
-      default:
-        // by default, no appointments
-        appointments[dayNum] = [];
-        break;
+  const allAppointments: Appointment[] = [];
+
+  // start with today
+  const month = dayjs().month();
+  const year = dayjs().year();
+
+  // do this for three months; dayjs 0-indexes its months, hence starting at 1
+  for (let monthsFromNow = 1; monthsFromNow < 4; monthsFromNow++) {
+    // make sure month is two digits;
+    const monthString = padNum(month + monthsFromNow);
+    const startDate = dayjs(`${year}${monthString}01`);
+    const lastDate = Number(startDate.endOf('month').format('DD'));
+
+    for (let i = 0; i < lastDate; i++) {
+      const dayNum = i + 1;
+      const thisDate = dayjs(`${year}${monthString}${padNum(dayNum)}`);
+      const dayofWeek = Number(thisDate.format('d'));
+      switch (dayofWeek) {
+        case 1:
+          // Mondays: massage 10am, facial 2pm
+          allAppointments.push(
+            makeAppointment(
+              'massage',
+              thisDate.clone().add(10, 'hours'),
+              existingAppointmentsById,
+            ),
+          );
+          allAppointments.push(
+            makeAppointment(
+              'facial',
+              thisDate.clone().add(14, 'hours'),
+              existingAppointmentsById,
+            ),
+          );
+          break;
+        case 2:
+          // Tuesdays: scrub 1pm, massage 3pm
+          allAppointments.push(
+            makeAppointment(
+              'scrub',
+              thisDate.clone().add(13, 'hours'),
+              existingAppointmentsById,
+            ),
+          );
+          allAppointments.push(
+            makeAppointment(
+              'massage',
+              thisDate.clone().add(15, 'hours'),
+              existingAppointmentsById,
+            ),
+          );
+          break;
+        case 3:
+          // Wednesdays: facial: 11am, scrub 4pm
+          allAppointments.push(
+            makeAppointment(
+              'facial',
+              thisDate.clone().add(11, 'hours'),
+              existingAppointmentsById,
+            ),
+          );
+          allAppointments.push(
+            makeAppointment(
+              'scrub',
+              thisDate.clone().add(16, 'hours'),
+              existingAppointmentsById,
+            ),
+          );
+          break;
+        case 4:
+          // Thursdays: scrub: 9am, scrub 1pm
+          allAppointments.push(
+            makeAppointment(
+              'scrub',
+              thisDate.clone().add(9, 'hours'),
+              existingAppointmentsById,
+            ),
+          );
+          allAppointments.push(
+            makeAppointment(
+              'scrub',
+              thisDate.clone().add(13, 'hours'),
+              existingAppointmentsById,
+            ),
+          );
+          break;
+        case 5:
+          // Fridays: massage: 1pm, massage 3pm
+          allAppointments.push(
+            makeAppointment(
+              'massage',
+              thisDate.clone().add(13, 'hours'),
+              existingAppointmentsById,
+            ),
+          );
+          allAppointments.push(
+            makeAppointment(
+              'massage',
+              thisDate.clone().add(15, 'hours'),
+              existingAppointmentsById,
+            ),
+          );
+          break;
+        default:
+          break;
+      }
     }
   }
-
-  return appointments;
+  await db.writeAppointments(allAppointments);
 }

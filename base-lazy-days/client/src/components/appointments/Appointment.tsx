@@ -4,7 +4,7 @@ import { ReactElement } from 'react';
 
 import { Appointment as AppointmentType, User } from '../../../../shared/types';
 import { useUser } from '../user/hooks/useUser';
-import { useSetAppointment } from './hooks/useSetAppointment';
+import { useUpdateAppointment } from './hooks/useUpdateAppointment';
 import { appointmentInPast, getAppointmentColor } from './utils';
 
 // determine whether this appointment can be reserved / un-reserved by logged-in user
@@ -27,7 +27,7 @@ export function Appointment({
   appointmentData,
 }: AppointmentProps): ReactElement {
   const { user } = useUser();
-  const { setAppointment } = useSetAppointment();
+  const { setAppointment } = useUpdateAppointment();
   const [textColor, bgColor] = getAppointmentColor(appointmentData, user?.id);
 
   const clickable = isClickable(user, appointmentData);
@@ -36,7 +36,9 @@ export function Appointment({
 
   // turn the lozenge into a button if it's clickable
   if (clickable) {
-    reserveAppointment = () => setAppointment(appointmentData.id);
+    reserveAppointment = () => {
+      // update with useMutation result when available
+    };
     hoverCss = {
       transform: 'translateY(-1px)',
       boxShadow: 'md',

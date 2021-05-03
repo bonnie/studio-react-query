@@ -4,6 +4,7 @@
 //
 // This "database" is horribly inefficient and will be a problem
 // when Lazy Days Spa opens to hundreds of locations globally.
+import dayjs from 'dayjs';
 import jsonPatch, { Operation } from 'fast-json-patch';
 import { promises as fs } from 'fs';
 import path from 'path';
@@ -15,7 +16,6 @@ import {
   Treatment,
 } from '../../../shared/types';
 import { AuthUser, NewAuthUser } from '../auth';
-import { createAppointments } from './appointmentUtils.js';
 
 type JsonDataType = AuthUser | Appointment | Treatment | Staff;
 
@@ -28,9 +28,9 @@ export enum filenames {
 }
 
 /* ****** Read from file ***** */
-async function getJSONfromFile<T extends JsonDataType>(
+async function getJSONfromFile<ItemType extends JsonDataType>(
   filename: filenames,
-): Promise<T[]> {
+): Promise<ItemType[]> {
   const filePath = path.join(dbPath, filename);
   const data = await fs.readFile(filePath);
   return JSON.parse(data.toString());
@@ -70,14 +70,14 @@ async function deleteItem<T extends JsonDataType>(
 /* ****** Update item ***** */
 const { applyPatch } = jsonPatch;
 // eslint-disable-next-line max-lines-per-function
-async function updateItem<T extends JsonDataType>(
+async function updateItem<DataType extends JsonDataType>(
   itemId: number,
   filename: filenames,
   // should be fast-json-patch Operation, but I can't destructure on import
   itemPatch: Operation[],
-): Promise<T> {
+): Promise<DataType> {
   try {
-    const items = await getJSONfromFile<T>(filename);
+    const items = await getJSONfromFile<DataType>(filename);
 
     // find the item
     const foundItems = items.filter((item) => item.id === itemId);
@@ -114,13 +114,26 @@ export async function getAppointmentsByMonthYear(
   year: string,
 ): Promise<AppointmentDateMap> {
   // yet another place where inefficiency is ridiculous compared to a real db
-  const savedAppointments = await getAppointments();
-  const thisMonthSavedAppointments = savedAppointments.filter(
-    (appointment) =>
-      appointment.dateTime.getMonth() === Number(month) &&
-      appointment.dateTime.getFullYear() === Number(year),
-  );
-  return createAppointments(year, month, thisMonthSavedAppointments);
+  const appointmentDateMap: AppointmentDateMap = {};
+  const allAppointments = await getAppointments();
+
+  // filter data and massage into format expected by client
+  allAppointments.forEach((appointment) => {
+    const appointmentDate = dayjs(appointment.dateTime);
+    if (
+      // zero-indexed month
+      appointmentDate.month() + 1 === Number(month) &&
+      appointmentDate.year() === Number(year)
+    ) {
+      const dayNum = dayjs(appointment.dateTime).date();
+      if (appointmentDateMap[dayNum]) {
+        appointmentDateMap[dayNum].push(appointment);
+      } else {
+        appointmentDateMap[dayNum] = [appointment];
+      }
+    }
+  });
+  return appointmentDateMap;
 }
 
 export async function getTreatments(): Promise<Treatment[]> {
@@ -161,8 +174,16 @@ async function addUser(newUserData: NewAuthUser): Promise<AuthUser> {
   return newUser;
 }
 
+/* ****** Add new appoinment ***** */
+async function writeAppointments(
+  newAppointmentsArray: Appointment[],
+): Promise<void> {
+  await writeJSONToFile(filenames.appointments, newAppointmentsArray);
+}
+
 export default {
   filenames,
+  writeAppointments,
   addUser,
   deleteItem,
   updateItem,

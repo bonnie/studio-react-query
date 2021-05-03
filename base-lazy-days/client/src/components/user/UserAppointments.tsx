@@ -9,7 +9,7 @@ import {
   Text,
   Tr,
 } from '@chakra-ui/react';
-import { useSetAppointment } from 'components/appointments/hooks/useSetAppointment';
+import { useUpdateAppointment } from 'components/appointments/hooks/useUpdateAppointment';
 import dayjs from 'dayjs';
 import { ReactElement } from 'react';
 import { ImCancelCircle } from 'react-icons/im';
@@ -26,7 +26,7 @@ interface AppointmentsTableProps {
 function AppointmentsTable({
   userAppointments,
 }: AppointmentsTableProps): ReactElement {
-  const { cancelAppointment } = useSetAppointment();
+  const { cancelAppointment } = useUpdateAppointment();
 
   return (
     <Table variant="simple" m={10} maxWidth="500px">
@@ -45,7 +45,9 @@ function AppointmentsTable({
             <Td>
               <IconButton
                 aria-label="cancel appointment"
-                onClick={() => cancelAppointment(appointment.id)}
+                onClick={() => {
+                  // update with useMutation result when available
+                }}
                 icon={<ImCancelCircle />}
               />
             </Td>

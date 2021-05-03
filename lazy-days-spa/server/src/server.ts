@@ -6,6 +6,7 @@ import express, { json } from 'express';
 import jwt from 'express-jwt';
 
 import { User as UserType } from '../../shared/types';
+import { createAppointments } from './db-func/appointmentUtils.js';
 // add .js for ts-node; https://github.com/microsoft/TypeScript/issues/41887#issuecomment-741902030
 import { validateUser } from './middlewares/index.js';
 import appointmentRoutes from './route-methods/appointment.js';
@@ -79,9 +80,16 @@ app.get('/treatments', treatmentRoutes.get);
 app.get('/staff', staffRoutes.get);
 /* *********** END: routes ********* */
 
-if (esMain(import.meta)) {
+const startUp = async () => {
+  // create appointments relevant to current date
+  await createAppointments();
+
   // eslint-disable-next-line no-console
   app.listen(3030, () => console.log('Spa server listening on port 3030!'));
+};
+
+if (esMain(import.meta)) {
+  startUp();
 }
 
 export default app;

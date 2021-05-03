@@ -24,7 +24,7 @@ export async function get(req: Request, res: Response): Promise<Response> {
 export async function update(req: Request, res: Response): Promise<Response> {
   try {
     const { id } = req.params;
-    const { patch } = req.body;
+    const patch = req.body.data;
     const updatedAppointment = await db.updateItem<Appointment>(
       Number(id),
       db.filenames.appointments,
