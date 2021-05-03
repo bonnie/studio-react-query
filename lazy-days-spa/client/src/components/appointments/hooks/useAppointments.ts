@@ -88,7 +88,16 @@ export function useAppointments(): UseAppointments {
       return [
         [queryKeys.appointments, queryMonthYear.year, queryMonthYear.month],
         () => getAppointments(queryMonthYear.year, queryMonthYear.month),
-        { keepPreviousData: true, select: showAll ? undefined : selectFn },
+        {
+          keepPreviousData: true,
+          select: showAll ? undefined : selectFn,
+          staleTime: 0,
+          cacheTime: 300000, // five minutes
+          refetchOnWindowFocus: true, // no difference between true and 'always' since data is always stale
+          refetchOnReconnect: true,
+          refetchOnMount: true,
+          refetchInterval: 60000, // one minute
+        },
       ];
     },
     [showAll, selectFn],

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
 
 import type { User } from '../../../../../shared/types';
@@ -32,6 +32,7 @@ export function useUser(): UseUser {
   useQuery(queryKeys.user, () => getUser(user), {
     enabled: !!user,
     onSuccess: (data) => setUser(data),
+    notifyOnChangeProps: 'tracked',
   });
 
   // meant to be called from useAuth
