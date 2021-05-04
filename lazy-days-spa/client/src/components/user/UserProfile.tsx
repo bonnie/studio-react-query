@@ -27,10 +27,15 @@ export function UserProfile(): ReactElement {
   const emptyUser = {
     id: -1,
     email: 'none@none.none',
+    name: '',
+    address: '',
+    phone: '',
   };
 
   const formElements = ['name', 'address', 'phone'];
-  const [formData, setFormData] = useState<User>(user || emptyUser);
+  const [formData, setFormData] = useState<User>(
+    { ...emptyUser, ...user } || emptyUser,
+  );
   const [dirty, setDirty] = useState({ email: false });
 
   if (!user) {
