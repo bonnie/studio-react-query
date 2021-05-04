@@ -60,6 +60,9 @@ app.use(
 );
 app.use('/user/:id', validateUser);
 
+// note: should really validate user for editing appointments
+// I'm lazy and not implementing this. Spa customers beware!
+
 /* *********** routes ********* */
 
 // verify login

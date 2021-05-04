@@ -1,4 +1,4 @@
-import { useMutation, UseMutationResult } from 'react-query';
+import { UseMutateFunction, useMutation } from 'react-query';
 
 import { Appointment } from '../../../../../shared/types';
 import { axiosInstance } from '../../../axiosInstance';
@@ -18,11 +18,7 @@ async function setAppointmentUser(
   });
 }
 
-async function deleteAppointment(appointmentId) {
-  await axiosInstance.delete(`/appointments/${appointmentId}`);
-}
-
-export function useUpdateAppointment(): UseMutationResult<
+export function useReserveAppointment(): UseMutateFunction<
   void,
   unknown,
   Appointment,
@@ -30,7 +26,10 @@ export function useUpdateAppointment(): UseMutationResult<
 > {
   const { user } = useUser();
 
-  return useMutation((appointment: Appointment) =>
+  const { mutate } = useMutation((appointment: Appointment) =>
     setAppointmentUser(appointment, user?.id),
   );
+
+  // return the mutate function, which is really all we're interested in
+  return mutate;
 }

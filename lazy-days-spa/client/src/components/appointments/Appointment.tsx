@@ -4,7 +4,7 @@ import { ReactElement } from 'react';
 
 import { Appointment as AppointmentType, User } from '../../../../shared/types';
 import { useUser } from '../user/hooks/useUser';
-import { useUpdateAppointment } from './hooks/useUpdateAppointment';
+import { useReserveAppointment } from './hooks/useReserveAppointment';
 import { appointmentInPast, getAppointmentColor } from './utils';
 
 // determine whether this appointment can be reserved / un-reserved by logged-in user
@@ -27,16 +27,18 @@ export function Appointment({
   appointmentData,
 }: AppointmentProps): ReactElement {
   const { user } = useUser();
-  const updateAppointment = useUpdateAppointment();
+  const reserveAppointment = useReserveAppointment();
   const [textColor, bgColor] = getAppointmentColor(appointmentData, user?.id);
 
   const clickable = isClickable(user, appointmentData);
-  let reserveAppointment: undefined | (() => void);
+  let onAppointmentClick: undefined | (() => void);
   let hoverCss = {};
 
   // turn the lozenge into a button if it's clickable
   if (clickable) {
-    reserveAppointment = () => updateAppointment.mutate(appointmentData);
+    onAppointmentClick = user
+      ? () => reserveAppointment(appointmentData)
+      : undefined;
     hoverCss = {
       transform: 'translateY(-1px)',
       boxShadow: 'md',
@@ -52,7 +54,7 @@ export function Appointment({
       bgColor={bgColor}
       color={textColor}
       as={clickable ? 'button' : 'div'}
-      onClick={reserveAppointment}
+      onClick={onAppointmentClick}
       _hover={hoverCss}
     >
       <HStack justify="space-between">
