@@ -1,8 +1,9 @@
-import { UseMutateFunction, useMutation } from 'react-query';
+import { UseMutateFunction, useMutation, useQueryClient } from 'react-query';
 
 import { Appointment } from '../../../../../shared/types';
 import { axiosInstance } from '../../../axiosInstance';
 import { queryKeys } from '../../../react-query/constants';
+import { useCustomToast } from '../../app/hooks/useCustomToast';
 import { useUser } from '../../user/hooks/useUser';
 
 // for when we need functions for useMutation
@@ -25,9 +26,20 @@ export function useReserveAppointment(): UseMutateFunction<
   unknown
 > {
   const { user } = useUser();
+  const queryClient = useQueryClient();
+  const toast = useCustomToast();
 
-  const { mutate } = useMutation((appointment: Appointment) =>
-    setAppointmentUser(appointment, user?.id),
+  const { mutate } = useMutation(
+    (appointment: Appointment) => setAppointmentUser(appointment, user?.id),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(queryKeys.appointments);
+        toast({
+          title: 'You have reserved the appointment!',
+          status: 'success',
+        });
+      },
+    },
   );
 
   // return the mutate function, which is really all we're interested in

@@ -1,6 +1,7 @@
 import { Appointment } from '../../../../../shared/types';
 import { axiosInstance } from '../../../axiosInstance';
 import { queryKeys } from '../../../react-query/constants';
+import { useCustomToast } from '../../app/hooks/useCustomToast';
 
 // for when server call is needed
 // async function removeAppointmentUser(appointment: Appointment): Promise<void> {
@@ -12,5 +13,7 @@ import { queryKeys } from '../../../react-query/constants';
 
 // TODO: update return type
 export function useCancelAppointment(): void {
+  const toast = useCustomToast();
+
   // TODO: create and return mutation
 }
