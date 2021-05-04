@@ -14,17 +14,23 @@ import { ReactElement, useState } from 'react';
 import { Redirect } from 'react-router-dom';
 
 import type { User } from '../../../../shared/types';
+import { usePatchUser } from './hooks/usePatchUser';
 import { useUser } from './hooks/useUser';
 import { UserAppointments } from './UserAppointments';
 
 export function UserProfile(): ReactElement {
   const { user } = useUser();
-  const updateUser = (newData: User | null) => {
-    // replace with mutation hook
+  const patchUser = usePatchUser();
+
+  // a shell user that will allow us to type formData as User
+  // and avoid "uncontrolled to controlled field" errors
+  const emptyUser = {
+    id: -1,
+    email: 'none@none.none',
   };
 
   const formElements = ['name', 'address', 'phone'];
-  const [formData, setFormData] = useState<User | null>(user);
+  const [formData, setFormData] = useState<User>(user || emptyUser);
   const [dirty, setDirty] = useState({ email: false });
 
   if (!user) {
@@ -33,7 +39,6 @@ export function UserProfile(): ReactElement {
 
   function updateForm(fieldName: string, value: string) {
     setFormData((prevData) => {
-      if (!prevData) return null;
       const newData = { ...prevData };
       newData[fieldName] = value;
       return newData;
@@ -69,12 +74,13 @@ export function UserProfile(): ReactElement {
               <FormControl key={element} id={element}>
                 <FormLabel>{element}</FormLabel>
                 <Input
-                  value={formData ? formData[element] : null}
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  value={formData[element]}
                   onChange={(e) => updateForm(element, e.target.value)}
                 />
               </FormControl>
             ))}
-            <Button onClick={() => updateUser(formData)}>Update</Button>
+            <Button onClick={() => patchUser(formData)}>Update</Button>
           </Stack>
         </Box>
       </Stack>

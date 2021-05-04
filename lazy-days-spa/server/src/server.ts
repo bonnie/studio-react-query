@@ -61,7 +61,7 @@ app.use(
 app.use('/user/:id', validateUser);
 
 // note: should really validate user for editing appointments
-// I'm lazy and not implementing this. Spa customers beware!
+// I'm lazy and not implementing this. Spa managers beware!
 
 /* *********** routes ********* */
 
@@ -71,10 +71,11 @@ app.post('/signin', userRoutes.auth);
 // user profile protected by jwt
 app.get('/user/:id', userRoutes.get);
 app.get('/user/:id/appointments', userRoutes.getUserAppointments);
-
-app.post('/user', userRoutes.create);
 app.delete('/user/:id', userRoutes.remove);
 app.patch('/user/:id', userRoutes.update);
+
+// adding user
+app.post('/user', userRoutes.create);
 
 app.get('/appointments/:year/:month', appointmentRoutes.get);
 app.patch('/appointment/:id', appointmentRoutes.update);
