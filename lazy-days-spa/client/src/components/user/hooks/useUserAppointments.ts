@@ -21,7 +21,7 @@ export function useUserAppointments(): Appointment[] {
 
   const placeholderData: Appointment[] = [];
   const { data: userAppointments = placeholderData } = useQuery(
-    [queryKeys.appointments, user?.id],
+    [queryKeys.appointments, queryKeys.user, user?.id],
     () => getUserAppointments(user),
     {
       enabled: !!user,

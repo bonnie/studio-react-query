@@ -46,7 +46,7 @@ function AppointmentsTable({
               <IconButton
                 aria-label="cancel appointment"
                 onClick={() => {
-                  // TODO: update with mutation when available
+                  cancelAppointment(appointment);
                 }}
                 icon={<ImCancelCircle />}
               />

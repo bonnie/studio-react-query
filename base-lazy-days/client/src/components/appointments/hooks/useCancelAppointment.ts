@@ -12,8 +12,11 @@ import { useCustomToast } from '../../app/hooks/useCustomToast';
 // }
 
 // TODO: update return type
-export function useCancelAppointment(): void {
+export function useCancelAppointment(): (appointment: Appointment) => void {
   const toast = useCustomToast();
 
-  // TODO: create and return mutation
+  // TODO: replace with mutate function
+  return (appointment: Appointment) => {
+    // nothing to see here
+  };
 }

@@ -11,6 +11,7 @@ import dayjs from 'dayjs';
 import { ReactElement } from 'react';
 import { TiArrowLeftThick, TiArrowRightThick } from 'react-icons/ti';
 
+import { UserAppointments } from '../user/UserAppointments';
 import { DateBox } from './DateBox';
 import { useAppointments } from './hooks/useAppointments';
 
@@ -68,6 +69,7 @@ export function Calendar(): ReactElement {
           ) : null,
         )}
       </Grid>
+      <UserAppointments />
     </Box>
   );
 }
