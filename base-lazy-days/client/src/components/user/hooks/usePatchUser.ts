@@ -6,9 +6,9 @@ import { useUser } from './useUser';
 
 // for when we need a server function
 // async function patchUserOnServer(
-//   originalData: User | null,
 //   newData: User | null,
-// ): Promise<User | null> {
+//   originalData: User | null,
+//  ): Promise<User | null> {
 //   if (!newData || !originalData) return null;
 //   // create a patch for the difference between newData and originalData
 //   const patch = jsonpatch.compare(originalData, newData);
@@ -22,7 +22,7 @@ import { useUser } from './useUser';
 //     },
 //   );
 //   return data.user;
-// }
+//  }
 
 // TODO: update type to UseMutateFunction type
 export function usePatchUser(): (newData: User | null) => void {

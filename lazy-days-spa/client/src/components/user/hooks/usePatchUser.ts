@@ -83,6 +83,10 @@ export function usePatchUser(): UseMutateFunction<
       onSuccess: (response: AxiosResponseWithCancel | null) => {
         if (response?.data?.user) {
           updateUser(response.data.user);
+          toast({
+            title: 'User updated!',
+            status: 'success',
+          });
         }
       },
       // Always refetch after error or success:
