@@ -21,12 +21,11 @@ export function UserProfile(): ReactElement {
   const { user } = useUser();
   const patchUser = usePatchUser();
 
-  const formElements = ['name', 'address', 'phone'];
-
   if (!user) {
     return <Redirect to="/signin" />;
   }
 
+  const formElements = ['name', 'address', 'phone'];
   interface FormValues {
     name: string;
     address: string;
@@ -42,11 +41,11 @@ export function UserProfile(): ReactElement {
         </Stack>
         <Box rounded="lg" bg="white" boxShadow="lg" p={8}>
           <Formik
+            enableReinitialize
             initialValues={{
-              email: user.email,
-              name: user.name ?? '',
-              address: user.address ?? '',
-              phone: user.phone ?? '',
+              name: user?.name ?? '',
+              address: user?.address ?? '',
+              phone: user?.phone ?? '',
             }}
             onSubmit={(values: FormValues) => {
               patchUser({ ...user, ...values });
@@ -59,7 +58,9 @@ export function UserProfile(): ReactElement {
                   <Field name={element} as={Input} />
                 </FormControl>
               ))}
-              <Button type="submit">Update</Button>
+              <Button mt={6} type="submit">
+                Update
+              </Button>
             </Form>
           </Formik>
         </Box>
