@@ -13,8 +13,8 @@
 //       : 'error connecting to server';
 
 //   // prevent duplicate toasts
-//   if (!toast.isActive(id))
-//     toast({ id, title, status: 'error', variant: 'subtle', isClosable: true });
+//   toast.closeAll();
+//   toast({ id, title, status: 'error', variant: 'subtle', isClosable: true });
 // }
 
 // to satisfy typescript until this file has uncommented contents

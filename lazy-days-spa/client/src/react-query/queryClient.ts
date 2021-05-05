@@ -13,8 +13,8 @@ export function queryErrorHandler(error: unknown): void {
       : 'error connecting to server';
 
   // prevent duplicate toasts
-  if (!toast.isActive(id))
-    toast({ id, title, status: 'error', variant: 'subtle', isClosable: true });
+  toast.closeAll();
+  toast({ id, title, status: 'error', variant: 'subtle', isClosable: true });
 }
 
 export const queryClient = new QueryClient({
