@@ -1,13 +1,13 @@
-import { fireEvent, screen } from '@testing-library/react';
-import { QueryClient } from 'react-query';
+import {
+  fireEvent,
+  screen,
+  waitForElementToBeRemoved,
+} from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 
 import { mockUser } from '../../../mocks/mockData';
 import { renderWithClient } from '../../../test-utils';
-import mockUseCustomToast from '../../app/hooks/useCustomToast';
 import { Calendar } from '../Calendar';
-
-const s = jest.mock('../../app/hooks/useCustomToast');
 
 // mocking useUser to mimic a logged-in user
 jest.mock('../../user/hooks/useUser', () => ({
@@ -15,7 +15,7 @@ jest.mock('../../user/hooks/useUser', () => ({
   useUser: () => ({ user: mockUser }),
 }));
 
-test.skip('Reserve appointment', async () => {
+test('Reserve appointment', async () => {
   renderWithClient(
     <MemoryRouter>
       <Calendar />
@@ -31,17 +31,16 @@ test.skip('Reserve appointment', async () => {
   fireEvent.click(appointments[0]);
 
   // check for the toast alert
-  // const alertToast = await screen.findByRole('alert');
-  // expect(alertToast).toHaveTextContent('reserve');
-  console.log('schmocks', mockUseCustomToast);
-  console.log('usey', mockUseCustomToast.useCustomToast);
-  expect(mockUseCustomToast.mockToast).toHaveBeenCalledWith({
-    title: 'You have reserved the appointment!',
-    status: 'success',
-  });
+  const alertToast = await screen.findByRole('alert');
+  expect(alertToast).toHaveTextContent('reserve');
+
+  // close alert to keep state clean and wait for it to disappear
+  const alertCloseButton = screen.getByRole('button', { name: 'Close' });
+  alertCloseButton.click();
+  await waitForElementToBeRemoved(alertToast);
 });
 
-test.skip('Cancel appointment', async () => {
+test('Cancel appointment', async () => {
   renderWithClient(
     <MemoryRouter>
       <Calendar />
@@ -59,4 +58,9 @@ test.skip('Cancel appointment', async () => {
   // check for the toast alert
   const alertToast = await screen.findByRole('alert');
   expect(alertToast).toHaveTextContent('cancel');
+
+  // close alert to keep state clean and wait for it to disappear
+  const alertCloseButton = screen.getByRole('button', { name: 'Close' });
+  alertCloseButton.click();
+  await waitForElementToBeRemoved(alertToast);
 });
