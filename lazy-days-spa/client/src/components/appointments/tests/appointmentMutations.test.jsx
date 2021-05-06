@@ -6,7 +6,7 @@ import {
 import { MemoryRouter } from 'react-router-dom';
 
 import { mockUser } from '../../../mocks/mockData';
-import { renderWithClient } from '../../../test-utils';
+import { renderWithQueryClient } from '../../../test-utils';
 import { Calendar } from '../Calendar';
 
 // mocking useUser to mimic a logged-in user
@@ -16,7 +16,7 @@ jest.mock('../../user/hooks/useUser', () => ({
 }));
 
 test('Reserve appointment', async () => {
-  renderWithClient(
+  renderWithQueryClient(
     <MemoryRouter>
       <Calendar />
     </MemoryRouter>,
@@ -41,7 +41,7 @@ test('Reserve appointment', async () => {
 });
 
 test('Cancel appointment', async () => {
-  renderWithClient(
+  renderWithQueryClient(
     <MemoryRouter>
       <Calendar />
     </MemoryRouter>,

@@ -28,14 +28,13 @@ const generateQueryClient = () => {
   return new QueryClient({ defaultOptions });
 };
 
-// adapted from React Query tests
-// https://github.com/tannerlinsley/react-query/blob/ead2e5dd5237f3d004b66316b5f36af718286d2d/src/react/tests/utils.tsx#L6-L17
-export function renderWithClient(
+export function renderWithQueryClient(
   ui: React.ReactElement,
-  client: QueryClient = generateQueryClient(),
+  client: QueryClient,
 ) {
+  const queryClient = client ?? generateQueryClient();
   return render(
-    <QueryClientProvider client={client}>{ui}</QueryClientProvider>,
+    <QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>,
   );
 }
 

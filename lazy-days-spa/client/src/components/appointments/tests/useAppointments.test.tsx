@@ -8,26 +8,25 @@ test('reserve mutation', async () => {
     wrapper: createWrapper(),
   });
 
-  // // to get your bearings
-  // console.log(result);
-  // console.log(result.current);
+  // to get your bearings
+  console.log(result);
+  console.log(result.current);
 
-  // // wait for the appointments to populate
-  // await waitFor(() => result.current.appointments !== {});
-  // console.log('appys', result.current.appointments);
+  // wait for the appointments to populate
+  await waitFor(() => result.current.appointments !== {});
 
-  // const filteredAppointmentLength = Object.keys(result.current.appointments)
-  //   .length;
+  const filteredAppointmentLength = Object.keys(result.current.appointments)
+    .length;
 
-  // // set to filter to all appointments
-  // // should show at least one more appointment (the one that was "taken")
-  // // might show more depending on what day of the month test is run on!
-  // act(() => result.current.setShowAll(true));
+  // set to filter to all appointments
+  // should show at least one more appointment (the one that was "taken")
+  // might show more depending on what day of the month test is run on!
+  act(() => result.current.setShowAll(true));
 
-  // // wait for the appointments to show more than when filtered
-  // await waitFor(
-  //   () =>
-  //     Object.keys(result.current.appointments).length >
-  //     filteredAppointmentLength,
-  // );
+  // wait for the appointments to show more than when filtered
+  await waitFor(
+    () =>
+      Object.keys(result.current.appointments).length >
+      filteredAppointmentLength,
+  );
 });

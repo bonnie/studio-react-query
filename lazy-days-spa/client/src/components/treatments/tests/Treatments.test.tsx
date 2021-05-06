@@ -1,10 +1,10 @@
 import { screen } from '@testing-library/react';
 
-import { renderWithClient } from '../../../test-utils';
+import { renderWithQueryClient } from '../../../test-utils';
 import { Treatments } from '../Treatments';
 
 test('renders response from query', async () => {
-  renderWithClient(<Treatments />);
+  renderWithQueryClient(<Treatments />);
 
   const treatmentTitles = await screen.findAllByRole('heading', {
     name: /massage|facial|scrub/i,

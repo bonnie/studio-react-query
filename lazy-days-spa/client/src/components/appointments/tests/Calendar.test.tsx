@@ -3,7 +3,7 @@ import { screen } from '@testing-library/react';
 import { rest } from 'msw';
 
 import { server } from '../../../mocks/server';
-import { renderWithClient } from '../../../test-utils';
+import { renderWithQueryClient } from '../../../test-utils';
 import { Calendar } from '../Calendar';
 
 test('Appointment query error', async () => {
@@ -17,7 +17,7 @@ test('Appointment query error', async () => {
     ),
   );
 
-  renderWithClient(<Calendar />);
+  renderWithQueryClient(<Calendar />);
 
   // check for the toast alert
   const alertToast = await screen.findByRole('alert');

@@ -6,7 +6,7 @@ import { DefaultOptions, setLogger } from 'react-query';
 
 import { server } from '../../../mocks/server';
 import { defaultQueryClientOptions } from '../../../react-query/queryClient';
-import { renderWithClient } from '../../../test-utils';
+import { renderWithQueryClient } from '../../../test-utils';
 import { AllStaff } from '../AllStaff';
 
 setLogger({
@@ -18,7 +18,7 @@ setLogger({
 });
 
 test('renders response from query', async () => {
-  renderWithClient(<AllStaff />);
+  renderWithQueryClient(<AllStaff />);
 
   const staffNames = await screen.findAllByRole('heading', {
     name: /divya|sandra|michael|mateo/i,
@@ -38,7 +38,7 @@ test('handles query error', async () => {
   if (defaultOptions && defaultOptions.queries)
     defaultOptions.queries.retry = false;
 
-  renderWithClient(<AllStaff />);
+  renderWithQueryClient(<AllStaff />);
 
   // check for the toast alert
   const alertToast = await screen.findByRole('alert');
