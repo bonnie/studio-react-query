@@ -8,6 +8,7 @@
     "@chakra-ui/theme-tools": "^1.1.5",
     "@testing-library/jest-dom": "^5.11.10",
     "@testing-library/react": "^11.2.6",
+    "@testing-library/react-hooks": "^5.1.2",
     "@testing-library/user-event": "^12.8.3",
     "@types/axios": "^0.14.0",
     "@types/react-bootstrap": "^0.32.25",
@@ -61,5 +62,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "jest": {
+    "resetMocks": false
   }
 }

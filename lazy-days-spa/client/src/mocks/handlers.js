@@ -18,7 +18,13 @@ export const handlers = [
   rest.get(
     'http://localhost:3030/appointments/:month/:year',
     (req, res, ctx) => {
-      return res(ctx.status(500));
+      return res(ctx.json({ appointments: mockAppointments }));
     },
   ),
+  rest.get('http://localhost:3030/user/:id/appointments', (req, res, ctx) => {
+    return res(ctx.json({ appointments: mockUserAppointments }));
+  }),
+  rest.patch('http://localhost:3030/appointment/:id', (req, res, ctx) => {
+    return res(ctx.status(200));
+  }),
 ];

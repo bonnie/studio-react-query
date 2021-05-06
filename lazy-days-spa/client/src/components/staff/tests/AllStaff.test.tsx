@@ -1,15 +1,46 @@
-import { screen } from '@testing-library/react';
-import { QueryClient } from 'react-query';
+/* eslint-disable no-console */
 
+import { screen } from '@testing-library/react';
+import { rest } from 'msw';
+import { DefaultOptions, setLogger } from 'react-query';
+
+import { server } from '../../../mocks/server';
+import { defaultQueryClientOptions } from '../../../react-query/queryClient';
 import { renderWithClient } from '../../../test-utils';
 import { AllStaff } from '../AllStaff';
 
+setLogger({
+  log: console.log,
+  warn: console.warn,
+  error: () => {
+    // swallow the errors
+  },
+});
+
 test('renders response from query', async () => {
-  const queryClient = new QueryClient();
-  renderWithClient(queryClient, <AllStaff />);
+  renderWithClient(<AllStaff />);
 
   const staffNames = await screen.findAllByRole('heading', {
     name: /divya|sandra|michael|mateo/i,
   });
   expect(staffNames).toHaveLength(4);
+});
+
+test('handles query error', async () => {
+  // (re)set handler to return a 500 error for appointments
+  server.resetHandlers(
+    rest.get('http://localhost:3030/staff', (req, res, ctx) => {
+      return res(ctx.status(500));
+    }),
+  );
+
+  const defaultOptions: DefaultOptions = defaultQueryClientOptions;
+  if (defaultOptions && defaultOptions.queries)
+    defaultOptions.queries.retry = false;
+
+  renderWithClient(<AllStaff />);
+
+  // check for the toast alert
+  const alertToast = await screen.findByRole('alert');
+  expect(alertToast).toHaveTextContent('Request failed with status code 500');
 });
