@@ -58,12 +58,13 @@ function AppointmentsTable({
   );
 }
 
-export function UserAppointments(): ReactElement {
+export function UserAppointments(): ReactElement | null {
   const { user } = useUser();
   const userAppointments = useUserAppointments();
 
   if (!user) {
-    return <Redirect to="/signin" />;
+    // don't render if there's no user
+    return null;
   }
 
   return (

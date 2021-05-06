@@ -80,7 +80,38 @@ export const mockAppointments = {
     {
       id: 13,
       treatmentName: 'Facial',
-      dateTime: dayjs().add(3, 'days').toDate(),
+      dateTime: dayjs().toDate(),
+    },
+  ],
+  28: [
+    {
+      id: 16,
+      treatmentName: 'Massage',
+      dateTime: dayjs().add(3, 'hours').toDate(),
+    },
+  ],
+  30: [
+    {
+      id: 17,
+      treatmentName: 'Scrub',
+      dateTime: dayjs().add(2, 'hours').toDate(),
+    },
+    {
+      id: 18,
+      treatmentName: 'Scrub',
+      dateTime: dayjs().add(-2, 'hours').toDate(),
+    },
+  ],
+  31: [
+    {
+      id: 19,
+      treatmentName: 'Massage',
+      dateTime: dayjs().add(3, 'hours').toDate(),
+    },
+    {
+      id: 20,
+      treatmentName: 'Facial',
+      dateTime: dayjs().toDate(),
     },
   ],
 };
