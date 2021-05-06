@@ -1,14 +1,14 @@
 import { useInfiniteQuery } from "react-query";
 import InfiniteScroll from "react-infinite-scroller";
-import { Person } from "./Person";
+import { Species } from "./Species";
 
-const initialUrl = "https://swapi.dev/api/people/";
+const initialUrl = "https://swapi.dev/api/species/";
 const fetchUrl = async (url) => {
   const response = await fetch(url);
   return response.json();
 };
 
-export function InfinitePeople() {
+export function InfiniteSpecies() {
   const {
     data,
     error,
@@ -36,11 +36,11 @@ export function InfinitePeople() {
       <InfiniteScroll loadMore={fetchNextPage} hasMore={hasNextPage}>
         {data.pages.map((page) =>
           page.results.map((item) => (
-            <Person
+            <Species
               key={item.id}
               name={item.name}
-              hairColor={item.hair_color}
-              eyeColor={item.eye_color}
+              language={item.language}
+              averageLifespan={item.average_lifespan}
             />
           ))
         )}
