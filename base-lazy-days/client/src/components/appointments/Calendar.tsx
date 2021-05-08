@@ -1,3 +1,4 @@
+/* eslint-disable max-lines-per-function */
 import {
   Box,
   Checkbox,
@@ -7,52 +8,24 @@ import {
   IconButton,
 } from '@chakra-ui/react';
 import dayjs from 'dayjs';
-import { ReactElement, useState } from 'react';
+import { ReactElement } from 'react';
 import { TiArrowLeftThick, TiArrowRightThick } from 'react-icons/ti';
 
 import { UserAppointments } from '../user/UserAppointments';
 import { DateBox } from './DateBox';
 import { useAppointments } from './hooks/useAppointments';
 
-interface MonthYear {
-  startDate: dayjs.Dayjs; // first day of the month
-  firstDOW: number; // day of week; 0 === Sunday
-  lastDate: number; // last date of the month
-  monthName: string; // name of the month
-  month: string; // two digit month number
-  year: string; // four digit year
-}
-
-// get calendar-relevant data for the month containing initialDate
-function getMonthYearDetails(initialDate: dayjs.Dayjs): MonthYear {
-  const month = initialDate.format('MM');
-  const year = initialDate.format('YYYY');
-  const startDate = dayjs(`${year}${month}01`);
-  const firstDOW = Number(startDate.format('d'));
-  const lastDate = Number(startDate.clone().endOf('month').format('DD'));
-  const monthName = startDate.format('MMMM');
-  return { startDate, firstDOW, lastDate, monthName, month, year };
-}
-
 export function Calendar(): ReactElement {
   const currentDate = dayjs();
-  const [monthYear, setMonthYear] = useState(getMonthYearDetails(currentDate));
 
-  // show all appointments, or just the available ones?
-  // TODO: implement with React Query
-  const [showAll, setShowAll] = useState(false);
+  const {
+    appointments,
+    monthYear,
+    updateMonthYear,
+    showAll,
+    setShowAll,
+  } = useAppointments();
 
-  // TODO: make dependent on monthYear.month and monthYear.year
-  const appointments = useAppointments();
-
-  function updateMonthYear(monthIncrement: number): void {
-    setMonthYear((prevData) =>
-      // the clone is necessary to prevent mutation
-      getMonthYearDetails(
-        prevData.startDate.clone().add(monthIncrement, 'months'),
-      ),
-    );
-  }
   return (
     <Box>
       <HStack mt={10} spacing={8} justify="center">

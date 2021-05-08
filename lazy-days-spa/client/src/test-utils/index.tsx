@@ -30,7 +30,7 @@ const generateQueryClient = () => {
 
 export function renderWithQueryClient(
   ui: React.ReactElement,
-  client: QueryClient,
+  client?: QueryClient,
 ) {
   const queryClient = client ?? generateQueryClient();
   return render(

@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction, useState } from 'react';
+
 import type { Staff } from '../../../../../shared/types';
 import { axiosInstance } from '../../../axiosInstance';
 import { mockStaff } from '../../../mocks/mockData';
@@ -10,7 +12,18 @@ import { filterByTreatment } from '../utils';
 //   return data;
 // }
 
-export function useStaff(): Staff[] {
+interface UseStaff {
+  staff: Staff[];
+  filter: string;
+  setFilter: Dispatch<SetStateAction<string>>;
+}
+
+export function useStaff(): UseStaff {
+  // for filtering staff by treatment
+  const [filter, setFilter] = useState('all');
+
   // TODO: get data from server via useQuery
-  return mockStaff;
+  const staff = mockStaff;
+
+  return { staff, filter, setFilter };
 }

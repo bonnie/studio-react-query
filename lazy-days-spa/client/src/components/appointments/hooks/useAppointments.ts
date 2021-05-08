@@ -71,48 +71,40 @@ export function useAppointments(): UseAppointments {
     [user],
   );
 
-  const createQueryParams = useCallback(
-    (
-      queryMonthYear: MonthYear,
-    ): [
-      QueryKey,
-      QueryFunction<AppointmentDateMap>,
-      QueryObserverOptions<AppointmentDateMap>,
-    ] => {
-      function prefetchNextAndPreviousMonth() {
-        const nextMonthYear = getMonthYearDetails(
-          getUpdatedMonthYear(monthYear, 1),
-        );
-        queryClient.prefetchQuery<AppointmentDateMap>(
-          ...createQueryParams(nextMonthYear),
-        );
+  const createQueryParams = (
+    queryMonthYear: MonthYear,
+    prefetch = true,
+  ): [
+    QueryKey,
+    QueryFunction<AppointmentDateMap>,
+    QueryObserverOptions<AppointmentDateMap>,
+  ] => {
+    function prefetchNextAndPreviousMonth() {
+      const nextMonthYear = getMonthYearDetails(
+        getUpdatedMonthYear(monthYear, 1),
+      );
+      queryClient.prefetchQuery<AppointmentDateMap>(
+        ...createQueryParams(nextMonthYear, false),
+      );
 
-        const previousMonth = getMonthYearDetails(
-          getUpdatedMonthYear(monthYear, -1),
-        );
-        queryClient.prefetchQuery<AppointmentDateMap>(
-          ...createQueryParams(previousMonth),
-        );
-      }
+      const previousMonth = getMonthYearDetails(
+        getUpdatedMonthYear(monthYear, -1),
+      );
+      queryClient.prefetchQuery<AppointmentDateMap>(
+        ...createQueryParams(previousMonth, false),
+      );
+    }
 
-      return [
-        [queryKeys.appointments, queryMonthYear.year, queryMonthYear.month],
-        () => getAppointments(queryMonthYear.year, queryMonthYear.month),
-        {
-          keepPreviousData: true,
-          onSuccess: prefetchNextAndPreviousMonth,
-          select: showAll ? undefined : selectFn,
-          staleTime: 0,
-          cacheTime: 300000, // five minutes
-          refetchOnWindowFocus: true, // no difference between true and 'always' since data is always stale
-          refetchOnReconnect: true,
-          refetchOnMount: true,
-          refetchInterval: 60000, // one minute
-        },
-      ];
-    },
-    [showAll, selectFn, monthYear, queryClient],
-  );
+    return [
+      [queryKeys.appointments, queryMonthYear.year, queryMonthYear.month],
+      () => getAppointments(queryMonthYear.year, queryMonthYear.month),
+      {
+        keepPreviousData: true,
+        onSuccess: prefetch ? prefetchNextAndPreviousMonth : undefined,
+        select: showAll ? undefined : selectFn,
+      },
+    ];
+  };
 
   function updateMonthYear(monthIncrement: number): void {
     setMonthYear((prevData) =>

@@ -74,11 +74,13 @@ export function usePatchUser(): UseMutateFunction<
       },
       // If the mutation fails, use the context returned from onMutate to roll back
       onError: (err, newTodo, context) => {
-        queryClient.setQueryData(queryKeys.user, context?.previousUser);
-        toast({
-          title: 'Update failed; restoring previous values',
-          status: 'warning',
-        });
+        if (context?.previousUser) {
+          updateUser(context?.previousUser);
+          toast({
+            title: 'Update failed; restoring previous values',
+            status: 'warning',
+          });
+        }
       },
       onSuccess: (response: AxiosResponseWithCancel | null) => {
         if (response?.data?.user) {

@@ -6,11 +6,8 @@ import { useStaff } from './hooks/useStaff';
 import { Staff } from './Staff';
 
 export function AllStaff(): ReactElement {
-  // for filtering staff by treatment
-  const [filter, setFilter] = useState('all');
-
   // replace with data from React Query
-  const staff = useStaff();
+  const { staff, filter, setFilter } = useStaff();
   const treatments = useTreatments();
 
   return (
