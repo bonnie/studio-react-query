@@ -1,6 +1,5 @@
 import { useState } from "react";
 
-import { useQuery } from "react-query";
 import { PostDetail } from "./PostDetail";
 
 const maxPostPage = 10;
