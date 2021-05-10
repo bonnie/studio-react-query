@@ -25,8 +25,6 @@ export function PostDetail({ post }) {
   // replace with useQuery
   const data = [];
 
-  if (!data) return null;
-
   return (
     <>
       <h3 style={{ color: "blue" }}>{post.title}</h3>

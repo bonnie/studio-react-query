@@ -1,6 +1,8 @@
 import { useState } from "react";
 
+import { useQuery } from "react-query";
 import { PostDetail } from "./PostDetail";
+
 const maxPostPage = 10;
 
 async function fetchPosts() {
@@ -17,8 +19,6 @@ export function Posts() {
   // replace with useQuery
   const data = [];
 
-  if (!data) return null;
-
   return (
     <>
       <ul>
@@ -33,11 +33,21 @@ export function Posts() {
         ))}
       </ul>
       <div className="pages">
-        <button disabled={true} onClick={() => {}}>
+        <button
+          disabled
+          onClick={() => {
+            // TODO
+          }}
+        >
           Previous page
         </button>
         <span>Page {currentPage + 1}</span>
-        <button disabled={true} onClick={() => {}}>
+        <button
+          disabled
+          onClick={() => {
+            // TODO
+          }}
+        >
           Next page
         </button>
       </div>
