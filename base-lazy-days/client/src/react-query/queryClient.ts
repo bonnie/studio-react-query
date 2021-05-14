@@ -1,4 +1,4 @@
-// queryErrorHandler function to use in the future
+import { QueryClient } from 'react-query';
 // import { createStandaloneToast } from '@chakra-ui/react';
 
 // const toast = createStandaloneToast();
@@ -17,5 +17,4 @@
 //   toast({ id, title, status: 'error', variant: 'subtle', isClosable: true });
 // }
 
-// to satisfy typescript until this file has uncommented contents
-export {};
+export const queryClient = new QueryClient();

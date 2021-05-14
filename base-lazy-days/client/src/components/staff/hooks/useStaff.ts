@@ -2,7 +2,6 @@ import { Dispatch, SetStateAction, useState } from 'react';
 
 import type { Staff } from '../../../../../shared/types';
 import { axiosInstance } from '../../../axiosInstance';
-import { mockStaff } from '../../../mocks/mockData';
 import { queryKeys } from '../../../react-query/constants';
 import { filterByTreatment } from '../utils';
 
@@ -23,7 +22,7 @@ export function useStaff(): UseStaff {
   const [filter, setFilter] = useState('all');
 
   // TODO: get data from server via useQuery
-  const staff = mockStaff;
+  const staff = [];
 
   return { staff, filter, setFilter };
 }

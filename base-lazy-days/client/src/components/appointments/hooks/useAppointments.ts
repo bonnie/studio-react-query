@@ -4,7 +4,6 @@ import { Dispatch, SetStateAction, useState } from 'react';
 
 import { Appointment } from '../../../../../shared/types';
 import { axiosInstance } from '../../../axiosInstance';
-import { mockAppointments } from '../../../mocks/mockData';
 import { queryKeys } from '../../../react-query/constants';
 import { useUser } from '../../user/hooks/useUser';
 import { AppointmentDateMap } from '../types';
@@ -56,7 +55,7 @@ export function useAppointments(): UseAppointments {
   const [monthYear, setMonthYear] = useState(getMonthYearDetails(currentDate));
 
   // TODO: update with useQuery!
-  const appointments = mockAppointments;
+  const appointments = [];
 
   // for showing all appointments or just available ones
   const [showAll, setShowAll] = useState(false);
