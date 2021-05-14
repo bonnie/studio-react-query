@@ -19,7 +19,7 @@ export function useTreatments(): Treatment[] {
     onError: (error) => {
       const title =
         error instanceof Error
-          ? error.toString()
+          ? error.toString().replace(/^Error:\s*/, '')
           : 'error connecting to the server';
       toast({ title, status: 'error' });
     },
