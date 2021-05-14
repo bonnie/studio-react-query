@@ -15,7 +15,7 @@ export function queryErrorHandler(error: unknown): void {
       : 'error connecting to server';
 
   // prevent duplicate toasts
-  toast.closeAll();
+  // toast.closeAll();
   toast({ id, title, status: 'error', variant: 'subtle', isClosable: true });
 }
 
