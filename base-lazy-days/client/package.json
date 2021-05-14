@@ -4,8 +4,8 @@
   "private": true,
   "dependencies": {
     "@chakra-ui/react": "^1.6.0",
-    "@chakra-ui/theme": "^1.8.3",
-    "@chakra-ui/theme-tools": "^1.1.5",
+    "@chakra-ui/theme": "^1.8.5",
+    "@chakra-ui/theme-tools": "^1.1.7",
     "@testing-library/jest-dom": "^5.11.10",
     "@testing-library/react": "^11.2.6",
     "@testing-library/user-event": "^12.8.3",
