@@ -1,4 +1,3 @@
-/* eslint-disable max-lines-per-function */
 import {
   Box,
   Checkbox,
@@ -25,8 +24,6 @@ export function Calendar(): ReactElement {
     showAll,
     setShowAll,
   } = useAppointments();
-
-  console.log(appointments);
 
   return (
     <Box>
