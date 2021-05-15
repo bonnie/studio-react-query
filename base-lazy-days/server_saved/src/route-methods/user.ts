@@ -5,16 +5,11 @@ import { AuthUser, createJWT, hashPassword, passwordIsValid } from '../auth.js';
 import db from '../db-func/index.js';
 import { AuthRequest } from '../middlewares';
 
-function removePasswordandAddToken(user: AuthUser): User {
+function removePasswordData(user: AuthUser): User {
   // use "object rest operator" to remove properties in a typescript-friendly way
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { salt, keylen, iterations, hash, digest, ...cleanUser } = user;
-
-  // create token
-  const token = createJWT(cleanUser);
-
-  // return user with token
-  return { ...cleanUser, token };
+  return cleanUser;
 }
 
 // eslint-disable-next-line max-lines-per-function
@@ -26,7 +21,7 @@ export async function get(req: AuthRequest, res: Response): Promise<Response> {
     const userData = await db.getUserById(req.auth.id);
 
     // remove password data from user object
-    const user = removePasswordandAddToken(userData);
+    const user = removePasswordData(userData);
 
     // return user and appointments
     return res.status(200).json({ user });
@@ -71,9 +66,13 @@ export async function create(req: Request, res: Response): Promise<Response> {
       ...userPasswordData,
     });
 
-    const user = removePasswordandAddToken(newUser);
+    // create jwt
+    const cleanUser = removePasswordData(newUser);
+    const token = createJWT(cleanUser);
 
-    return res.status(201).json({ user });
+    return res.status(201).json({
+      user: { ...cleanUser, token },
+    });
   } catch (e) {
     return res.status(500).json({ message: `could not add user: ${e}` });
   }
@@ -109,10 +108,7 @@ export async function update(
       db.filenames.users,
       patch,
     );
-
-    const user = removePasswordandAddToken(updatedUser);
-
-    return res.status(200).json({ user });
+    return res.status(200).json({ user: updatedUser });
   } catch (e) {
     return res
       .status(500)
@@ -136,14 +132,14 @@ export async function auth(req: Request, res: Response): Promise<Response> {
   if (!validUser) return res.status(400).json({ message: 'Invalid login' });
 
   // create jwt
-  const user = removePasswordandAddToken(validUser);
+  const cleanUser = removePasswordData(validUser);
+  const token = createJWT(cleanUser);
 
-  return res.status(200).json({ user });
+  return res.status(200).json({ user: { ...cleanUser, token } });
 }
 
 export default {
   get,
-  getUserAppointments,
   create,
   remove,
   update,

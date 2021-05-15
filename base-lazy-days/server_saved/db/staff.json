@@ -38,7 +38,7 @@
   {
     "id": 4,
     "name": "Mateo",
-    "treatmentNames": ["massage"],
+    "treatmentNames": ["scrub", "massage"],
     "image": {
       "fileName": "mateo.jpg",
       "authorName": "Luis Quintero",

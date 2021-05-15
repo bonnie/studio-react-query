@@ -36,7 +36,7 @@ const app = express();
 // CORS for react app, assuming port 3000
 app.use(
   cors({
-    origin: 'http://localhost:3000',
+    origin: 'http://localhost:3001',
     credentials: true,
   }),
 );
@@ -89,7 +89,7 @@ const startUp = async () => {
   await createAppointments();
 
   // eslint-disable-next-line no-console
-  app.listen(3030, () => console.log('Spa server listening on port 3030!'));
+  app.listen(3333, () => console.log('Spa server listening on port 3333!'));
 };
 
 if (esMain(import.meta)) {

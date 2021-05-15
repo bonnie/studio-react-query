@@ -4,32 +4,32 @@
 //
 // This "database" is horribly inefficient and will be a problem
 // when Lazy Days Spa opens to hundreds of locations globally.
-import dayjs from 'dayjs';
-import jsonPatch, { Operation } from 'fast-json-patch';
-import { promises as fs } from 'fs';
-import path from 'path';
+import dayjs from "dayjs";
+import jsonPatch, { Operation } from "fast-json-patch";
+import { promises as fs } from "fs";
+import path from "path";
 
 import {
   Appointment,
   AppointmentDateMap,
   Staff,
   Treatment,
-} from '../../../shared/types';
-import { AuthUser, NewAuthUser } from '../auth';
+} from "../../../shared/types";
+import { AuthUser, NewAuthUser } from "../auth";
 
 type JsonDataType = AuthUser | Appointment | Treatment | Staff;
 
-const dbPath = 'db';
+const dbPath = "db";
 export enum filenames {
-  users = 'users.json',
-  appointments = 'appointments.json',
-  treatments = 'treatments.json',
-  staff = 'staff.json',
+  users = "users.json",
+  appointments = "appointments.json",
+  treatments = "treatments.json",
+  staff = "staff.json",
 }
 
 /* ****** Read from file ***** */
 async function getJSONfromFile<ItemType extends JsonDataType>(
-  filename: filenames,
+  filename: filenames
 ): Promise<ItemType[]> {
   const filePath = path.join(dbPath, filename);
   const data = await fs.readFile(filePath);
@@ -39,17 +39,17 @@ async function getJSONfromFile<ItemType extends JsonDataType>(
 /* ****** Write to file ***** */
 async function writeJSONToFile<T extends JsonDataType>(
   filename: filenames,
-  data: Array<T>,
+  data: Array<T>
 ): Promise<void> {
   const filePath = path.join(dbPath, filename);
   const jsonData = JSON.stringify(data);
-  await fs.writeFile(filePath, jsonData, { flag: 'w' });
+  await fs.writeFile(filePath, jsonData, { flag: "w" });
 }
 
 /* ****** Delete item ***** */
 async function deleteItem<T extends JsonDataType>(
   filename: filenames,
-  itemId: number,
+  itemId: number
 ): Promise<number> {
   try {
     const items = await getJSONfromFile<T>(filename);
@@ -62,7 +62,7 @@ async function deleteItem<T extends JsonDataType>(
     return itemId;
   } catch (e) {
     throw new Error(
-      `Could not delete item id ${itemId} from ${filename}: ${e}`,
+      `Could not delete item id ${itemId} from ${filename}: ${e}`
     );
   }
 }
@@ -74,7 +74,7 @@ async function updateItem<DataType extends JsonDataType>(
   itemId: number,
   filename: filenames,
   // should be fast-json-patch Operation, but I can't destructure on import
-  itemPatch: Operation[],
+  itemPatch: Operation[]
 ): Promise<DataType> {
   try {
     const items = await getJSONfromFile<DataType>(filename);
@@ -100,7 +100,7 @@ async function updateItem<DataType extends JsonDataType>(
     return updatedData;
   } catch (e) {
     throw new Error(
-      `Could not delete item id ${itemId} from ${filename}: ${e}`,
+      `Could not delete item id ${itemId} from ${filename}: ${e}`
     );
   }
 }
@@ -111,7 +111,7 @@ export async function getAppointments(): Promise<Appointment[]> {
 
 export async function getAppointmentsByMonthYear(
   month: string,
-  year: string,
+  year: string
 ): Promise<AppointmentDateMap> {
   // yet another place where inefficiency is ridiculous compared to a real db
   const appointmentDateMap: AppointmentDateMap = {};
@@ -151,8 +151,8 @@ export function getUsers(): Promise<AuthUser[]> {
 export async function getUserById(userId: number): Promise<AuthUser> {
   const users = await getUsers();
   const userData = users.filter((u) => u.id === userId);
-  if (userData.length < 1) throw new Error('user not found');
-  if (userData.length < 1) throw new Error('duplicate user found');
+  if (userData.length < 1) throw new Error("user not found");
+  if (userData.length < 1) throw new Error("duplicate user found");
   return userData[0];
 }
 
@@ -176,7 +176,7 @@ async function addUser(newUserData: NewAuthUser): Promise<AuthUser> {
 
 /* ****** Add new appoinment ***** */
 async function writeAppointments(
-  newAppointmentsArray: Appointment[],
+  newAppointmentsArray: Appointment[]
 ): Promise<void> {
   await writeJSONToFile(filenames.appointments, newAppointmentsArray);
 }
