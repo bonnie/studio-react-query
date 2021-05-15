@@ -15,10 +15,10 @@ import { AppointmentDateMap } from '../types';
 import { getAvailableAppointments } from '../utils';
 import { getMonthYearDetails, getNewMonthYear, MonthYear } from './monthYear';
 
-// common options for both the prefetch and the useQuery
+// common options for both useQuery and prefetchQuery
 const commonOptions = {
   staleTime: 0,
-  cacheTime: 30000, // 5 minutes
+  cacheTime: 300000, // 5 minutes
 };
 
 // query function for useQuery call
@@ -107,7 +107,6 @@ export function useAppointments(): UseAppointments {
       refetchOnMount: true,
       refetchOnReconnect: true,
       refetchOnWindowFocus: true,
-      refetchInterval: 60000, // every second; not recommended for production
     },
   );
 
