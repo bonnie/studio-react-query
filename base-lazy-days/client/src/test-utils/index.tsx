@@ -1,10 +1,9 @@
-import { render } from '@testing-library/react';
+import { render, RenderResult } from '@testing-library/react';
 
+// ** FOR TESTING CUSTOM HOOKS ** //
 // from https://tkdodo.eu/blog/testing-react-query#for-custom-hooks
-// export const createWrapper = () => {
-//   const queryClient = new QueryClient({
-//     defaultOptions: defaultQueryClientOptions,
-//   });
+// export const createQueryClientWrapper = () => {
+//   const queryClient = generateQueryClient();
 //   return ({ children }) => (
 //     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
 //   );
