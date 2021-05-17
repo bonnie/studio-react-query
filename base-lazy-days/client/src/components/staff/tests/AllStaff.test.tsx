@@ -1,7 +1,6 @@
 import { screen } from '@testing-library/react';
 
 // import { rest } from 'msw';
-// import { defaultQueryClientOptions } from '../../../react-query/queryClient';
 // import { server } from '../../../mocks/server';
 // import { renderWithQueryClient } from '../../../test-utils';
 import { AllStaff } from '../AllStaff';
