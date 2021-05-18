@@ -4,7 +4,6 @@ import {
   mockAppointments,
   mockStaff,
   mockTreatments,
-  mockUser,
   mockUserAppointments,
 } from './mockData';
 
